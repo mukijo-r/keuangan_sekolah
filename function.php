@@ -18,7 +18,7 @@ if(isset($_POST['tambahSiswa'])){
     $tanggalLahir = date("Y-m-d", strtotime($tglLahir));
 
     $addSiswa = mysqli_query($conn, "insert into siswa (nisn, nama, id_kelas, jk, tempat_lahir, tanggal_lahir, agama, alamat) values ($nisn, '$namaSiswa', $kelas, '$jk', '$kotaLahir', '$tanggalLahir', '$agama', '$alamat')");
-    header('location:index.php');
+    header('location:siswa.php');
 }
 
 //Edit Siswa
@@ -55,8 +55,18 @@ if(isset($_POST['editGuru'])){
     $jabatan= $_POST['jabatan'];
     $idg = $_POST['idg'];
 
-    $editGuru = mysqli_query($conn, "update guru set nip='$nip', nama_lengkap='$namaGuru', jk='$jk', jabatan='$jabatan' where id_guru=$idg");
-    header('location:guru.php');
+    $editGuru = mysqli_query($conn, "pdate guru set nip='$nip', nama_lengkap='$namaGuru', jk='$jk', jabatan='$jabatan' where id_guru=$idg");
+    if ($editGuru) {
+        $_SESSION['flash_message'] = 'Edit data guru berhasil';
+        $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+        header('location:guru.php');
+        exit;
+    } else {
+        $_SESSION['flash_message'] = 'Edit data guru gagal';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location:guru.php');
+        exit;
+    }    
 }
 
 //Hapus Guru

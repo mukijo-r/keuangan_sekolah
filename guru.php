@@ -24,7 +24,7 @@ require 'cek.php';
                     <div class="container-fluid px-4">
                         <h2 class="mt-4">Daftar Guru</h2>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">DATA/Guru</li>
+                            <li class="breadcrumb-item active">DATA/Guru</li>                            
                         </ol>
                         <!-- <div class="row">
                             <div class="col-xl-3 col-md-6">
@@ -75,12 +75,27 @@ require 'cek.php';
                                 </div>
                             </div>
                         </div> -->
+                        
                         <br>
-                        <div class="container-fluid px-4">                          
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahGuru">
-                                    Tambah Guru
-                            </button>
-                        </div>
+                        <div class="container-fluid px-4">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahGuru">
+                                        Tambah Guru
+                                    </button>
+                                </div>
+                                <div class="col-md-8">
+                                    <?php
+                                    if (isset($_SESSION['flash_message'])) {
+                                        $message_class = isset($_SESSION['flash_message_class']) ? $_SESSION['flash_message_class'] : 'alert-success';
+                                        echo '<div class="alert ' . $message_class . ' text-center">' . $_SESSION['flash_message'] . '</div>';
+                                        unset($_SESSION['flash_message']); // Hapus pesan flash setelah ditampilkan
+                                    }
+                                    
+                                    ?>
+                                </div>
+                            </div>
+                        </div>                    
                         <br>
                         <div class="card mb-4">
                             <div class="card-header">
