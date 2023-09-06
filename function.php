@@ -55,19 +55,26 @@ if(isset($_POST['editGuru'])){
     $jabatan= $_POST['jabatan'];
     $idg = $_POST['idg'];
 
-    $editGuru = mysqli_query($conn, "pdate guru set nip='$nip', nama_lengkap='$namaGuru', jk='$jk', jabatan='$jabatan' where id_guru=$idg");
-    if ($editGuru) {
+    $editGuru = mysqli_query($conn, "update guru set nip='$nip', nama_lengkap='$namaGuru', jk='$jk', jabatan='$jabatan' where id_guru=$idg");
+
+    // Query SELECT untuk mengambil data yang baru saja diperbarui
+    $result = mysqli_query($conn, "SELECT * FROM guru WHERE id_guru = $idg");
+
+    if ($editGuru && mysqli_num_rows($result) > 0) {
+        // Data yang baru saja diperbarui ada dalam database, itu berarti edit berhasil
         $_SESSION['flash_message'] = 'Edit data guru berhasil';
         $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
         header('location:guru.php');
         exit;
     } else {
+        // Data yang baru saja diperbarui tidak ada dalam database, itu berarti edit gagal
         $_SESSION['flash_message'] = 'Edit data guru gagal';
         $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
         header('location:guru.php');
         exit;
-    }    
-}
+    }
+}    
+
 
 //Hapus Guru
 if(isset($_POST['hapusGuru'])){
