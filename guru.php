@@ -1,4 +1,6 @@
 <?php
+require 'function.php';
+require 'cek.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,47 +10,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Dashboard - SB Admin</title>
+        <title>Halaman Guru</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.php">Start Bootstrap</a>
-            <!-- Sidebar Toggle-->
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            <!-- Navbar Search-->
-            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
-                </div>
-            </form>
-            <!-- Navbar-->
-            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Settings</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
+        <?php include 'navbar.php'; ?>
         <div id="layoutSidenav">
-            <?php include 'navbar.php'; ?>;
+            <?php include 'sidebar.php'; ?>
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
+                        <h2 class="mt-4">Daftar Guru</h2>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Dashboard</li>
+                            <li class="breadcrumb-item active">DATA/Guru</li>
                         </ol>
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
                                     <div class="card-body">Primary Card</div>
@@ -75,16 +53,7 @@
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Danger Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
+                            </div>                            
                         </div>
                         <div class="row">
                             <div class="col-xl-6">
@@ -105,33 +74,127 @@
                                     <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
                                 </div>
                             </div>
+                        </div> -->
+                        <br>
+                        <div class="container-fluid px-4">                          
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahGuru">
+                                    Tambah Guru
+                            </button>
                         </div>
+                        <br>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                DataTable Example
+                                Daftar Guru
                             </div>
                             <div class="card-body">
                                 <table id="datatablesSimple">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Position</th>
-                                            <th>Office</th>
-                                            <th>Age</th>
-                                            <th>Start date</th>
-                                            <th>Salary</th>
+                                            <th>No.</th>    
+                                            <th>Nama</th>
+                                            <th>NIP</th>
+                                            <th>Jenis Kelamin</th>
+                                            <th>Jabatan</th>
+                                            <th colspan='2'>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td>2011/04/25</td>
-                                            <td>$320,800</td>
-                                        </tr> 
+                                    <?php 
+                                    $dataGuru = mysqli_query($conn, "select * from guru");
+                                    $i = 1;
+                                    while($data=mysqli_fetch_array($dataGuru)){
+                                        $namaGuru = $data['nama_lengkap'];
+                                        $nip = $data['nip'];
+                                        $jk = $data['jk'];
+                                        $jabatan = $data['jabatan'];
+                                        $idg = $data['id_guru'];                                       
+                                    ?>
+                                    <tr>
+                                        <td><?=$i++;?></td>
+                                        <td><?=$namaGuru;?></td>
+                                        <td><?=$nip;?></td>
+                                        <td><?=$jk;?></td>
+                                        <td><?=$jabatan;?></td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditGuru<?=$idg;?>">Edit</button>
+                                            <input type="hidden" name="idgis" value="<?=$idg;?>">
+                                            <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusGuru<?=$idg;?>">Hapus</button> 
+                                        </td>
+                                    </tr>
+                                    <!-- Modal Edit Guru-->
+                                    <div class="modal fade" id="modalEditGuru<?=$idg;?>">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Edit Guru</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <!-- Modal body -->
+                                            
+                                            <form method="post">
+                                            <div class="modal-body">
+                                                <input type="text" name="namaGuru" value="<?=$namaGuru;?>" class="form-control">
+                                                <br>
+                                                <input type="text" name="nip" value="<?=$nip;?>" class="form-control">
+                                                <br>
+                                                <select class="form-select" name="jk" aria-label="Jenis Kelamin">
+                                                    <option selected><?=$jk;?></option>
+                                                    <option value="L">L</option>
+                                                    <option value="P">P</option>
+                                                </select>
+                                                <br>
+                                                <select class="form-select" name="jabatan" aria-label="Jabatan">
+                                                    <option selected><?=$jabatan;?></option>
+                                                    <option value="Guru">Guru</option>
+                                                    <option value="Bendahara Sekolah">Bendahara Sekolah</option>
+                                                    <option value="Kepala Sekolah">Kepala Sekolah</option>
+                                                </select>
+                                                <br>
+                                                <input type="hidden" name="idg" value="<?=$idg;?>">
+                                            </div>
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-warning" name="editGuru">Edit</button> 
+                                            </div>
+                                            <br> 
+                                            </form>        
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Hapus Guru-->
+                                    <div class="modal fade" id="modalHapusGuru<?=$idg;?>">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Hapus Guru?</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <!-- Modal body -->
+                                            
+                                            <form method="post">
+                                            <div class="modal-body">
+                                                <h4>Anda yakin ingin menghapus data guru <?=$namaGuru;?>?</h4>
+                                                
+                                            </div>
+                                            <div class="text-center">
+                                                <input type="hidden" name="idg" value="<?=$idg;?>">
+                                                <button type="submit" class="btn btn-danger" name="hapusGuru">Hapus</button> 
+                                            </div>
+                                            <br> 
+                                            </form>       
+                                            </div>
+                                        </div>
+                                    <?php
+                                    };
+
+                                    ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -160,14 +223,65 @@
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script>
         <script>
-        // Menggunakan JavaScript untuk mengatur collapse menu
-        const siswaLink = document.querySelector(".nav-link[href='siswa.php']");
-        const transaksiCollapse = document.querySelector("#collapseLayouts");
-
-        siswaLink.addEventListener("click", function(event) {
-            event.preventDefault(); // Mencegah navigasi ke "siswa.php"
-            transaksiCollapse.classList.add("show"); // Menampilkan collapse menu "Transaksi"
-        });
-    </script>
+        </script>
     </body>
+    <!-- Modal Tambah Guru-->
+    <div class="modal fade" id="modalTambahGuru">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Tambah Guru</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <!-- Modal body -->      
+            <form method="post">
+            <div class="modal-body">
+                <input type="text" name="nisn" placeholder="NISN" class="form-control">
+                <br>
+                <input type="text" name="namaGuru" placeholder="Nama Guru" class="form-control" required>
+                <br>
+                <select class="form-select" name="kelas" aria-label="Pilih Kelas">
+                    <option selected>Kelas</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+                <br>
+                <select class="form-select" name="jk" aria-label="Jenis Kelamin">
+                    <option selected>Jenis Kelamin</option>
+                    <option value="L">L</option>
+                    <option value="P">P</option>
+                </select>
+                <br>
+                <input type="text" name="tempatLahir" placeholder="Tempat Lahir" class="form-control">
+                <br>
+                <input type="date" name="tanggalLahir" placeholder="Tanggal Lahir" class="form-control">
+                <br>
+                <select class="form-select" name="agama" aria-label="Agama">
+                    <option selected>Agama</option>
+                    <option value="Katolik">Katolik</option>
+                    <option value="Kristen">Kristen</option>
+                    <option value="Islam">Islam</option>
+                    <option value="Hindu">Hindu</option>
+                    <option value="Buddha">Buddha</option>
+                    <option value="Khonghucu">Khonghucu</option>
+                </select>
+                <br>
+                <textarea name="alamat" rows="5" cols="60">Alamat</textarea>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success" name="tambahGuru">Tambah</button> 
+            </div>
+            <br> 
+        </form>   
+        </div>
+    </div>
+    </div>
+
+    
 </html>

@@ -26,7 +26,7 @@ require 'cek.php';
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">DATA/Siswa</li>
                         </ol>
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-xl-3 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
                                     <div class="card-body">Primary Card</div>
@@ -74,7 +74,7 @@ require 'cek.php';
                                     <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <br>
                         <div class="container-fluid px-4">                          
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahSiswa">
@@ -95,6 +95,7 @@ require 'cek.php';
                                             <th>Nama</th>
                                             <th>NISN</th>
                                             <th>Kelas</th>
+                                            <th>Jenis Kelamin</th>
                                             <th>Tampat Lahir</th>
                                             <th>Tanggal Lahir</th>
                                             <th>Agama</th>
@@ -110,6 +111,7 @@ require 'cek.php';
                                         $namaSiswa = $data['nama'];
                                         $nisn = $data['nisn'];
                                         $kelas = $data['id_kelas'];
+                                        $jk = $data['jk'];
                                         $tempatLahir = $data['tempat_lahir'];
                                         $tanggalLahir = $data['tanggal_lahir'];
                                         $agama = $data['agama'];
@@ -121,16 +123,105 @@ require 'cek.php';
                                         <td><?=$namaSiswa;?></td>
                                         <td><?=$nisn;?></td>
                                         <td><?=$kelas;?></td>
+                                        <td><?=$jk;?></td>
                                         <td><?=$tempatLahir;?></td>
                                         <td><?=$tanggalLahir;?></td>
                                         <td><?=$agama;?></td>
                                         <td><?=$alamat;?></td>
                                         <td>
-                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditSiswa<?=$i;?>">Edit</button>
+                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditSiswa<?=$ids;?>">Edit</button>
                                             <input type="hidden" name="idsis" value="<?=$ids;?>">
                                             <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusSiswa<?=$ids;?>">Hapus</button> 
                                         </td>
                                     </tr>
+                                    <!-- Modal Edit Siswa-->
+                                    <div class="modal fade" id="modalEditSiswa<?=$ids;?>">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Edit Siswa</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <!-- Modal body -->
+                                            
+                                            <form method="post">
+                                            <div class="modal-body">
+                                                <input type="text" name="nisn" value="<?=$nisn;?>" class="form-control">
+                                                <br>
+                                                <input type="text" name="namaSiswa" value="<?=$namaSiswa;?>" class="form-control">
+                                                <br>
+                                                <select class="form-select" name="kelas" aria-label="Pilih Kelas">
+                                                    <option selected><?=$kelas;?></option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
+                                                </select>
+                                                <br>
+                                                <select class="form-select" name="jk" aria-label="Jenis Kelamin">
+                                                    <option selected><?=$jk;?></option>
+                                                    <option value="L">L</option>
+                                                    <option value="P">P</option>
+                                                </select>
+                                                <br>
+                                                <input type="text" name="tempatLahir" value="<?=$tempatLahir;?>" class="form-control">
+                                                <br>
+                                                <input type="date" name="tanggalLahir" value="<?=$tanggalLahir;?>" class="form-control">
+                                                <br>
+                                                <select class="form-select" name="agama" aria-label="Agama">
+                                                    <option selected><?=$agama;?></option>
+                                                    <option value="Katolik">Katolik</option>
+                                                    <option value="Kristen">Kristen</option>
+                                                    <option value="Islam">Islam</option>
+                                                    <option value="Hindu">Hindu</option>
+                                                    <option value="Buddha">Buddha</option>
+                                                    <option value="Khonghucu">Khonghucu</option>
+                                                </select>
+                                                <br>
+                                                <textarea name="alamat" rows="5" cols="60"><?=$alamat;?></textarea>
+                                                <input type="hidden" name="ids" value="<?=$ids;?>">
+                                            </div>
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-warning" name="editSiswa">Edit</button> 
+                                            </div>
+                                            <br> 
+                                            </form>        
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Hapus Siswa-->
+                                    <div class="modal fade" id="modalHapusSiswa<?=$ids;?>">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Hapus Siswa?</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <!-- Modal body -->
+                                            
+                                            <form method="post">
+                                            <div class="modal-body">
+                                                <h4>Anda yakin ingin menghapus data siswa <?=$namaSiswa;?>?</h4>
+                                                
+                                            </div>
+                                            <div class="text-center">
+                                                <input type="hidden" name="ids" value="<?=$ids;?>">
+                                                <button type="submit" class="btn btn-danger" name="hapusSiswa">Hapus</button> 
+                                            </div>
+                                            <br> 
+                                            </form>       
+                                            </div>
+                                        </div>
+                                    </div>
                                     <?php
                                     };
 
@@ -223,123 +314,5 @@ require 'cek.php';
     </div>
     </div>
 
-    <!-- Modal Edit Siswa-->
-    <div class="modal fade" id="modalEditSiswa<?=$ids;?>">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Edit Siswa</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <!-- Modal body -->
-            
-            <form method="get">
-            <div class="modal-body">
-                <input type="text" name="nisn" value="<?=$nisn;?>" class="form-control">
-                <br>
-                <input type="text" name="namaSiswa" value="<?=$namaSiswa;?> class="form-control">
-                <br>
-                <select class="form-select" name="kelas" aria-label="Pilih Kelas">
-                    <option selected><?=$kelas;?></option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                </select>
-                <br>
-                <select class="form-select" name="jk" aria-label="Jenis Kelamin">
-                    <option selected><?=$jk;?></option>
-                    <option value="L">L</option>
-                    <option value="P">P</option>
-                </select>
-                <br>
-                <input type="text" name="tempatLahir" value="<?=$tempatLahir;?>" class="form-control">
-                <br>
-                <input type="date" name="tanggalLahir" value="<?=$tanggalLahir;?>" class="form-control">
-                <br>
-                <select class="form-select" name="agama" aria-label="Agama">
-                    <option selected><?=$agama;?></option>
-                    <option value="Katolik">Katolik</option>
-                    <option value="Kristen">Kristen</option>
-                    <option value="Islam">Islam</option>
-                    <option value="Hindu">Hindu</option>
-                    <option value="Buddha">Buddha</option>
-                    <option value="Khonghucu">Khonghucu</option>
-                </select>
-                <br>
-                <textarea name="alamat" rows="5" cols="60"><?=$alamat;?></textarea>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-warning" name="editSiswa">Edit</button> 
-            </div>
-            <br> 
-            </form>        
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Hapus Siswa-->
-    <div class="modal fade" id="#modalHapusSiswa<?=$ids;?>">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Hapus Siswa?</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <!-- Modal body -->
-            
-            <form method="post">
-            <div class="modal-body">
-                <input type="text" name="nisn" placeholder="NISN" class="form-control">
-                <br>
-                <input type="text" name="namaSiswa" placeholder="Nama Siswa" class="form-control" required>
-                <br>
-                <select class="form-select" name="kelas" aria-label="Pilih Kelas">
-                    <option selected>Kelas</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                </select>
-                <br>
-                <select class="form-select" name="jk" aria-label="Jenis Kelamin"required>
-                    <option selected>Jenis Kelamin</option>
-                    <option value="L">L</option>
-                    <option value="P">P</option>
-                </select>
-                <br>
-                <input type="text" name="tempatLahir" placeholder="Tempat Lahir" class="form-control">
-                <br>
-                <input type="date" name="tanggalLahir" placeholder="Tanggal Lahir" class="form-control">
-                <br>
-                <select class="form-select" name="agama" aria-label="Agama">
-                    <option selected>Agama</option>
-                    <option value="Katolik">Katolik</option>
-                    <option value="Kristen">Kristen</option>
-                    <option value="Islam">Islam</option>
-                    <option value="Hindu">Hindu</option>
-                    <option value="Buddha">Buddha</option>
-                    <option value="Khonghucu">Khonghucu</option>
-                </select>
-                <br>
-                <textarea name="alamat" rows="5" cols="60">Alamat</textarea>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-danger" name="tambahSiswa">Hapus</button> 
-            </div>
-            <br> 
-            </form>       
-            </div>
-        </div>
-    </div>
+    
 </html>
