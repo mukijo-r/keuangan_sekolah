@@ -80,8 +80,8 @@ require 'cek.php';
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahGuru">
-                                        Tambah Guru
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTabung">
+                                        Menabung
                                     </button>
                                 </div>
                                 <div class="col-md-8">
@@ -103,12 +103,12 @@ require 'cek.php';
                                 Daftar Transaksi Menabung
                             </div>
                             <div class="card-body">
-                                <table id="tabelTabMasuk">
+                                <table id="datatablesSimple">
                                     <thead>
                                         <tr>
                                             <th>No.</th>    
                                             <th>Tanggal</th>
-                                            <th>Nama siswa</th>
+                                            <th>Nama Siswa</th>
                                             <th>Jumlah Ditabung</th>
                                             <th>Guru Pencatat</th>
                                             <th>Keterangan</th>
@@ -117,21 +117,27 @@ require 'cek.php';
                                     </thead>
                                     <tbody>
                                     <?php 
-                                    $dataTabungan = mysqli_query($conn, "select * from tabung_masuk");
+                                    $dataTabungan = mysqli_query($conn, "SELECT tm.*, s.nama AS nama_siswa, g.nama_lengkap AS nama_guru, k.nama_kelas AS kelas
+                                                                        FROM tabung_masuk tm
+                                                                        LEFT JOIN siswa s ON tm.id_siswa = s.id_siswa
+                                                                        LEFT JOIN guru g ON tm.id_guru = g.id_guru
+                                                                        LEFT JOIN kelas k ON s.id_kelas = k.id_kelas");
                                     $i = 1;
                                     while($data=mysqli_fetch_array($dataTabungan)){
                                         $tanggal = $data['tanggal'];
-                                        $idSiswa = $data['id_siswa'];
-                                        $nominal= $data['jumlah'];
-                                        $id_guru = $data['id_guru'];
-                                        $keterangan = $data['keterangan'];                                       
+                                        $namaSiswa = $data['nama_siswa'];
+                                        $kelas = $data['kelas'];
+                                        $nominal = $data['jumlah'];
+                                        $namaGuru = $data['nama_guru'];
+                                        $keterangan = $data['keterangan'];
                                     ?>
                                     <tr>
                                         <td><?=$i++;?></td>
                                         <td><?=$tanggal;?></td>
-                                        <td><?=$idSiswa;?></td>
+                                        <td><?=$namaSiswa;?></td>
+                                        <td><?=$kelas;?></td>
                                         <td><?=$nominal;?></td>
-                                        <td><?=$id_guru;?></td>
+                                        <td><?=$namaGuru;?></td>
                                         <td><?=$keterangan;?></td>
                                         <td>
                                             <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="modalEditTransTabung<?=$idg;?>">Edit</button>
@@ -139,6 +145,8 @@ require 'cek.php';
                                             <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="modalHapusTransTabung<?=$idg;?>">Hapus</button> 
                                         </td>
                                     </tr>
+
+
                                     <!-- Modal Edit Transaksi-->
                                     <div class="modal fade" id="modalEditGuru<?=$idg;?>">
                                         <div class="modal-dialog">
@@ -242,22 +250,22 @@ require 'cek.php';
         <script>
         </script>
     </body>
-    <!-- Modal Tambah Guru-->
+    <!-- Modal Menabung-->
     <div class="modal fade" id="modalTambahGuru">
     <div class="modal-dialog">
         <div class="modal-content">
 
         <!-- Modal Header -->
         <div class="modal-header">
-            <h4 class="modal-title">Tambah Guru</h4>
+            <h4 class="modal-title">Transaksi Menabung</h4>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <!-- Modal body -->      
             <form method="post">
             <div class="modal-body">
-                <input type="text" name="nip" placeholder="NIP" class="form-control">
-                <br>
-                <input type="text" name="namaGuru" placeholder="Nama Guru" class="form-control" required>
+                <input type="date" name="tanggalLahir" placeholder="Tanggal" class="form-control">
+                <br>                
+                <input type="text" name="namaSiswa" placeholder="Nama siswa" class="form-control" required>
                 <br>
                 <select class="form-select" name="jk" aria-label="Jenis Kelamin">
                     <option selected>Jenis Kelamin</option>

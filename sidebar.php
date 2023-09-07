@@ -65,11 +65,11 @@
                                 <div></div>
                             </a>
                             <div class="sb-sidenav-menu-heading">Tabungan</div>
-                            <a class="nav-link" href="charts.html">
+                            <a class="nav-link" href="tabung.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Tabung
                             </a>
-                            <a class="nav-link" href="tables.html">
+                            <a class="nav-link" href="#">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Ambil
                             </a>
