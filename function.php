@@ -278,12 +278,21 @@ if(isset($_POST['hapusGuru'])){
             // Lakukan operasi INSERT ke tabel "siswa" dalam database
             $sql = "INSERT INTO siswa (nama, id_kelas, jk, nisn, tempat_lahir, tanggal_lahir, agama, alamat) VALUES ('$namaSiswa', '$idKelas', '$jk', '$nisn', '$tempatLahir', '$tanggalLahir', '$agama', '$alamat')";
             
-            // Eksekusi query INSERT
+            // // Eksekusi query INSERT
             if (!mysqli_query($conn, $sql)) {
                 throw new Exception(mysqli_error($conn));
             }
+            // echo "nama : " . $namaSiswa . "<br>";
+            // echo "id_kelas : " . $idKelas . "<br>";
+            // echo "jk : " . $jk . "<br>";
+            // echo "nisn : " . $nisn . "<br>";
+            // echo "tempat_lahir : " . $tempatLahir . "<br>";
+            // echo "tanggal_lahir : " . $tanggalLahir . "<br>";
+            // echo "agama : " . $alamat . "<br>";
+            // echo "alamat : " . $alamat . "<br>";
+            // echo "<br>";
             // Data berhasil diimpor
-            $flash_message .= "Data berhasil diimpor.<br>"; 
+            //$flash_message .= "Data berhasil diimpor.<br>"; 
         }
 
         // Tutup koneksi database
