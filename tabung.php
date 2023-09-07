@@ -80,7 +80,7 @@ require 'cek.php';
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTabung">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTransTabung">
                                         Menabung
                                     </button>
                                 </div>
@@ -250,44 +250,76 @@ require 'cek.php';
         <script>
         </script>
     </body>
-    <!-- Modal Menabung-->
-    <div class="modal fade" id="modalTambahGuru">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-        <!-- Modal Header -->
-        <div class="modal-header">
-            <h4 class="modal-title">Transaksi Menabung</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <!-- Modal body -->      
-            <form method="post">
-            <div class="modal-body">
-                <input type="date" name="tanggalLahir" placeholder="Tanggal" class="form-control">
-                <br>                
-                <input type="text" name="namaSiswa" placeholder="Nama siswa" class="form-control" required>
-                <br>
-                <select class="form-select" name="jk" aria-label="Jenis Kelamin">
-                    <option selected>Jenis Kelamin</option>
-                    <option value="L">L</option>
-                    <option value="P">P</option>
-                </select>
-                <br>
-                <select class="form-select" name="jabatan" aria-label="jabatan">
-                    <option selected>Jabatan</option>
-                    <option value="Guru">Guru</option>
-                    <option value="Bendahara Sekolah">Bendahara Sekolah</option>
-                    <option value="Kepala Sekolah">Kepala Sekolah</option>
-                </select>
+    <!-- Form Modal -->
+        <div class="modal fade" id="modalTambahTransTabung">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Tambah Transaksi Tabungan</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <!-- Modal Body -->
+                    <form method="post">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="tanggal">Tanggal</label>
+                                <input type="date" name="tanggal" class="form-control" id="tanggal">
+                            </div>
+                            <div class="mb-3">
+                                <label for="siswa">Siswa</label>
+                                <select name="siswa" class="form-control" id="siswa">
+                                    <?php
+                                    // Ambil data siswa dari tabel siswa
+                                    $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama FROM siswa");
+                                    while ($siswa = mysqli_fetch_assoc($querySiswa)) {
+                                        echo '<option value="' . $siswa['id_siswa'] . '">' . $siswa['nama'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="kelas">Kelas</label>
+                                <select name="kelas" class="form-control" id="kelas">
+                                    <?php
+                                    // Ambil data kelas dari tabel kelas
+                                    $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
+                                    while ($kelas = mysqli_fetch_assoc($queryKelas)) {
+                                        echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nominal">Nominal</label>
+                                <input type="text" name="nominal" class="form-control" id="nominal">
+                            </div>
+                            <div class="mb-3">
+                                <label for="guru">Guru Pencatat</label>
+                                <select name="guru" class="form-control" id="guru">
+                                    <?php
+                                    // Ambil data guru dari tabel guru
+                                    $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
+                                    while ($guru = mysqli_fetch_assoc($queryGuru)) {
+                                        echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="keterangan">Keterangan</label>
+                                <textarea name="keterangan" class="form-control" id="keterangan" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <!-- Modal Footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary" name="simpanTransTabung">Simpan</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-success" name="tambahGuru">Tambah</button> 
-            </div>
-            <br> 
-        </form>   
         </div>
-    </div>
-    </div>
 
     
 </html>
