@@ -1,6 +1,7 @@
 <?php
 require 'function.php';
 require 'cek.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -335,7 +336,7 @@ require 'cek.php';
         </div>
     </div>
 
-    <!-- Modal Tambah Siswa-->
+    <!-- Modal Import Excel-->
     <div class="modal fade" id="modalImportExcel">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -346,15 +347,15 @@ require 'cek.php';
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <!-- Modal body -->      
-                <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 <div class="modal-body">
                 <div class="mb-3">
-                <label for="formFile" class="form-label">Default file input example</label>
-                <input class="form-control" type="file" id="formFile">
+                <label for="formFile" class="form-label">Pilih file Excel yang akan diimport</label>
+                <input type="file" name="formFile" id="formFile" class="form-control">
                 </div>
                 </div>
                 <div class="text-center">
-                    <button type="submit" class="btn btn-success" name="tambahSiswa">Import</button> 
+                    <button type="submit" class="btn btn-success" name="importExcel">Import</button> 
                 </div>
                 <br> 
             </form>   

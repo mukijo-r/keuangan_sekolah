@@ -1,5 +1,9 @@
 <?php
-require 'lib/excel-reader2.php';
+require_once 'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 session_start();
 //Koneksi ke database
 
@@ -243,6 +247,63 @@ if(isset($_POST['hapusGuru'])){
         exit;
     }
 }
+
+
+    if (isset($_POST['importExcel'])) {
+        // Membaca file Excel yang diunggah
+        $inputFileName = $_FILES['formFile']['tmp_name'];
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
+
+        try {
+        // Loop melalui baris-baris data Excel (mulai dari baris kedua karena baris pertama biasanya adalah header)
+        foreach ($spreadsheet->getActiveSheet()->getRowIterator(2) as $row) {
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+
+            $data = [];
+            foreach ($cellIterator as $cell) {
+                $data[] = $cell->getValue();
+            }
+
+            // Ambil data dari kolom-kolom Excel
+            $namaSiswa = $data[0];
+            $idKelas = $data[1];
+            $jk = $data[2];
+            $nisn = $data[3];
+            $tempatLahir = $data[4];
+            $tanggalLahir = $data[5];
+            $agama = $data[6];
+            $alamat = $data[7];
+
+            // Lakukan operasi INSERT ke tabel "siswa" dalam database
+            $sql = "INSERT INTO siswa (nama, id_kelas, jk, nisn, tempat_lahir, tanggal_lahir, agama, alamat) VALUES ('$namaSiswa', '$idKelas', '$jk', '$nisn', '$tempatLahir', '$tanggalLahir', '$agama', '$alamat')";
+            
+            // Eksekusi query INSERT
+            if (!mysqli_query($conn, $sql)) {
+                throw new Exception(mysqli_error($conn));
+            }
+            // Data berhasil diimpor
+            $flash_message .= "Data berhasil diimpor.<br>"; 
+        }
+
+        // Tutup koneksi database
+        mysqli_close($conn);
+
+        // Set pesan flash
+        $_SESSION['flash_message'] = 'Import Data Siswa Berhasil';
+        $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+        header('location:siswa.php');
+        exit;
+    }
+    catch (Exception $e) {
+    // Tangani exception di sini
+    $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+    $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+    header('location:siswa.php');
+    exit;
+}}
+
+
 
     
 ?>
