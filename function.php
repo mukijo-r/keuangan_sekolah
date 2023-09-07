@@ -1,4 +1,5 @@
 <?php
+require 'lib/excel-reader2.php';
 session_start();
 //Koneksi ke database
 
@@ -128,22 +129,43 @@ if(isset($_POST['hapusSiswa'])){
 }
 
 
-//Tambah Guru
-if(isset($_POST['tambahSiswa'])){
-    $nisn = $_POST['nisn'];
-    $namaSiswa = $_POST['namaSiswa'];
-    $kelas = $_POST['kelas'];
+// Tambah Guru
+if(isset($_POST['tambahGuru'])){
+    $nip = $_POST['nip'];
+    $namaGuru = $_POST['namaGuru'];
     $jk = $_POST['jk'];
-    $kotaLahir = $_POST['tempatLahir'];
-    $tglLahir = $_POST['tanggalLahir'];
-    $agama = $_POST['agama'];
-    $alamat = $_POST['alamat'];
+    $jabatan = $_POST['jabatan'];
 
-    $tanggalLahir = date("Y-m-d", strtotime($tglLahir));
+    try {
+        // Coba jalankan query insert
+        $addGuru = mysqli_query($conn, "INSERT INTO guru (nip, nama_lengkap, jk, jabatan) VALUES ('$nip', '$namaGuru', '$jk', '$jabatan')");
 
-    $addSiswa = mysqli_query($conn, "insert into siswa (nisn, nama, id_kelas, jk, tempat_lahir, tanggal_lahir, agama, alamat) values ($nisn, '$namaSiswa', $kelas, '$jk', '$kotaLahir', '$tanggalLahir', '$agama', '$alamat')");
-    header('location:siswa.php');
+        if (!$addGuru) {
+            throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM guru WHERE nip = '$nip'");
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Tambah data guru berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:guru.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database setelah insert, itu berarti gagal
+            throw new Exception("Data guru tidak ditemukan setelah ditambahkan");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location:guru.php');
+        exit;
+    }
 }
+
 
 //Edit Guru
 if(isset($_POST['editGuru'])){

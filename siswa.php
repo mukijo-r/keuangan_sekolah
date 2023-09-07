@@ -75,7 +75,7 @@ require 'cek.php';
                                 </div>
                             </div>
                         </div> -->
-                        <br>
+                        
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
@@ -93,6 +93,12 @@ require 'cek.php';
                                     
                                     ?>
                                 </div>
+                            </div>
+                            <br>
+                            <div>
+                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
+                                    Import Excel
+                                </button>
                             </div>
                         </div> 
                         <br>
@@ -270,63 +276,94 @@ require 'cek.php';
         <script>
         </script>
     </body>
+
     <!-- Modal Tambah Siswa-->
     <div class="modal fade" id="modalTambahSiswa">
     <div class="modal-dialog">
         <div class="modal-content">
 
-        <!-- Modal Header -->
-        <div class="modal-header">
-            <h4 class="modal-title">Tambah Siswa</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <!-- Modal body -->      
-            <form method="post">
-            <div class="modal-body">
-                <input type="text" name="nisn" placeholder="NISN" class="form-control">
-                <br>
-                <input type="text" name="namaSiswa" placeholder="Nama Siswa" class="form-control" required>
-                <br>
-                <select class="form-select" name="kelas" aria-label="Pilih Kelas">
-                    <option selected>Kelas</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                </select>
-                <br>
-                <select class="form-select" name="jk" aria-label="Jenis Kelamin">
-                    <option selected>Jenis Kelamin</option>
-                    <option value="L">L</option>
-                    <option value="P">P</option>
-                </select>
-                <br>
-                <input type="text" name="tempatLahir" placeholder="Tempat Lahir" class="form-control">
-                <br>
-                <input type="date" name="tanggalLahir" placeholder="Tanggal Lahir" class="form-control">
-                <br>
-                <select class="form-select" name="agama" aria-label="Agama">
-                    <option selected>Agama</option>
-                    <option value="Katolik">Katolik</option>
-                    <option value="Kristen">Kristen</option>
-                    <option value="Islam">Islam</option>
-                    <option value="Hindu">Hindu</option>
-                    <option value="Buddha">Buddha</option>
-                    <option value="Khonghucu">Khonghucu</option>
-                </select>
-                <br>
-                <textarea name="alamat" rows="5" cols="45">Alamat</textarea>
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Tambah Siswa</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-success" name="tambahSiswa">Tambah</button> 
+            <!-- Modal body -->      
+                <form method="post">
+                <div class="modal-body">
+                    <input type="text" name="nisn" placeholder="NISN" class="form-control">
+                    <br>
+                    <input type="text" name="namaSiswa" placeholder="Nama Siswa" class="form-control" required>
+                    <br>
+                    <select class="form-select" name="kelas" aria-label="Pilih Kelas">
+                        <option selected>Kelas</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                    <br>
+                    <select class="form-select" name="jk" aria-label="Jenis Kelamin">
+                        <option selected>Jenis Kelamin</option>
+                        <option value="L">L</option>
+                        <option value="P">P</option>
+                    </select>
+                    <br>
+                    <input type="text" name="tempatLahir" placeholder="Tempat Lahir" class="form-control">
+                    <br>
+                    <input type="date" name="tanggalLahir" placeholder="Tanggal Lahir" class="form-control">
+                    <br>
+                    <select class="form-select" name="agama" aria-label="Agama">
+                        <option selected>Agama</option>
+                        <option value="Katolik">Katolik</option>
+                        <option value="Kristen">Kristen</option>
+                        <option value="Islam">Islam</option>
+                        <option value="Hindu">Hindu</option>
+                        <option value="Buddha">Buddha</option>
+                        <option value="Khonghucu">Khonghucu</option>
+                    </select>
+                    <br>
+                    <textarea name="alamat" rows="5" cols="45">Alamat</textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success" name="tambahSiswa">Tambah</button> 
+                </div>
+                <br> 
+            </form>   
             </div>
-            <br> 
-        </form>   
         </div>
     </div>
+
+    <!-- Modal Tambah Siswa-->
+    <div class="modal fade" id="modalImportExcel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Import Excel</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->      
+                <form method="post">
+                <div class="modal-body">
+                <div class="mb-3">
+                <label for="formFile" class="form-label">Default file input example</label>
+                <input class="form-control" type="file" id="formFile">
+                </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success" name="tambahSiswa">Import</button> 
+                </div>
+                <br> 
+            </form>   
+            </div>
+        </div>
     </div>
+
+    
+</div>
 
     
 </html>
