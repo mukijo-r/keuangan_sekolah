@@ -252,55 +252,75 @@ require 'cek.php';
     </body>   
 
     <!-- Modal Tambah Transaksi Tabungan -->
-    <div class="modal fade" id="modalTambahTransTabung">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Tambah Transaksi Tabungan</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <!-- Modal Body -->
-                <form method="post">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="tanggal">Tanggal</label>
-                            <input type="date" name="tanggal" class="form-control" id="tanggal">
-                                </div>
-                        <div class="mb-3">
-                            <select class="form-select" name="kelas" id="kelas" aria-label="Kelas">
-                                <option selected disabled>Pilih Kelas</option>
-                                <?php
-                                // Ambil data kelas dari tabel kelas
-                                $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
-                                while ($kelas = mysqli_fetch_assoc($queryKelas)) {
-                                    echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <select name="siswa" class="form-select" id="siswa" aria-label="Siswa">
-                                <option selected disabled>Pilih Kelas Terlebih Dahulu</option>
-                                <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="keterangan">Keterangan</label>
-                            <textarea name="keterangan" class="form-control" id="keterangan" rows="2"></textarea>
-                        </div>
-                    </div>
-                    <!-- Modal Footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary" name="simpanTransTabung">Simpan</button>
-                    </div>
-                </form>
+<div class="modal fade" id="modalTambahTransTabung">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Tambah Transaksi Tabungan</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+            <!-- Modal Body -->
+            <form method="post">
+                <div class="modal-body">
+                    <div class="mb3">
+                        <label for="nominal">Tanggal</label><br>
+                        <input type="date" name="tanggal" placeholder="Tanggal" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="nominal">Kelas</label>
+                        <select class="form-select" name="kelas" id="kelas" aria-label="Kelas">
+                            <option selected disabled>Pilih Kelas</option>
+                            <?php
+                            // Ambil data kelas dari tabel kelas
+                            $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
+                            while ($kelas = mysqli_fetch_assoc($queryKelas)) {
+                                echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nominal">Siswa</label>
+                        <select name="siswa" class="form-select" id="siswa" aria-label="Siswa">
+                            <option selected disabled>Pilih Kelas Terlebih Dahulu</option>
+                            <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nominal">Nominal</label>
+                        <label for="nominal">Nominal</label>
+                        <input type="number" name="nominal" class="form-control" id="nominal">
+                    </div>
+                    <div class="mb-3">   
+                        <label for="nominal">Penerima</label>                     
+                        <select name="guru" class="form-select" id="guru">
+                        <option selected disabled>Guru Penerima</option>
+                            <?php
+                            // Ambil data guru dari tabel guru
+                            $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
+                            while ($guru = mysqli_fetch_assoc($queryGuru)) {
+                                echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                    <label for="nominal">Keterangan</label>   
+                        <textarea name="keterangan" class="form-control" id="keterangan" rows="2"></textarea>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary" name="simpanTransTabung">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <script>
+<script>
     // Menggunakan JavaScript untuk mengisi dropdown siswa berdasarkan kelas yang dipilih
     document.getElementById('kelas').addEventListener('change', function () {
         var selectedKelas = this.value;
@@ -326,8 +346,7 @@ require 'cek.php';
             xhr.send();
         }
     });
-    </script>
-    
+</script>   
 
     
 </html>
