@@ -312,6 +312,63 @@ if(isset($_POST['hapusGuru'])){
     exit;
 }}
 
+// Tabungan Masuk
+if(isset($_POST['tambahTransTabung'])){
+    $tanggal = $_POST['tanggal'];
+    
+    $kelas = $_POST['kelas'];
+    // Menggunakan query untuk mendapatkan id_kelas berdasarkan nama_kelas yang dipilih
+    $queryGetKelas = mysqli_query($conn, "SELECT id_kelas FROM kelas WHERE nama_kelas = '$kelas'");
+
+    if ($queryGetKelas && mysqli_num_rows($queryGetKelas) > 0) {
+        $kelasData = mysqli_fetch_assoc($queryGetKelas);
+        $id_kelas = $kelasData['id_kelas'];
+    } else {
+        // Kelas tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Kelas tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: tabung.php');
+        exit;
+    }
+
+    $idSiswa = $_POST['id_siswa'];
+    $nominal = $_POST['nominal'];
+    $guru = $_POST['guru'];
+    $keterangan = $_POST['keterangan'];
+    $tanggal = date("Y-m-d", strtotime($tanggal));
+
+    try {
+        $queryInsertTabung = "INSERT INTO tabung_masuk (`tanggal`, `id_siswa`, `jumlah`, `id_guru`, `keterangan`) VALUES ('$tanggal','$idSiswa','$nominal','$guru','$keterangan')";
+
+        $tabung = mysqli_query($conn, $queryInsertTabung);
+
+        if (!$tabung) {
+            throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM tabung_masuk WHERE tanggal = '$tanggal' and id_siswa = $idSiswa and jumlah=$nominal");
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Tambah tabungan siswa berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:tabung.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data transaksi tidak ditemukan setelah ditambahkan");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        echo $queryInsert;
+        header('location:tabung.php');
+        exit;
+    }
+}
+
 
 
     

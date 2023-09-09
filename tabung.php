@@ -109,8 +109,10 @@ require 'cek.php';
                                             <th>No.</th>    
                                             <th>Tanggal</th>
                                             <th>Nama Siswa</th>
+                                            <th>Kelas</th>
                                             <th>Jumlah Ditabung</th>
                                             <th>Guru Pencatat</th>
+                                            <th>Saldo</th>
                                             <th>Keterangan</th>
                                             <th colspan='2'>Aksi</th>
                                         </tr>
@@ -118,10 +120,10 @@ require 'cek.php';
                                     <tbody>
                                     <?php 
                                     $dataTabungan = mysqli_query($conn, "SELECT tm.*, s.nama AS nama_siswa, g.nama_lengkap AS nama_guru, k.nama_kelas AS kelas
-                                                                        FROM tabung_masuk tm
-                                                                        LEFT JOIN siswa s ON tm.id_siswa = s.id_siswa
-                                                                        LEFT JOIN guru g ON tm.id_guru = g.id_guru
-                                                                        LEFT JOIN kelas k ON s.id_kelas = k.id_kelas");
+                                    FROM tabung_masuk tm
+                                    LEFT JOIN siswa s ON tm.id_siswa = s.id_siswa
+                                    LEFT JOIN guru g ON tm.id_guru = g.id_guru
+                                    LEFT JOIN kelas k ON s.id_kelas = k.id_kelas");
                                     $i = 1;
                                     while($data=mysqli_fetch_array($dataTabungan)){
                                         $tanggal = $data['tanggal'];
@@ -130,15 +132,35 @@ require 'cek.php';
                                         $nominal = $data['jumlah'];
                                         $namaGuru = $data['nama_guru'];
                                         $keterangan = $data['keterangan'];
-                                    ?>
-                                    <tr>
-                                        <td><?=$i++;?></td>
-                                        <td><?=$tanggal;?></td>
-                                        <td><?=$namaSiswa;?></td>
-                                        <td><?=$kelas;?></td>
-                                        <td><?=$nominal;?></td>
-                                        <td><?=$namaGuru;?></td>
-                                        <td><?=$keterangan;?></td>
+                                        $idSiswa = $data['id_siswa'];
+
+                                        // Menghitung saldo
+                                        $idSiswa = $data['id_siswa'];
+                                        $querySaldo = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM tabung_masuk WHERE id_siswa = $idSiswa");
+                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa");
+
+                                        $saldo_masuk = 0;
+                                        $saldo_ambil = 0;
+
+                                        if ($rowSaldo = mysqli_fetch_assoc($querySaldo)) {
+                                            $saldo_masuk = $rowSaldo['total_masuk'];
+                                        }
+
+                                        if ($rowSaldoAmbil = mysqli_fetch_assoc($querySaldoAmbil)) {
+                                            $saldo_ambil = $rowSaldoAmbil['total_ambil'];
+                                        }
+
+                                        $saldo = $saldo_masuk - $saldo_ambil;
+                                        ?>
+                                        <tr>
+                                            <td><?=$i++;?></td>
+                                            <td><?=$tanggal;?></td>
+                                            <td><?=$namaSiswa;?></td>
+                                            <td><?=$kelas;?></td>
+                                            <td><?="Rp " . number_format($nominal, 0, ',', '.'). ",00";?></td>
+                                            <td><?=$namaGuru;?></td>
+                                            <td><?="Rp " . number_format($saldo, 0, ',', '.'). ",00";?></td>
+                                            <td><?=$keterangan;?></td>
                                         <td>
                                             <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="modalEditTransTabung<?=$idg;?>">Edit</button>
                                             <input type="hidden" name="idgis" value="<?=$idg;?>">
@@ -263,12 +285,13 @@ require 'cek.php';
             <!-- Modal Body -->
             <form method="post">
                 <div class="modal-body">
-                    <div class="mb3">
-                        <label for="nominal">Tanggal</label><br>
-                        <input type="date" name="tanggal" placeholder="Tanggal" class="form-control">
-                    </div>
+                <div class="mb-3">
+                    <label for="tanggal">Tanggal :</label><br>
+                    <input type="date" name="tanggal" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                </div>
+
                     <div class="mb-3">
-                        <label for="nominal">Kelas</label>
+                        <label for="kelas">Kelas :</label>
                         <select class="form-select" name="kelas" id="kelas" aria-label="Kelas">
                             <option selected disabled>Pilih Kelas</option>
                             <?php
@@ -281,20 +304,19 @@ require 'cek.php';
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="nominal">Siswa</label>
-                        <select name="siswa" class="form-select" id="siswa" aria-label="Siswa">
+                        <label for="siswa">Siswa :</label>
+                        <select name="id_siswa" class="form-select" id="siswa" aria-label="Siswa">
                             <option selected disabled>Pilih Kelas Terlebih Dahulu</option>
                             <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="nominal">Nominal</label>
-                        <label for="nominal">Nominal</label>
-                        <input type="number" name="nominal" class="form-control" id="nominal">
+                        <label for="nominal">Nominal :</label>                        
+                        <input type="number" name="nominal" class="form-control">
                     </div>
                     <div class="mb-3">   
-                        <label for="nominal">Penerima</label>                     
-                        <select name="guru" class="form-select" id="guru">
+                        <label for="guru">Penerima :</label>                     
+                        <select name="guru" class="form-select" id="guru" aria-label="Guru">>
                         <option selected disabled>Guru Penerima</option>
                             <?php
                             // Ambil data guru dari tabel guru
@@ -306,14 +328,14 @@ require 'cek.php';
                         </select>
                     </div>
                     <div class="mb-3">
-                    <label for="nominal">Keterangan</label>   
+                    <label for="keterangan">Keterangan :</label>   
                         <textarea name="keterangan" class="form-control" id="keterangan" rows="2"></textarea>
                     </div>
                 </div>
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary" name="simpanTransTabung">Simpan</button>
+                    <button type="submit" class="btn btn-primary" name="tambahTransTabung">Simpan</button>
                 </div>
             </form>
         </div>
@@ -321,6 +343,36 @@ require 'cek.php';
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Temukan elemen "kelas" dan "siswa"
+        var kelasDropdown = document.getElementById('kelas');
+        var siswaDropdown = document.getElementById('siswa');
+
+        // Tambahkan event listener ketika nilai "kelas" berubah
+        kelasDropdown.addEventListener('change', function() {
+            var selectedKelas = kelasDropdown.value;
+
+            // Gunakan AJAX untuk mengambil data siswa berdasarkan kelas
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'get_siswa_by_kelas.php?kelas=' + selectedKelas, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Parse data JSON yang diterima
+                    var dataSiswa = JSON.parse(xhr.responseText);
+
+                    // Bersihkan dropdown "siswa" dan tambahkan opsi-opsi baru
+                    siswaDropdown.innerHTML = '<option selected disabled>Pilih Siswa</option>';
+                    dataSiswa.forEach(function(siswa) {
+                        siswaDropdown.innerHTML += '<option value="' + siswa.id_siswa + '">' + siswa.nama + '</option>';
+                    });
+                }
+            };
+            xhr.send();
+        });
+    });
+</script>
+
+<!-- <script>
     // Menggunakan JavaScript untuk mengisi dropdown siswa berdasarkan kelas yang dipilih
     document.getElementById('kelas').addEventListener('change', function () {
         var selectedKelas = this.value;
@@ -346,7 +398,8 @@ require 'cek.php';
             xhr.send();
         }
     });
-</script>   
+</script>    -->
+
 
     
 </html>
