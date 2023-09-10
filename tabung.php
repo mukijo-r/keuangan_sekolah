@@ -123,9 +123,14 @@ require 'cek.php';
                                     FROM tabung_masuk tm
                                     LEFT JOIN siswa s ON tm.id_siswa = s.id_siswa
                                     LEFT JOIN guru g ON tm.id_guru = g.id_guru
-                                    LEFT JOIN kelas k ON s.id_kelas = k.id_kelas");
-                                    $i = 1;
+                                    LEFT JOIN kelas k ON s.id_kelas = k.id_kelas
+                                    ORDER BY tm.id_tb_masuk DESC");
+
+                                    $totalEntries = mysqli_num_rows($dataTabungan);
+                                    $i = $totalEntries;
+                                    
                                     while($data=mysqli_fetch_array($dataTabungan)){
+                                        $idTbMasuk = $data['id_tb_masuk'];
                                         $tanggal = $data['tanggal'];
                                         $namaSiswa = $data['nama_siswa'];
                                         $kelas = $data['kelas'];
@@ -135,9 +140,8 @@ require 'cek.php';
                                         $idSiswa = $data['id_siswa'];
 
                                         // Menghitung saldo
-                                        $idSiswa = $data['id_siswa'];
-                                        $querySaldo = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM tabung_masuk WHERE id_siswa = $idSiswa");
-                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa");
+                                        $querySaldo = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM tabung_masuk WHERE id_siswa = $idSiswa AND tanggal <= '$tanggal'");
+                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa AND tanggal <= '$tanggal'");
 
                                         $saldo_masuk = 0;
                                         $saldo_ambil = 0;
@@ -153,73 +157,100 @@ require 'cek.php';
                                         $saldo = $saldo_masuk - $saldo_ambil;
                                         ?>
                                         <tr>
-                                            <td><?=$i++;?></td>
+                                            <td><?=$i--;?></td>
                                             <td><?=$tanggal;?></td>
                                             <td><?=$namaSiswa;?></td>
                                             <td><?=$kelas;?></td>
-                                            <td><?="Rp " . number_format($nominal, 0, ',', '.'). ",00";?></td>
+                                            <td><?="Rp " . number_format($nominal, 0, ',', '.');?></td>
                                             <td><?=$namaGuru;?></td>
-                                            <td><?="Rp " . number_format($saldo, 0, ',', '.'). ",00";?></td>
+                                            <td><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
                                             <td><?=$keterangan;?></td>
                                         <td>
-                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="modalEditTransTabung<?=$idg;?>">Edit</button>
-                                            <input type="hidden" name="idgis" value="<?=$idg;?>">
-                                            <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="modalHapusTransTabung<?=$idg;?>">Hapus</button> 
+                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditTransTabung<?=$idTbMasuk;?>">Edit</button>
+                                            <input type="hidden" name="idgis" value="<?=$idSiswa;?>">
+                                            <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusTransTabung<?=$idTbMasuk;?>">Hapus</button> 
                                         </td>
                                     </tr>
 
 
-                                    <!-- Modal Edit Transaksi-->
-                                    <div class="modal fade" id="modalEditGuru<?=$idg;?>">
+                                        <!-- Modal edit Transaksi Tabungan -->
+                                    <div class="modal fade" id="modalEditTransTabung<?=$idTbMasuk;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
+                                                <!-- Modal Header -->
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Edit Transaksi Tabungan</h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <!-- Modal Body -->
+                                                <form method="post">
+                                                    <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="tanggal">Tanggal :</label><br>
+                                                        <input type="date" name="tanggal" class="form-control" value="<?=$tanggal;?>">
+                                                    </div>
 
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Edit Transaksi</h4>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <!-- Modal body -->
-                                            
-                                            <form method="post">
-                                            <div class="modal-body">
-                                                <input type="text" name="namaGuru" value="<?=$namaGuru;?>" class="form-control">
-                                                <br>
-                                                <input type="text" name="nip" value="<?=$nip;?>" class="form-control">
-                                                <br>
-                                                <select class="form-select" name="jk" aria-label="Jenis Kelamin">
-                                                    <option selected><?=$jk;?></option>
-                                                    <option value="L">L</option>
-                                                    <option value="P">P</option>
-                                                </select>
-                                                <br>
-                                                <select class="form-select" name="jabatan" aria-label="Jabatan">
-                                                    <option selected><?=$jabatan;?></option>
-                                                    <option value="Guru">Guru</option>
-                                                    <option value="Bendahara Sekolah">Bendahara Sekolah</option>
-                                                    <option value="Kepala Sekolah">Kepala Sekolah</option>
-                                                </select>
-                                                <br>
-                                                <input type="hidden" name="idg" value="<?=$idg;?>">
-                                            </div>
-                                            <div class="text-center">
-                                                <button type="submit" class="btn btn-warning" name="editGuru">Edit</button> 
-                                            </div>
-                                            <br> 
-                                            </form>        
+                                                        <div class="mb-3">
+                                                            <label for="kelas">Kelas :</label>
+                                                            <select class="form-select" name="kelas" id="kelasEdit" aria-label="Kelas">
+                                                                <option selected><?=$kelas;?></option>
+                                                                <?php
+                                                                // Ambil data kelas dari tabel kelas
+                                                                $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
+                                                                while ($kelas = mysqli_fetch_assoc($queryKelas)) {
+                                                                    echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
+                                                                }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="siswa">Siswa :</label>
+                                                            <select name="id_siswa" class="form-select" id="siswaEdit" aria-label="Siswa">
+                                                                <option selected><?=$namaSiswa;?></option>
+                                                                <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="nominal">Nominal :</label>                        
+                                                            <input type="number" name="nominal" value="<?=$nominal;?>" class="form-control">
+                                                        </div>
+                                                        <div class="mb-3">   
+                                                            <label for="guru">Penerima :</label>                     
+                                                            <select name="guru" class="form-select" id="guruEdit" aria-label="Guru">>
+                                                            <option selected><?=$namaGuru;?></option>
+                                                                <?php
+                                                                // Ambil data guru dari tabel guru
+                                                                $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
+                                                                while ($guru = mysqli_fetch_assoc($queryGuru)) {
+                                                                    echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
+                                                                }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                        <label for="keterangan">Keterangan :</label>   
+                                                            <textarea name="keterangan" class="form-control" id="keterangan" rows="2"><?=$keterangan;?></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Modal Footer -->
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                        <input type="hidden" name="id_tb_masuk" value="<?=$idTbMasuk;?>">
+                                                        <button type="submit" class="btn btn-primary" name="editTransTabung">Simpan</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Modal Hapus Guru-->
-                                    <div class="modal fade" id="modalHapusGuru<?=$idg;?>">
+                                    <!-- Modal Hapus Transaksi Tabungan-->
+                                    <div class="modal fade" id="modalHapusTransTabung<?=$idTbMasuk;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
 
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                                <h4 class="modal-title">Hapus Guru?</h4>
+                                                <h4 class="modal-title">Hapus Transaksi Menabung ini?</h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
 
@@ -227,12 +258,12 @@ require 'cek.php';
                                             
                                             <form method="post">
                                             <div class="modal-body">
-                                                <h4>Anda yakin ingin menghapus data guru <?=$namaGuru;?>?</h4>
+                                                <h5>Anda yakin ingin menghapus data menabung <u> <?=$namaSiswa;?> </u> dengan nominal <b><?=$nominal?></b> pada tangg <?=$tanggal?>?</h5>
                                                 
                                             </div>
                                             <div class="text-center">
-                                                <input type="hidden" name="idg" value="<?=$idg;?>">
-                                                <button type="submit" class="btn btn-danger" name="hapusGuru">Hapus</button> 
+                                                <input type="hidden" name="id_tb_masuk" value="<?=$idTbMasuk;?>">
+                                                <button type="submit" class="btn btn-danger" name="hapusTransaksiMenabung">Hapus</button> 
                                             </div>
                                             <br> 
                                             </form>       
@@ -344,11 +375,16 @@ require 'cek.php';
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Temukan elemen "kelas" dan "siswa"
+        // Temukan elemen "kelas" dan "siswa" pada Tambah Transaksi Tabungan
         var kelasDropdown = document.getElementById('kelas');
         var siswaDropdown = document.getElementById('siswa');
 
-        // Tambahkan event listener ketika nilai "kelas" berubah
+        // Temukan elemen "kelas" dan "siswa" pada Edit Transaksi Tabungan
+        var kelasDropdown2 = document.getElementById('kelasEdit');
+        var siswaDropdown2 = document.getElementById('siswaEdit');
+
+
+        // Tambahkan event listener ketika nilai "kelas" berubah pada Tambah Transaksi Tabungan
         kelasDropdown.addEventListener('change', function() {
             var selectedKelas = kelasDropdown.value;
 
@@ -369,37 +405,30 @@ require 'cek.php';
             };
             xhr.send();
         });
-    });
-</script>
 
-<!-- <script>
-    // Menggunakan JavaScript untuk mengisi dropdown siswa berdasarkan kelas yang dipilih
-    document.getElementById('kelas').addEventListener('change', function () {
-        var selectedKelas = this.value;
-        var siswaDropdown = document.getElementById('siswa');
-        // Reset dropdown siswa
-        siswaDropdown.innerHTML = '<option selected disabled>Pilih Kelas Terlebih Dahulu</option>';
-        if (selectedKelas) {
-            // Jika kelas dipilih, ambil data siswa berdasarkan kelas menggunakan Ajax
+        // Tambahkan event listener ketika nilai "kelas" berubah pada Edit Transaksi Tabungan
+        kelasDropdown2.addEventListener('change', function() {
+            var selectedKelas = kelasDropdown2.value;
+
+            // Gunakan AJAX untuk mengambil data siswa berdasarkan kelas
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'get_siswa_by_kelas.php?kelas=' + selectedKelas, true);
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Parse data JSON yang diterima
                     var dataSiswa = JSON.parse(xhr.responseText);
-                    // Isi dropdown siswa dengan data siswa yang diambil
-                    dataSiswa.forEach(function (siswa) {
-                        var option = document.createElement('option');
-                        option.value = siswa.id_siswa;
-                        option.textContent = siswa.nama;
-                        siswaDropdown.appendChild(option);
+
+                    // Bersihkan dropdown "siswa" dan tambahkan opsi-opsi baru
+                    siswaDropdown2.innerHTML = '<option selected disabled>Pilih Siswa</option>';
+                    dataSiswa.forEach(function(siswa) {
+                        siswaDropdown2.innerHTML += '<option value="' + siswa.id_siswa + '">' + siswa.nama + '</option>';
                     });
                 }
             };
             xhr.send();
-        }
+        });
     });
-</script>    -->
-
+</script>
 
     
 </html>

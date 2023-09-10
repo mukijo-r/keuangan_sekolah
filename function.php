@@ -282,17 +282,6 @@ if(isset($_POST['hapusGuru'])){
             if (!mysqli_query($conn, $sql)) {
                 throw new Exception(mysqli_error($conn));
             }
-            // echo "nama : " . $namaSiswa . "<br>";
-            // echo "id_kelas : " . $idKelas . "<br>";
-            // echo "jk : " . $jk . "<br>";
-            // echo "nisn : " . $nisn . "<br>";
-            // echo "tempat_lahir : " . $tempatLahir . "<br>";
-            // echo "tanggal_lahir : " . $tanggalLahir . "<br>";
-            // echo "agama : " . $alamat . "<br>";
-            // echo "alamat : " . $alamat . "<br>";
-            // echo "<br>";
-            // Data berhasil diimpor
-            //$flash_message .= "Data berhasil diimpor.<br>"; 
         }
 
         // Tutup koneksi database
@@ -369,7 +358,124 @@ if(isset($_POST['tambahTransTabung'])){
     }
 }
 
+// Edit Tabungan Masuk
+if(isset($_POST['editTransTabung'])){
+    $tanggal = $_POST['tanggal'];
+    
+    $kelas = $_POST['kelas'];
+    // Menggunakan query untuk mendapatkan id_kelas berdasarkan nama_kelas yang dipilih
+    $queryGetKelas = mysqli_query($conn, "SELECT id_kelas FROM kelas WHERE nama_kelas = '$kelas'");
 
+    if ($queryGetKelas && mysqli_num_rows($queryGetKelas) > 0) {
+        $kelasData = mysqli_fetch_assoc($queryGetKelas);
+        $id_kelas = $kelasData['id_kelas'];
+    } else {
+        // Kelas tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Kelas tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: tabung.php');
+        exit;
+    }
+
+    $siswa = $_POST['id_siswa'];
+    // Menggunakan query untuk mendapatkan id_siswa berdasarkan nama_siswa yang dipilih
+    $queryGetSiswa = mysqli_query($conn, "SELECT id_siswa FROM siswa WHERE nama = '$siswa'");
+
+    if ($queryGetSiswa && mysqli_num_rows($queryGetSiswa) > 0) {
+        $siswaData = mysqli_fetch_assoc($queryGetSiswa);
+        $idSiswa = $siswaData['id_siswa'];
+    } else {
+        // siswa tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Siswa tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: tabung.php');
+        exit;
+    }
+
+    $nominal = $_POST['nominal'];
+    $guru = $_POST['guru'];
+    // Menggunakan query untuk mendapatkan id_guru berdasarkan nama_guru yang dipilih
+    $queryGetGuru = mysqli_query($conn, "SELECT id_guru FROM guru WHERE nama_lengkap = '$guru'");
+
+    if ($queryGetGuru && mysqli_num_rows($queryGetGuru) > 0) {
+        $guruData = mysqli_fetch_assoc($queryGetGuru);
+        $idGuru = $guruData['id_guru'];
+    } else {
+        // siswa tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Guru tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: tabung.php');
+        exit;
+    }
+
+    $keterangan = $_POST['keterangan'];
+    $tanggal = date("Y-m-d", strtotime($tanggal));
+    $idTbMasuk = $_POST['id_tb_masuk'];
+
+    try {
+        $queryUpdatetTabung = "UPDATE tabung_masuk SET tanggal='$tanggal', id_siswa='$idSiswa', jumlah='$nominal', id_guru='$idGuru', keterangan='$keterangan' WHERE id_tb_masuk='$idTbMasuk'";
+        $updateTabung = mysqli_query($conn, $queryUpdatetTabung);
+
+        if (!$updateTabung) {
+            throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM tabung_masuk WHERE tanggal = '$tanggal' and id_siswa = $idSiswa and jumlah=$nominal");
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Edit tabungan siswa berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:tabung.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data transaksi tidak berubah setelah diubah");
+        }
+    } catch (Exception $e) {
+        //Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        echo $queryInsert;
+        header('location:tabung.php');
+        exit;
+    }
+}
+
+// Hapus Transaksi Menabung
+if(isset($_POST['hapusTransaksiMenabung'])){
+    $idTbMasuk = $_POST['id_tb_masuk'];
+
+    try {
+        // Coba jalankan query hapus
+        $hapusTransaksiMenabung = mysqli_query($conn, "DELETE FROM tabung_masuk WHERE id_tb_masuk='$idTbMasuk'");
+
+        if (!$hapusTransaksiMenabung) {
+            throw new Exception("Query hapus gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah tidak ada dalam database setelah dihapus
+        $result = mysqli_query($conn, "SELECT * FROM tabung_masuk WHERE id_tb_masuk='$idTbMasuk'");
+
+        if ($result && mysqli_num_rows($result) === 0) {
+            // Data sudah tidak ada dalam database, set pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Hapus data guru berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:tabung.php');
+            exit;
+        } else {
+            // Data masih ada dalam database setelah dihapus, set pesan flash message gagal
+            throw new Exception("Data guru masih ada dalam database setelah dihapus");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location:tabung.php');
+        exit;
+    }
+}
 
     
 ?>
