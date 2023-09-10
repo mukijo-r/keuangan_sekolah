@@ -69,9 +69,9 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Tabung
                             </a>
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="tabung.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Ambil
+                                Daftar Tabungan
                             </a>
                             <div class="sb-sidenav-menu-heading">Data</div>
                             <a class="nav-link" href="guru.php">
