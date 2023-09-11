@@ -69,7 +69,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Tabung
                             </a>
-                            <a class="nav-link" href="tabung.php">
+                            <a class="nav-link" href="tabung_list.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Daftar Tabungan
                             </a>
