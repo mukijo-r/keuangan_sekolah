@@ -1,6 +1,7 @@
 <?php
 require 'function.php';
 require 'cek.php';
+require 'config.php';
 
 ?>
 <!DOCTYPE html>

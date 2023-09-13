@@ -1,6 +1,7 @@
 <?php
 require 'function.php';
 require 'cek.php';
+require 'config.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,7 +108,7 @@ require 'cek.php';
                                     <thead>
                                         <tr>
                                             <th>No.</th>    
-                                            <th>Tanggal</th>
+                                            <th>Bulan</th>
                                             <th>Nama Siswa</th>
                                             <th>Kelas</th>
                                             <th>Jumlah Ditabung</th>
@@ -131,7 +132,7 @@ require 'cek.php';
                                     
                                     while($data=mysqli_fetch_array($dataTabungan)){
                                         $idTbMasuk = $data['id_tb_masuk'];
-                                        $tanggal = $data['tanggal'];
+                                        $bulan = $data['bulan'];
                                         $namaSiswa = $data['nama_siswa'];
                                         $kelas = $data['kelas'];
                                         $nominal = $data['jumlah'];
@@ -165,12 +166,12 @@ require 'cek.php';
                                             <td><?=$namaGuru;?></td>
                                             <td><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
                                             <td><?=$keterangan;?></td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditTransTabung<?=$idTbMasuk;?>">Edit</button>
-                                            <input type="hidden" name="idgis" value="<?=$idSiswa;?>">
-                                            <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusTransTabung<?=$idTbMasuk;?>">Hapus</button> 
-                                        </td>
-                                    </tr>
+                                            <td>
+                                                <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditTransTabung<?=$idTbMasuk;?>">Edit</button>
+                                                <input type="hidden" name="idgis" value="<?=$idSiswa;?>">
+                                                <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusTransTabung<?=$idTbMasuk;?>">Hapus</button> 
+                                            </td>
+                                        </tr>
 
 
                                         <!-- Modal edit Transaksi Tabungan -->

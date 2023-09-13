@@ -1,5 +1,6 @@
 <?php
 include 'function.php';
+require 'config.php';
 
 //cek login
 if(isset($_POST['login'])){
