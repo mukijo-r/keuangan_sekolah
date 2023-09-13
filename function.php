@@ -305,6 +305,20 @@ if(isset($_POST['hapusGuru'])){
 // Tabungan Masuk
 if(isset($_POST['tambahTransTabung'])){
     $tanggal = $_POST['tanggal'];
+
+    // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
+    $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+    if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+        $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+        $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+    } else {
+        // Kelas tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Tahun ajar tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: tabung.php');
+        exit;
+    }
     
     $kelas = $_POST['kelas'];
     // Menggunakan query untuk mendapatkan id_kelas berdasarkan nama_kelas yang dipilih
@@ -325,11 +339,11 @@ if(isset($_POST['tambahTransTabung'])){
     $nominal = $_POST['nominal'];
     $guru = $_POST['guru'];
     $keterangan = $_POST['keterangan'];
-    $tanggal = date("Y-m-d", strtotime($tanggal));
+    $bulan = $_POST['bulan'];;
 
     try {
-        $queryInsertTabung = "INSERT INTO tabung_masuk (`tanggal`, `id_siswa`, `jumlah`, `id_guru`, `keterangan`) VALUES ('$tanggal','$idSiswa','$nominal','$guru','$keterangan')";
-
+        $queryInsertTabung = "INSERT INTO tabung_masuk (id_tahun_ajar, bulan, id_siswa, jumlah, id_guru, keterangan) VALUES ('$idTahunAjar', '$bulan','$idSiswa','$nominal','$guru','$keterangan')";
+              
         $tabung = mysqli_query($conn, $queryInsertTabung);
 
         if (!$tabung) {
@@ -337,7 +351,7 @@ if(isset($_POST['tambahTransTabung'])){
         }
 
         // Query SELECT untuk memeriksa apakah data sudah masuk ke database
-        $result = mysqli_query($conn, "SELECT * FROM tabung_masuk WHERE tanggal = '$tanggal' and id_siswa = $idSiswa and jumlah=$nominal");
+        $result = mysqli_query($conn, "SELECT * FROM tabung_masuk WHERE bulan = '$bulan' and id_siswa = $idSiswa and jumlah=$nominal");
 
         if ($result && mysqli_num_rows($result) > 0) {
             // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
@@ -351,9 +365,9 @@ if(isset($_POST['tambahTransTabung'])){
         }
     } catch (Exception $e) {
         // Tangani exception jika terjadi kesalahan
-        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryInsertTabung . $e->getMessage();
         $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
-        echo $queryInsert;
+        echo $queryInsertTabung;
         header('location:tabung.php');
         exit;
     }
@@ -361,7 +375,7 @@ if(isset($_POST['tambahTransTabung'])){
 
 // Edit Tabungan Masuk
 if(isset($_POST['editTransTabung'])){
-    $tanggal = $_POST['tanggal'];
+    $bulan = $_POST['bulan'];
     
     $kelas = $_POST['kelas'];
     // Menggunakan query untuk mendapatkan id_kelas berdasarkan nama_kelas yang dipilih
@@ -414,7 +428,7 @@ if(isset($_POST['editTransTabung'])){
     $idTbMasuk = $_POST['id_tb_masuk'];
 
     try {
-        $queryUpdatetTabung = "UPDATE tabung_masuk SET tanggal='$tanggal', id_siswa='$idSiswa', jumlah='$nominal', id_guru='$idGuru', keterangan='$keterangan' WHERE id_tb_masuk='$idTbMasuk'";
+        $queryUpdatetTabung = "UPDATE tabung_masuk SET bulan='$bulan', id_siswa='$idSiswa', jumlah='$nominal', id_guru='$idGuru', keterangan='$keterangan' WHERE id_tb_masuk='$idTbMasuk'";
         $updateTabung = mysqli_query($conn, $queryUpdatetTabung);
 
         if (!$updateTabung) {
@@ -422,7 +436,7 @@ if(isset($_POST['editTransTabung'])){
         }
 
         // Query SELECT untuk memeriksa apakah data sudah masuk ke database
-        $result = mysqli_query($conn, "SELECT * FROM tabung_masuk WHERE tanggal = '$tanggal' and id_siswa = $idSiswa and jumlah=$nominal");
+        $result = mysqli_query($conn, "SELECT * FROM tabung_masuk WHERE bulan = '$bulan' and id_siswa = $idSiswa and jumlah=$nominal");
 
         if ($result && mysqli_num_rows($result) > 0) {
             // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
@@ -461,13 +475,13 @@ if(isset($_POST['hapusTransaksiMenabung'])){
 
         if ($result && mysqli_num_rows($result) === 0) {
             // Data sudah tidak ada dalam database, set pesan flash message berhasil
-            $_SESSION['flash_message'] = 'Hapus data guru berhasil';
+            $_SESSION['flash_message'] = 'Hapus data tabungan berhasil';
             $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
             header('location:tabung.php');
             exit;
         } else {
             // Data masih ada dalam database setelah dihapus, set pesan flash message gagal
-            throw new Exception("Data guru masih ada dalam database setelah dihapus");
+            throw new Exception("Data tabungan masih ada dalam database setelah dihapus");
         }
     } catch (Exception $e) {
         // Tangani exception jika terjadi kesalahan
@@ -479,10 +493,7 @@ if(isset($_POST['hapusTransaksiMenabung'])){
 }
 
 // Ubah Tahun Ajar
-if (isset($_POST['tambahTahunAjar'])) {
-    $tahun_ajar = $_POST['tahunAjar'];
-    
-}
+
 
 
 

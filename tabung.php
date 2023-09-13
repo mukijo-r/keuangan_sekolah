@@ -141,8 +141,8 @@ require 'config.php';
                                         $idSiswa = $data['id_siswa'];
 
                                         // Menghitung saldo
-                                        $querySaldo = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM tabung_masuk WHERE id_siswa = $idSiswa AND tanggal <= '$tanggal'");
-                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa AND tanggal <= '$tanggal'");
+                                        $querySaldo = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM tabung_masuk WHERE id_siswa = $idSiswa AND id_tb_masuk <= $idTbMasuk");
+                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa");
 
                                         $saldo_masuk = 0;
                                         $saldo_ambil = 0;
@@ -159,7 +159,7 @@ require 'config.php';
                                         ?>
                                         <tr>
                                             <td><?=$i--;?></td>
-                                            <td><?=$tanggal;?></td>
+                                            <td><?=$bulan;?></td>
                                             <td><?=$namaSiswa;?></td>
                                             <td><?=$kelas;?></td>
                                             <td><?="Rp " . number_format($nominal, 0, ',', '.');?></td>
@@ -187,10 +187,18 @@ require 'config.php';
                                                 <form method="post">
                                                     <div class="modal-body">
                                                     <div class="mb-3">
-                                                        <label for="tanggal">Tanggal :</label><br>
-                                                        <input type="date" name="tanggal" class="form-control" value="<?=$tanggal;?>">
-                                                    </div>
-
+                                                            <label for="bulan">Bulan :</label>
+                                                            <select class="form-select" name="bulan" id="bulanEdit" aria-label="Bulan">
+                                                                <option selected><?=$bulan;?></option>
+                                                                <?php
+                                                                // Ambil data bulan dari tabel tabung_masuk
+                                                                $queryBulan = mysqli_query($conn, "SELECT bulan FROM tabung_masuk");
+                                                                while ($bulan = mysqli_fetch_assoc($queryBulan)) {
+                                                                    echo '<option value="' . $bulan['bulan'] . '">' . $bulan['bulan'] . '</option>';
+                                                                }
+                                                                ?>
+                                                            </select>
+                                                        </div>
                                                         <div class="mb-3">
                                                             <label for="kelas">Kelas :</label>
                                                             <select class="form-select" name="kelas" id="kelasEdit" aria-label="Kelas">
@@ -259,7 +267,7 @@ require 'config.php';
                                             
                                             <form method="post">
                                             <div class="modal-body">
-                                                <h5>Anda yakin ingin menghapus data menabung <u> <?=$namaSiswa;?> </u> dengan nominal <b><?=$nominal?></b> pada tangg <?=$tanggal?>?</h5>
+                                                <h5>Anda yakin ingin menghapus data menabung <u> <?=$namaSiswa;?> </u> dengan nominal Rp. <b><?=$nominal;?>?</h5>
                                                 
                                             </div>
                                             <div class="text-center">
@@ -318,10 +326,23 @@ require 'config.php';
             <form method="post">
                 <div class="modal-body">
                 <div class="mb-3">
-                    <label for="tanggal">Tanggal :</label><br>
-                    <input type="date" name="tanggal" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                    <label for="tanggal">Bulan :</label><br>
+                    <select class="form-select" name="bulan" aria-label="Bulan">
+                        <option selected>Pilih bulan</option>
+                        <option value="Januari">Januari</option>
+                        <option value="Februari">Februari</option>
+                        <option value="Maret">Maret</option>
+                        <option value="April">April</option>
+                        <option value="Mei">Mei</option>
+                        <option value="Juni">Juni</option>
+                        <option value="Juli">Juli</option>
+                        <option value="Agustus">Agustus</option>
+                        <option value="September">September</option>
+                        <option value="Oktober">Oktober</option>
+                        <option value="November">November</option>
+                        <option value="Desember">Desember</option>
+                        </select>
                 </div>
-
                     <div class="mb-3">
                         <label for="kelas">Kelas :</label>
                         <select class="form-select" name="kelas" id="kelas" aria-label="Kelas">
