@@ -478,5 +478,18 @@ if(isset($_POST['hapusTransaksiMenabung'])){
     }
 }
 
+// Ubah Tahun Ajar
+if (isset($_POST['tambahTahunAjar'])) {
+    $tahun_ajar = $_POST['tahunAjar'];
+    
+}
+
+
+
+    //$insertTA = mysqli_query($conn, "INSERT INTO tahun_ajar (tahun_ajar) VALUES ('$tahun_ajar')");
+    //$tahun_ajar = $tahun_ajar;
+
+
+
     
 ?>

@@ -1,4 +1,5 @@
 <?php
+include 'config.php';
 // Koneksi ke database
 $conn = mysqli_connect("localhost:3306","root","","sdk");
 

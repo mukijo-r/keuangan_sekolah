@@ -1,5 +1,7 @@
 <?php
-require 'config.php';
+include 'config.php';
+include 'sidebar_function.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -89,10 +91,54 @@ require 'config.php';
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        Start Bootstrap
+                        <div class="small">Tahun ajar:</div>
+                        <a href=# data-bs-toggle="modal" data-bs-target="#modalTahunAjar">
+                        <?=$tahun_ajar;?>
+                        </a>
                     </div>
                 </nav>
             </div>
+
+            <!-- Modal Ganti Tahun ajar-->
+    <div class="modal fade" id="modalTahunAjar">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Ganti Tahun Ajar</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->      
+                <form method="post">
+                <div class="modal-body">
+                    <h6>Tambahkan Tahun Ajar baru atau pilih dari menu<h6>
+                    <br>
+                    <input type="text" name="newTahunAjar" placeholder="Tahun/Tahun" class="form-control">
+                    <br>
+                    <div class="text-center">
+                    <button type="submit" class="btn btn-success" name="tambahTahunAjar">Tambah</button> 
+                    </div>
+                    <br>
+                    <select class="form-select" name="tahunAjar" aria-label="Pilih TA">
+                        <option selected>Pilih Tahun Ajar</option>
+                        <?php
+                            // Ambil data kelas dari tabel kelas
+                            $queryTA = mysqli_query($conn, "SELECT id_tahun_ajar, tahun_ajar FROM tahun_ajar");
+                            while ($ta = mysqli_fetch_assoc($queryTA)) {
+                                echo '<option value="' . $ta['tahun_ajar'] . '">' . $ta['tahun_ajar'] . '</option>';
+                            }
+                            ?>
+                    </select>
+                    <br>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary" name="ubahTahunAjar">Ubah</button> 
+                </div>
+                <br> 
+            </form>   
+            </div>
+        </div>
+    </div>
 
 
