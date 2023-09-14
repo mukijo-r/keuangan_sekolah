@@ -75,9 +75,8 @@ require 'config.php';
                                     <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
                                 </div>
                             </div>
-                        </div> -->
-                        
-                        <br>
+                        </div> -->                        
+
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
@@ -96,115 +95,229 @@ require 'config.php';
                             </div>
                         </div>                    
                         <br>
+                        <?php
+                        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+                        if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+                            $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+                            $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+                        } else {
+                            // Kelas tidak ditemukan, tangani kesalahan di sini
+                            $_SESSION['flash_message'] = 'Tahun ajar tidak ditemukan.';
+                            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+                            header('location: tabung.php');
+                            exit;
+                        }
+
+                        // Loop untuk membuat tabel untuk kelas 1 hingga 6
+                        for ($kelas = 1; $kelas <= 6; $kelas++) {
+                            ?>
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-table me-1"></i>
+                                    <b>Daftar Tabungan - Kelas <?php echo $kelas; ?></b>
+                                </div>
+                                <div class="card-body">                                
+                                    <table id="datatablesSimple1" class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Nama Siswa</th>
+                                                <th>Juli</th>
+                                                <th>Agustus</th>
+                                                <th>September</th>
+                                                <th>Oktober</th>
+                                                <th>November</th>
+                                                <th>Desember</th>
+                                                <th>Januari</th>
+                                                <th>Februari</th>
+                                                <th>Maret</th>
+                                                <th>April</th>
+                                                <th>Mei</th>
+                                                <th>Juni</th>
+                                                <th>Saldo Tabungan</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php 
+                                            $no = 1; 
+                                            $saldoTabunganKelas = array();
+
+                                            $queryDaftarTabungan = "SELECT
+                                                    s.nama AS Siswa,
+                                                    COALESCE((SELECT SUM(tm1.jumlah) FROM tabung_masuk tm1 WHERE tm1.id_siswa = s.id_siswa AND tm1.bulan = 'Januari' AND tm1.id_tahun_ajar = '$idTahunAjar'), 0) AS Januari,
+                                                    COALESCE((SELECT SUM(tm2.jumlah) FROM tabung_masuk tm2 WHERE tm2.id_siswa = s.id_siswa AND tm2.bulan = 'Februari' AND tm2.id_tahun_ajar = '$idTahunAjar'), 0) AS Februari,
+                                                    COALESCE((SELECT SUM(tm3.jumlah) FROM tabung_masuk tm3 WHERE tm3.id_siswa = s.id_siswa AND tm3.bulan = 'Maret' AND tm3.id_tahun_ajar = '$idTahunAjar'), 0) AS Maret,
+                                                    COALESCE((SELECT SUM(tm4.jumlah) FROM tabung_masuk tm4 WHERE tm4.id_siswa = s.id_siswa AND tm4.bulan = 'April' AND tm4.id_tahun_ajar = '$idTahunAjar'), 0) AS April,
+                                                    COALESCE((SELECT SUM(tm5.jumlah) FROM tabung_masuk tm5 WHERE tm5.id_siswa = s.id_siswa AND tm5.bulan = 'Mei' AND tm5.id_tahun_ajar = '$idTahunAjar'), 0) AS Mei,
+                                                    COALESCE((SELECT SUM(tm6.jumlah) FROM tabung_masuk tm6 WHERE tm6.id_siswa = s.id_siswa AND tm6.bulan = 'Juni' AND tm6.id_tahun_ajar = '$idTahunAjar'), 0) AS Juni,
+                                                    COALESCE((SELECT SUM(tm7.jumlah) FROM tabung_masuk tm7 WHERE tm7.id_siswa = s.id_siswa AND tm7.bulan = 'Juli' AND tm7.id_tahun_ajar = '$idTahunAjar'), 0) AS Juli,
+                                                    COALESCE((SELECT SUM(tm8.jumlah) FROM tabung_masuk tm8 WHERE tm8.id_siswa = s.id_siswa AND tm8.bulan = 'Agustus' AND tm8.id_tahun_ajar = '$idTahunAjar'), 0) AS Agustus,
+                                                    COALESCE((SELECT SUM(tm9.jumlah) FROM tabung_masuk tm9 WHERE tm9.id_siswa = s.id_siswa AND tm9.bulan = 'September' AND tm9.id_tahun_ajar = '$idTahunAjar'), 0) AS September,
+                                                    COALESCE((SELECT SUM(tm10.jumlah) FROM tabung_masuk tm10 WHERE tm10.id_siswa = s.id_siswa AND tm10.bulan = 'Oktober' AND tm10.id_tahun_ajar = '$idTahunAjar'), 0) AS Oktober,
+                                                    COALESCE((SELECT SUM(tm11.jumlah) FROM tabung_masuk tm11 WHERE tm11.id_siswa = s.id_siswa AND tm11.bulan = 'November' AND tm11.id_tahun_ajar = '$idTahunAjar'), 0) AS November,
+                                                    COALESCE((SELECT SUM(tm12.jumlah) FROM tabung_masuk tm12 WHERE tm12.id_siswa = s.id_siswa AND tm12.bulan = 'Desember' AND tm12.id_tahun_ajar = '$idTahunAjar'), 0) AS Desember,
+                                                    COALESCE(SUM(tm.jumlah), 0) - COALESCE(saldo_ambil, 0) AS Saldo_Total
+                                                FROM
+                                                    siswa s
+                                                LEFT JOIN
+                                                    tabung_masuk tm ON s.id_siswa = tm.id_siswa AND tm.id_tahun_ajar = '$idTahunAjar'
+                                                LEFT JOIN (
+                                                    SELECT
+                                                        id_siswa,
+                                                        SUM(jumlah) AS saldo_ambil
+                                                    FROM
+                                                        tabung_ambil
+                                                    WHERE
+                                                        id_tahun_ajar = '$idTahunAjar'
+                                                    GROUP BY
+                                                        id_siswa
+                                                ) ta ON s.id_siswa = ta.id_siswa
+                                                LEFT JOIN kelas k ON s.id_kelas = k.id_kelas
+                                                WHERE k.id_kelas = '$kelas'
+                                                GROUP BY
+                                                    s.nama
+                                                ORDER BY
+                                                    s.nama;
+                                                ";
+                                            $result = mysqli_query($conn, $queryDaftarTabungan); // Eksekusi query
+
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                // Ambil data dari setiap kolom
+                                                $namaSiswa = $row['Siswa'];
+                                                $juli = $row['Juli'];
+                                                $agustus = $row['Agustus'];
+                                                $september = $row['September'];
+                                                $oktober = $row['Oktober'];
+                                                $november = $row['November'];
+                                                $desember = $row['Desember'];
+                                                $januari = $row['Januari'];
+                                                $februari = $row['Februari'];
+                                                $maret = $row['Maret'];
+                                                $april = $row['April'];
+                                                $mei = $row['Mei'];
+                                                $juni = $row['Juni'];
+                                                $saldoTabunganSiswa = $row['Saldo_Total'];                                                
+
+
+                                                if (!isset($saldoTabunganKelas[$kelas])) {
+                                                    $saldoTabunganKelas[$kelas] = 0; // Inisialisasi total saldo untuk kelas baru
+                                                }
+                                                $saldoTabunganKelas[$kelas] += $saldoTabunganSiswa;
+
+                                                ?>
+                                                
+                                                <tr>
+                                                    <td><?=$no;?></td>
+                                                    <td><?=$namaSiswa;?></td>
+                                                    <td>Rp. <?=$juli;?></td>
+                                                    <td>Rp. <?=$agustus;?></td>
+                                                    <td>Rp. <?=$september;?></td>
+                                                    <td>Rp. <?=$oktober;?></td>
+                                                    <td>Rp. <?=$november;?></td>
+                                                    <td>Rp. <?=$desember;?></td>
+                                                    <td>Rp. <?=$januari;?></td>
+                                                    <td>Rp. <?=$februari;?></td>
+                                                    <td>Rp. <?=$maret;?></td>
+                                                    <td>Rp. <?=$april;?></td>
+                                                    <td>Rp. <?=$mei;?></td>
+                                                    <td>Rp. <?=$juni;?></td>
+                                                    <td>Rp. <?=$saldoTabunganSiswa;?></td>
+                                                    <td>Aksi</td>
+                                                </tr>
+                                                <?php
+                                                $no++; // Tingkatkan nomor baris
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                    <div class="total-saldo">
+                                        <b>Total Saldo Tabungan Kelas <?=$kelas;?> : Rp. <?=$saldoTabunganKelas[$kelas];?></b>
+                                    </div>     
+                                </div>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                        <br>                        
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Daftar Transaksi Menabung
+                                <b>Saldo Tabungan Semua Kelas</b>
                             </div>
-                            <div class="card-body">                                
-                                <table id="datatablesSimple">
+                            <div class="card-body">
+                                <table id="datatablesSimple1" class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>No.</th>
-                                            <th>Nama Siswa</th>
-                                            <th>Juli</th>
-                                            <th>Agustus</th>
-                                            <th>September</th>
-                                            <th>Oktober</th>
-                                            <th>November</th>
-                                            <th>Desember</th>
-                                            <th>Januari</th>
-                                            <th>Februari</th>
-                                            <th>Maret</th>
-                                            <th>April</th>
-                                            <th>Mei</th>
-                                            <th>Juni</th>
-                                            <th>Saldo Tabungan</th>
-                                            <th>Aksi</th>
+                                            <th style="width: 20%;">No.</th>
+                                            <th style="width: 20%;">Kelas</th>
+                                            <th style="width: 30%;">Saldo</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php 
-                                    $dataTabungan = mysqli_query($conn, "SELECT 
-                                    s.id_siswa,
-                                    s.nama,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 7 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS juli,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 8 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS agustus,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 9 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS september,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 10 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS oktober,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 11 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS november,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 12 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS desember,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 1 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS januari,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 2 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS februari,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 3 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS maret,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 4 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS april,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 5 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS mei,
-                                    SUM(CASE WHEN MONTH(tm.tanggal) = 6 THEN tm.jumlah ELSE 0 END) - SUM(ta.jumlah) AS juni,
-                                    COALESCE((SELECT SUM(tm.jumlah) - SUM(ta.jumlah) FROM tabung_masuk tm LEFT JOIN tabung_ambil ta ON tm.id_siswa = ta.id_siswa WHERE tm.id_siswa = s.id_siswa), 0) AS saldo_total
-                                FROM siswa s
-                                LEFT JOIN tabung_masuk tm ON s.id_siswa = tm.id_siswa
-                                LEFT JOIN tabung_ambil ta ON s.id_siswa = ta.id_siswa
-                                GROUP BY s.id_siswa, s.nama");
-                                
-                                   
-                                    $i = 1;
-                                    $bulanNames = array(
-                                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni'
-                                    );
-                                    
-                                    while($data=mysqli_fetch_assoc($dataTabungan)){
-                                            echo '<tr>';
-                                            echo '<td>' . $i++ . '</td>';
-                                            echo '<td>' . $data['nama'] . '</td>';                                         
-                    
-                                        foreach ($bulanNames as $bulanName) {
-                                            echo '<td>' . "Rp " . number_format($data[strtolower($bulanName)], 0, ',', '.') . '</td>';
-                                        }                                        
-                                        ?>
-                                            <td> <?="Rp " . number_format($data['saldo_total'], 0, ',', '.') ?></td>
-                                            <td>
-                                                <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalAmbilTabungan<?=$idSiswa;?>">Edit</button>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Modal Ambil Tabungan-->
-                                    <div class="modal fade" id="modalAmbilTabungan<?=$idSiswa;?>">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Hapus Transaksi Menabung ini?</h4>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <!-- Modal body -->
+                                        <?php 
+                                        $no = 1; 
+                                        $totalSaldoSemuaKelas = 0; // Inisialisasi total saldo untuk semua kelas
+                                        
+                                        // Loop dari kelas 1 hingga 6
+                                        for ($kelas = 1; $kelas <= 6; $kelas++) {
+                                            // Query untuk mengambil saldo untuk kelas tertentu
+                                            $querySaldoSiswa = "SELECT
+                                            s.nama AS Siswa,
+                                            COALESCE(SUM(tm.jumlah), 0) - COALESCE(saldo_ambil, 0) AS Saldo_Total
+                                            FROM
+                                            siswa s
+                                            LEFT JOIN
+                                                tabung_masuk tm ON s.id_siswa = tm.id_siswa AND tm.id_tahun_ajar = $idTahunAjar
+                                            LEFT JOIN (
+                                                SELECT
+                                                    id_siswa,
+                                                    SUM(jumlah) AS saldo_ambil
+                                                    FROM
+                                                        tabung_ambil
+                                                    WHERE
+                                                        id_tahun_ajar = $idTahunAjar
+                                                    GROUP BY
+                                                        id_siswa
+                                                ) ta ON s.id_siswa = ta.id_siswa
+                                            LEFT JOIN kelas k ON s.id_kelas = k.id_kelas
+                                                WHERE k.id_kelas = $kelas
+                                                GROUP BY
+                                                    s.nama
+                                                ORDER BY
+                                                    s.nama;";
                                             
-                                            <form method="post">
-                                            <div class="modal-body">
-                                                <h5>Anda yakin ingin menghapus data menabung <u> <?=$namaSiswa;?> </u> dengan nominal <b><?=$nominal?></b> pada tangg <?=$tanggal?>?</h5>
+                                            $result = mysqli_query($conn, $querySaldoSiswa); // Eksekusi query
+
+                                            $totalSaldo = 0; // Inisialisasi variabel penjumlahan saldo
+
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                // Ambil nilai saldo dari setiap baris dan tambahkan ke variabel penjumlahan
+                                                $saldo = $row['Saldo_Total'];
+                                                $totalSaldo += $saldo;
+                                            }
+                                            ?>
                                                 
-                                            </div>
-                                            <div class="text-center">
-                                                <input type="hidden" name="id_tb_masuk" value="<?=$idTbMasuk;?>">
-                                                <button type="submit" class="btn btn-danger" name="hapusTransaksiMenabung">Hapus</button> 
-                                            </div>
-                                            <br> 
-                                            </form>       
-                                            </div>
-                                        </div>
-
-
-                                    <?php
-                                    }
-                                    ?>                                 
-                                    
-
+                                                <tr>
+                                                    <td><?=$no;?></td>
+                                                    <td><?=$kelas;?></td>
+                                                    <td>Rp. <?=$totalSaldo;?></td>
+                                                </tr>
+                                            <?php
+                                             $no++;
+                                             $totalSaldoSemuaKelas += $totalSaldo;
+                                        }
+                                        ?>
                                     </tbody>
                                 </table>
-                                
+                                <div class="total-saldo">
+                                    <b>Total Saldo Semua Kelas: <?php echo $totalSaldoSemuaKelas; ?></b>
+                                </div>
                             </div>
                         </div>
+
+                        <?php ?>
                     </div>
                 </main>
                 <footer class="py-4 bg-light mt-auto">
