@@ -145,6 +145,7 @@ require 'config.php';
                                             $saldoTabunganKelas = array();
 
                                             $queryDaftarTabungan = "SELECT
+                                                    s.id_siswa,
                                                     s.nama AS Siswa,
                                                     COALESCE((SELECT SUM(tm1.jumlah) FROM tabung_masuk tm1 WHERE tm1.id_siswa = s.id_siswa AND tm1.bulan = 'Januari' AND tm1.id_tahun_ajar = '$idTahunAjar'), 0) AS Januari,
                                                     COALESCE((SELECT SUM(tm2.jumlah) FROM tabung_masuk tm2 WHERE tm2.id_siswa = s.id_siswa AND tm2.bulan = 'Februari' AND tm2.id_tahun_ajar = '$idTahunAjar'), 0) AS Februari,
@@ -177,7 +178,7 @@ require 'config.php';
                                                 LEFT JOIN kelas k ON s.id_kelas = k.id_kelas
                                                 WHERE k.id_kelas = '$kelas'
                                                 GROUP BY
-                                                    s.nama
+                                                    id_siswa
                                                 ORDER BY
                                                     s.nama;
                                                 ";
@@ -185,6 +186,7 @@ require 'config.php';
 
                                             while ($row = mysqli_fetch_assoc($result)) {
                                                 // Ambil data dari setiap kolom
+                                                $ids = $row['id_siswa']; 
                                                 $namaSiswa = $row['Siswa'];
                                                 $juli = $row['Juli'];
                                                 $agustus = $row['Agustus'];
@@ -224,8 +226,60 @@ require 'config.php';
                                                     <td>Rp. <?=$mei;?></td>
                                                     <td>Rp. <?=$juni;?></td>
                                                     <td>Rp. <?=$saldoTabunganSiswa;?></td>
-                                                    <td>Aksi</td>
+                                                    <td>
+                                                        <input type="hidden" name="idsis" value="<?=$ids;?>">
+                                                        <button type="button" class="btn btn-warning" name="tblAmbil" data-bs-toggle="modal" data-bs-target="#modalAmbilTab<?=$ids;?>">Ambil</button> 
+                                                    </td>
+                                                    </td>
                                                 </tr>
+                                                <!-- Modal Ambil-->
+                                                <div class="modal fade" id="modalAmbilTab<?=$ids;?>">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+
+                                                        <!-- Modal Header -->
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Ambil Tabungan</h4>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+
+                                                        <!-- Modal body -->
+                                                        
+                                                        <form method="post">
+                                                        <div class="modal-body">
+                                                            <h6>Ambil tabungan <?=$namaSiswa;?>?<h6>
+                                                            <br>
+                                                            <label for="tanggal">Tanggal Pengambilan :</label>       
+                                                            <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                                                            <br>
+                                                            <label for="jumlahTab">Jumlah Tabungan :</label>       
+                                                            <input type="text" name="jumlahTab" value="<?=$saldoTabunganSiswa;?>" class="form-control" readonly>
+                                                            <br>
+                                                            <label for="jumlahAmbil">Jumlah Tabungan yang akan diambil :</label>
+                                                            <input type="text" name="jumlahAmbil" value="<?=$saldoTabunganSiswa;?>" class="form-control">
+                                                            <br>
+                                                            <label for="guru">Guru Pencatat :</label>                     
+                                                            <select name="guru" class="form-select" id="guru" aria-label="Guru">>
+                                                            <option selected disabled>Guru Pencatat</option>
+                                                                <?php
+                                                                // Ambil data guru dari tabel guru
+                                                                $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
+                                                                while ($guru = mysqli_fetch_assoc($queryGuru)) {
+                                                                    echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
+                                                                }
+                                                                ?>
+                                                            </select>
+                                                            <br>                                                             
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <input type="hidden" name="ids" value="<?=$ids;?>">
+                                                            <button type="submit" class="btn btn-warning" name="ambilTab">Ambil</button> 
+                                                        </div>
+                                                        <br> 
+                                                        </form>        
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <?php
                                                 $no++; // Tingkatkan nomor baris
                                             }

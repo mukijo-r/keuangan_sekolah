@@ -34,7 +34,7 @@ include 'sidebar_function.php';
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="siswa.php">Kategori</a>
+                                    <a class="nav-link" href="kat_siswa.php">Kategori</a>
                                     <a class="nav-link" href="guru.php">Penetapan</a>
                                     <a class="nav-link" href="guru.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
@@ -79,6 +79,11 @@ include 'sidebar_function.php';
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Daftar Tabungan
                             </a>
+                            <a class="nav-link" href="tabung_ambil.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Daftar Pengambilan
+                            </a>
+
                             <div class="sb-sidenav-menu-heading">Data</div>
                             <a class="nav-link" href="guru.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>

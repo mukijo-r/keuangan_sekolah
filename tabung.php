@@ -107,7 +107,8 @@ require 'config.php';
                                 <table id="datatablesSimple">
                                     <thead>
                                         <tr>
-                                            <th>No.</th>    
+                                            <th>No.</th>
+                                            <th>Tanggal</th>    
                                             <th>Bulan</th>
                                             <th>Nama Siswa</th>
                                             <th>Kelas</th>
@@ -131,6 +132,8 @@ require 'config.php';
                                     $i = $totalEntries;
                                     
                                     while($data=mysqli_fetch_array($dataTabungan)){
+                                        $tanggal =  $data['tanggal'];
+                                        $tanggalTabung = date("Y-m-d", strtotime($tanggal));
                                         $idTbMasuk = $data['id_tb_masuk'];
                                         $bulan = $data['bulan'];
                                         $namaSiswa = $data['nama_siswa'];
@@ -141,13 +144,13 @@ require 'config.php';
                                         $idSiswa = $data['id_siswa'];
 
                                         // Menghitung saldo
-                                        $querySaldo = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM tabung_masuk WHERE id_siswa = $idSiswa AND id_tb_masuk <= $idTbMasuk");
-                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa");
+                                        $querySaldoTabung = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM tabung_masuk WHERE id_siswa = $idSiswa AND id_tb_masuk <= $tanggal");
+                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa AND id_tb_ambil <= $tanggal");
 
                                         $saldo_masuk = 0;
                                         $saldo_ambil = 0;
 
-                                        if ($rowSaldo = mysqli_fetch_assoc($querySaldo)) {
+                                        if ($rowSaldo = mysqli_fetch_assoc($querySaldoTabung)) {
                                             $saldo_masuk = $rowSaldo['total_masuk'];
                                         }
 
@@ -159,6 +162,7 @@ require 'config.php';
                                         ?>
                                         <tr>
                                             <td><?=$i--;?></td>
+                                            <td><?=$tanggal;?></td>
                                             <td><?=$bulan;?></td>
                                             <td><?=$namaSiswa;?></td>
                                             <td><?=$kelas;?></td>
@@ -325,8 +329,12 @@ require 'config.php';
             <!-- Modal Body -->
             <form method="post">
                 <div class="modal-body">
+                <div>
+                    <label for="tanggal">Tanggal Input :</label>       
+                    <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                </div>
                 <div class="mb-3">
-                    <label for="tanggal">Bulan :</label><br>
+                    <label for="bulan">Bulan :</label><br>
                     <select class="form-select" name="bulan" aria-label="Bulan">
                         <option selected>Pilih bulan</option>
                         <option value="Januari">Januari</option>
