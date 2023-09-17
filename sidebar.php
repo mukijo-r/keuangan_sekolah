@@ -34,10 +34,21 @@ include 'sidebar_function.php';
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="kat_siswa.php">Kategori</a>
                                     <a class="nav-link" href="guru.php">Penetapan</a>
                                     <a class="nav-link" href="guru.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
+                                </nav>
+                            </div>
+                            <a class="nav-link col1lapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts1" aria-expanded="false" aria-controls="collapseLayouts1">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Tabungan
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts1" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="tabung.php">Log Tabung</a>
+                                    <a class="nav-link" href="tabung_ambil.php">Log Ambil</a>
+                                    <a class="nav-link" href="tabung_list.php">Daftar Tabungan</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts2">
@@ -47,7 +58,6 @@ include 'sidebar_function.php';
                             </a>
                             <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="siswa.php">Kategori</a>
                                     <a class="nav-link" href="guru.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
                                 </nav>
@@ -65,23 +75,32 @@ include 'sidebar_function.php';
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
                                 </nav>
                             </div>
-                            <a class="nav-link" href="transaksi.php">
+                            <a class="nav-link collapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts4" aria-expanded="false" aria-controls="collapseLayouts4">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Konsolidasi
-                                <div></div>
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="sb-sidenav-menu-heading">Tabungan</div>
-                            <a class="nav-link" href="tabung.php">
+                            <div class="collapse" id="collapseLayouts4" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="#">Kategori Kas</a>
+                                    <a class="nav-link" href="#">Laporan</a>
+                                </nav>
+                            </div>
+
+
+
+                            <div class="sb-sidenav-menu-heading">Menu lain</div>
+                            <a class="nav-link" href="#">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Tabung
+                                ...
                             </a>
-                            <a class="nav-link" href="tabung_list.php">
+                            <a class="nav-link" href="#">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Daftar Tabungan
+                                ...
                             </a>
-                            <a class="nav-link" href="tabung_ambil.php">
+                            <a class="nav-link" href="#">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Daftar Pengambilan
+                                ...
                             </a>
 
                             <div class="sb-sidenav-menu-heading">Data</div>
