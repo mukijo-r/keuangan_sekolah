@@ -343,7 +343,7 @@ if(isset($_POST['tambahTransTabung'])){
     $bulan = $_POST['bulan'];;
 
     try {
-        $queryInsertTabung = "INSERT INTO tabung_masuk (tanggal, id_tahun_ajar, id_kategori, bulan, id_siswa, jumlah, id_guru, keterangan) VALUES ('$tanggalTabung', '$idTahunAjar', '1', '$bulan','$idSiswa','$nominal','$guru','$keterangan')";
+        $queryInsertTabung = "INSERT INTO tabung_masuk (tanggal, id_tahun_ajar, id_kategori, bulan, id_siswa, jumlah, id_guru, keterangan) VALUES ('$tanggalTabung', '$idTahunAjar', '8', '$bulan','$idSiswa','$nominal','$guru','$keterangan')";
               
         $tabung = mysqli_query($conn, $queryInsertTabung);
 
@@ -520,7 +520,7 @@ if(isset($_POST['ambilTab'])){
         // Coba jalankan query
         $queryambilTabungan = "INSERT INTO tabung_ambil
         (`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_siswa`, `jumlah`, `id_guru`, `keterangan`) 
-        VALUES ('$tanggalAmbil','$idTahunAjar','1','$idSiswa','$ambilTab','$idGuru','$keterangan')";
+        VALUES ('$tanggalAmbil','$idTahunAjar','8','$idSiswa','$ambilTab','$idGuru','$keterangan')";
         
         $ambilTabungan = mysqli_query($conn, $queryambilTabungan);
 
