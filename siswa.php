@@ -104,6 +104,7 @@ require 'config.php';
                             </div>
                         </div> 
                         <br>
+
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -127,7 +128,7 @@ require 'config.php';
                                     </thead>
                                     <tbody>
                                     <?php 
-                                    $datasiswa = mysqli_query($conn, "select * from siswa");
+                                    $datasiswa = mysqli_query($conn, "select * from siswa ORDER BY id_kelas ASC");
                                     $i = 1;
                                     while($data=mysqli_fetch_array($datasiswa)){
                                         $namaSiswa = $data['nama'];
@@ -252,6 +253,7 @@ require 'config.php';
                                 </table>
                             </div>
                         </div>
+
                     </div>
                 </main>
                 <footer class="py-4 bg-light mt-auto">
