@@ -550,6 +550,45 @@ if(isset($_POST['ambilTab'])){
     }
 }
 
+// Tambah Kategori Kas
+if(isset($_POST['tambahKategoriKas'])){
+    $jenisKas = $_POST['jenisKas'];
+    $kelompok = $_POST['kelompok'];
+    $namaGuru = $_POST['guru'];
+    $keterangan = $_POST['keterangan'];
+
+    try {
+        $queryInsertKategori = "INSERT INTO `kategori`(`nama_kategori`, `kelompok`, `id_guru`, `keterangan`) VALUES ('$jenisKas', '$kelompok', '$namaGuru','$keterangan')";
+              
+        $kategori = mysqli_query($conn, $queryInsertKategori);
+
+        if (!$kategori) {
+            throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM kategori WHERE nama_kategori='$jenisKas'");
+
+        if ($result && mysqli_num_rows($result) === 1) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Tambah kategori berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:kategori_kas.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data tidak ditemukan setelah ditambahkan");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryInsertKategori . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        echo $queryInsertTabung;
+        header('location:kategori_kas.php');
+        exit;
+    }
+}
+
 
 
     
