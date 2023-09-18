@@ -60,6 +60,7 @@ require 'config.php';
                                         <tr>
                                             <th>No.</th>    
                                             <th>Jenis Kas</th>
+                                            <th>Kelompok</th>
                                             <th>Penanggung Jawab</th>
                                             <th>Keterangan</th>
                                             <th colspan='2'>Aksi</th>
@@ -73,11 +74,14 @@ require 'config.php';
                                 FROM
                                     kategori kat
                                 JOIN
-                                    guru g ON kat.id_guru = g.id_guru");
+                                    guru g ON kat.id_guru = g.id_guru
+                                ORDER BY kat.id_kategori ASC
+                                ");
                                     $i = 1;
                                     while($data=mysqli_fetch_array($dataKategori)){
                                         $idKat = $data['id_kategori'];
                                         $kategoriKas = $data['nama_kategori'];
+                                        $kelompok = $data['kelompok'];
                                         $idg = $data['id_guru'];
                                         $namaGuru = $data['nama_guru'];
                                         $keterangan = $data['keterangan'];                                    
@@ -85,6 +89,7 @@ require 'config.php';
                                     <tr>
                                         <td><?=$i++;?></td>
                                         <td><?=$kategoriKas;?></td>
+                                        <td><?=$kelompok;?></td>
                                         <td><?=$namaGuru;?></td>
                                         <td><?=$keterangan;?></td>
                                         <td>
@@ -212,6 +217,13 @@ require 'config.php';
                 <label for="jenisKas">Nama Kas :</label> 
                 <input type="text" name="jenisKas" placeholder="Nama Kas" class="form-control" required>
                 <br>
+                <label for="kelompok">Kelompok :</label> 
+                <select class="form-select" name="kelompok" aria-label="Pilih Kelompok">
+                        <option selected>Kelompok</option>
+                        <option value="siswa">Siswa</option>
+                        <option value="umum">Umum</option>
+                    </select>
+                <br>
                 <label for="guru">Penannggung Jawab :</label>                     
                 <select name="guru" class="form-select" id="guru" aria-label="Guru">>
                     <option selected disabled>Pilih Guru</option>
@@ -228,7 +240,7 @@ require 'config.php';
                 <textarea name="keterangan" class="form-control" id="keterangan" rows="2"></textarea>
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-success" name="tambahGuru">Tambah</button> 
+                <button type="submit" class="btn btn-success" name="tambahKategoriKas">Tambah</button> 
             </div>
             <br> 
         </form>   
