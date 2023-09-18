@@ -34,7 +34,7 @@ include 'sidebar_function.php';
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="guru.php">Penetapan</a>
+                                    <a class="nav-link" href="penetapan.php">Penetapan</a>
                                     <a class="nav-link" href="guru.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
                                 </nav>
@@ -82,7 +82,7 @@ include 'sidebar_function.php';
                             </a>
                             <div class="collapse" id="collapseLayouts4" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="#">Kategori Kas</a>
+                                    <a class="nav-link" href="kategori_kas.php">Kategori Kas</a>
                                     <a class="nav-link" href="#">Laporan</a>
                                 </nav>
                             </div>
