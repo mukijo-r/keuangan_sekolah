@@ -93,62 +93,68 @@ require 'config.php';
                                         <td><?=$namaGuru;?></td>
                                         <td><?=$keterangan;?></td>
                                         <td>
-                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditGuru<?=$idKat;?>">Edit</button>
+                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditKategori<?=$idKat;?>">Edit</button>
                                             <input type="hidden" name="idKat" value="<?=$idKat;?>">
-                                            <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusGuru<?=$iKat;?>">Hapus</button> 
+                                            <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusKategori<?=$idKat;?>">Hapus</button> 
                                         </td>
                                     </tr>
-                                    <!-- Modal Edit Guru-->
-                                    <div class="modal fade" id="modalEditGuru<?=$idg;?>">
+
+                                    <!-- Modal Edit Kategori-->
+                                    <div class="modal fade" id="modalEditKategori<?=$idKat;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
 
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Edit Guru</h4>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <!-- Modal body -->
-                                            
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Edit Kategori Kas</h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <!-- Modal body -->      
                                             <form method="post">
                                             <div class="modal-body">
-                                                <input type="text" name="namaGuru" value="<?=$namaGuru;?>" class="form-control">
+                                                <label for="jenisKas">Nama Kas :</label> 
+                                                <input type="text" name="jenisKas" value="<?=$kategoriKas;?>" class="form-control" required>
                                                 <br>
-                                                <input type="text" name="nip" value="<?=$nip;?>" class="form-control">
+                                                <label for="kelompok">Kelompok :</label> 
+                                                <select class="form-select" name="kelompok" aria-label="Pilih Kelompok">
+                                                        <option selected><?=$kelompok;?></option>
+                                                        <option value="siswa">Siswa</option>
+                                                        <option value="umum">Umum</option>
+                                                    </select>
                                                 <br>
-                                                <select class="form-select" name="jk" aria-label="Jenis Kelamin">
-                                                    <option selected><?=$jk;?></option>
-                                                    <option value="L">L</option>
-                                                    <option value="P">P</option>
-                                                </select>
+                                                <label for="guru">Penannggung Jawab :</label>                     
+                                                <select name="guru" class="form-select" id="guru" aria-label="Guru">>
+                                                    <option selected><?=$namaGuru;?></option>
+                                                    <?php
+                                                        // Ambil data guru dari tabel guru
+                                                        $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
+                                                        while ($guru = mysqli_fetch_assoc($queryGuru)) {
+                                                            echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
+                                                        }
+                                                    ?>
+                                                    </select>
                                                 <br>
-                                                <select class="form-select" name="jabatan" aria-label="Jabatan">
-                                                    <option selected><?=$jabatan;?></option>
-                                                    <option value="Guru">Guru</option>
-                                                    <option value="Bendahara Sekolah">Bendahara Sekolah</option>
-                                                    <option value="Kepala Sekolah">Kepala Sekolah</option>
-                                                </select>
-                                                <br>
-                                                <input type="hidden" name="idg" value="<?=$idg;?>">
+                                                <label for="keterangan">Keterangan :</label>   
+                                                <textarea name="keterangan" class="form-control" value="<?=$keterangan;?>" id="keterangan" rows="2"></textarea>
                                             </div>
                                             <div class="text-center">
-                                                <button type="submit" class="btn btn-warning" name="editGuru">Edit</button> 
+                                                <input type="hidden" name="idk" value="<?=$idKat;?>">
+                                                <button type="submit" class="btn btn-success" name="ubahKategoriKas">Ubah</button> 
                                             </div>
                                             <br> 
-                                            </form>        
-                                            </div>
+                                        </form>   
                                         </div>
                                     </div>
+                                    </div>
 
-                                    <!-- Modal Hapus Guru-->
-                                    <div class="modal fade" id="modalHapusGuru<?=$idg;?>">
+                                    <!-- Modal Hapus Kategori-->
+                                    <div class="modal fade" id="modalHapusKategori<?=$idKat;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
 
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                                <h4 class="modal-title">Hapus Guru?</h4>
+                                                <h5 class="modal-title">Hapus Kategori?</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
 
@@ -156,12 +162,12 @@ require 'config.php';
                                             
                                             <form method="post">
                                             <div class="modal-body">
-                                                <h4>Anda yakin ingin menghapus data guru <?=$namaGuru;?>?</h4>
+                                                <h6>Anda yakin ingin menghapus kategori kas <?=$kategoriKas;?>?</h6>
                                                 
                                             </div>
                                             <div class="text-center">
-                                                <input type="hidden" name="idg" value="<?=$idg;?>">
-                                                <button type="submit" class="btn btn-danger" name="hapusGuru">Hapus</button> 
+                                                <input type="hidden" name="idk" value="<?=$idKat;?>">
+                                                <button type="submit" class="btn btn-danger" name="hapusKategoriKas">Hapus</button> 
                                             </div>
                                             <br> 
                                             </form>       

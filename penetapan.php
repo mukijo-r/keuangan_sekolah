@@ -80,7 +80,7 @@ require 'config.php';
                                     $i = 1;
                                     while($data=mysqli_fetch_array($dataPenetapan)){
                                         $idPenetapan = $data['id_penetapan'];
-                                        $idsiswa = $data['id_siswa'];
+                                        $idSiswa = $data['id_siswa'];
                                         $spp = $data['spp'];
                                         $ekstra = $data['ekstra'];
                                         $les = $data['les'];
@@ -102,18 +102,18 @@ require 'config.php';
                                         <td><?=$us;?></td>
                                         <td>
                                             <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditPenetapan<?=$idPenetapan;?>">Edit</button>
-                                            <input type="hidden" name="idKat" value="<?=$idPenetapan;?>">
+                                            <input type="hidden" name="idPen" value="<?=$idPenetapan;?>">
                                             <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusPenetapan<?=$idPenetapan;?>">Hapus</button> 
                                         </td>
                                     </tr>
-                                    <!-- Modal Edit Guru-->
-                                    <div class="modal fade" id="modalEditGuru<?=$idg;?>">
+                                    <!-- Modal Edit Penetapan-->
+                                    <div class="modal fade" id="modalEditPenetapan<?=$idPenetapan;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
 
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                                <h4 class="modal-title">Edit Guru</h4>
+                                                <h4 class="modal-title">Edit Penetapan</h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
 
@@ -121,27 +121,54 @@ require 'config.php';
                                             
                                             <form method="post">
                                             <div class="modal-body">
-                                                <input type="text" name="namaGuru" value="<?=$namaGuru;?>" class="form-control">
-                                                <br>
-                                                <input type="text" name="nip" value="<?=$nip;?>" class="form-control">
-                                                <br>
-                                                <select class="form-select" name="jk" aria-label="Jenis Kelamin">
-                                                    <option selected><?=$jk;?></option>
-                                                    <option value="L">L</option>
-                                                    <option value="P">P</option>
-                                                </select>
-                                                <br>
-                                                <select class="form-select" name="jabatan" aria-label="Jabatan">
-                                                    <option selected><?=$jabatan;?></option>
-                                                    <option value="Guru">Guru</option>
-                                                    <option value="Bendahara Sekolah">Bendahara Sekolah</option>
-                                                    <option value="Kepala Sekolah">Kepala Sekolah</option>
-                                                </select>
-                                                <br>
-                                                <input type="hidden" name="idg" value="<?=$idg;?>">
+                                                <div class="mb-3">
+                                                    <label for="kelas">Kelas :</label>
+                                                    <select class="form-select" name="kelas" id="kelas" aria-label="Kelas">
+                                                        <option selected <?=$kelas;?>><?=$kelas;?></option>
+                                                        <?php
+                                                        // Ambil data kelas dari tabel kelas
+                                                        $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
+                                                        while ($kelas = mysqli_fetch_assoc($queryKelas)) {
+                                                            echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="siswa">Siswa :</label>
+                                                    <select name="siswa" class="form-select" id="siswa" aria-label="Siswa">
+                                                        <option selected <?=$idSiswa;?>><?=$namaSiswa;?></option>
+                                                        <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="spp">SPP :</label>                        
+                                                    <input type="number" name="spp" value="<?=$spp;?>" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="ekstra">Ekstrakurikuler :</label>                        
+                                                    <input type="number" name="ekstra" value="<?=$ekstra;?>" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="les">Les :</label>                        
+                                                    <input type="number" name="les" value="<?=$les;?>" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="pts">PTS :</label>                        
+                                                    <input type="number" name="pts" value="<?=$pts;?>" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="pas">PAS :</label>                        
+                                                    <input type="number" name="pas" value="<?=$pas;?>" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="us">US :</label>                        
+                                                    <input type="number" name="us" value="<?=$us;?>" class="form-control">
+                                                </div>                                               
                                             </div>
                                             <div class="text-center">
-                                                <button type="submit" class="btn btn-warning" name="editGuru">Edit</button> 
+                                                <input type="hidden" name="idPen" value="<?=$idPenetapan;?>">
+                                                <button type="submit" class="btn btn-warning" name="editPenetapan">Edit</button> 
                                             </div>
                                             <br> 
                                             </form>        
@@ -248,23 +275,23 @@ require 'config.php';
                         </div>
                         <div class="mb-3">
                             <label for="ekstra">Ekstrakurikuler :</label>                        
-                            <input type="number" name="ekstra" class="form-control">
+                            <input type="number" name="ekstra" value="50000" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="les">Les :</label>                        
-                            <input type="number" name="les" class="form-control">
+                            <input type="number" name="les" value="50000" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="pts">PTS :</label>                        
-                            <input type="number" name="pts" class="form-control">
+                            <input type="number" name="pts" value="50000" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="pas">PAS :</label>                        
-                            <input type="number" name="pas" class="form-control">
+                            <input type="number" name="pas" value="50000" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="us">US :</label>                        
-                            <input type="number" name="us" class="form-control">
+                            <input type="number" name="us" value="50000" class="form-control">
                         </div>
                         
 

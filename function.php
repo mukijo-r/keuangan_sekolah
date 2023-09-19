@@ -493,7 +493,7 @@ if(isset($_POST['hapusTransaksiMenabung'])){
     }
 }
 
-// ambil Tabungan
+// Ambil Tabungan
 if(isset($_POST['ambilTab'])){
     $tanggal = $_POST['tanggal'];
     $tanggalAmbil = date("Y-m-d", strtotime($tanggal));
@@ -589,7 +589,235 @@ if(isset($_POST['tambahKategoriKas'])){
     }
 }
 
+// Edit Kategori Kas
+if(isset($_POST['ubahKategoriKas'])){
+    $idKas = $_POST['idk'];
+    $jenisKas = $_POST['jenisKas'];
+    $kelompok = $_POST['kelompok'];
+    $namaGuru = $_POST['guru'];
+    $keterangan = $_POST['keterangan'];
 
+    try {
+        $queryUpdateKategori = "UPDATE `kategori` SET `nama_kategori`='$jenisKas', `kelompok`='$kelompok', `id_guru`='$namaGuru', `keterangan`='$keterangan' WHERE `id_kategori`='$idKas'";
+          
+        $kategori = mysqli_query($conn, $queryUpdateKategori);
+
+        if (!$kategori) {
+            throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM kategori WHERE nama_kategori='$jenisKas' AND `kelompok`='$kelompok' AND `id_guru`='$namaGuru' AND `keterangan`='$keterangan'");
+
+        if ($result && mysqli_num_rows($result) === 1) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Ubah kategori berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:kategori_kas.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data tidak ditemukan setelah diubah");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        echo $queryInsertTabung;
+        header('location:kategori_kas.php');
+        exit;
+    }
+}
+
+// Hapus Kategori Kas
+if(isset($_POST['hapusKategoriKas'])){
+    $idKas = $_POST['idk'];
+
+    try {
+        $queryHapusKategori = "DELETE from `kategori` WHERE `id_kategori`='$idKas'";
+          
+        $kategori = mysqli_query($conn, $queryHapusKategori);
+
+        if (!$kategori) {
+            throw new Exception("Query hapus gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM kategori WHERE `id_kategori`='$idKas'");
+
+        if ($result && mysqli_num_rows($result) === 0) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Hapus kategori berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:kategori_kas.php');
+            exit;
+        } else {
+            // Data masih ada dalam database, itu berarti gagal
+            throw new Exception("Data masih ada setelah dihapus");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        echo $queryInsertTabung;
+        header('location:kategori_kas.php');
+        exit;
+    }
+}
+
+// Tambah Item Penetapan
+if(isset($_POST['tambahPenetapan'])){
+    $kelas = $_POST['kelas'];
+    $idSiswa = $_POST['id_siswa'];
+    $spp = $_POST['spp'];
+    $ekstra = $_POST['ekstra'];
+    $les = $_POST['les'];
+    $pts = $_POST['pts'];
+    $pas = $_POST['pas'];
+    $us = $_POST['us'];
+
+    try {
+        $queryInsertPenetapan = "INSERT INTO `penetapan`(`id_siswa`, `spp`, `ekstra`, `les`, `PTS`, `PAS`, `US`) 
+        VALUES ('$idSiswa','$spp','$ekstra','$les','$pts','$pas','$us')";
+              
+        $penetapan = mysqli_query($conn, $queryInsertPenetapan);
+
+        if (!$penetapan) {
+            throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM penetapan WHERE `id_siswa`='$idSiswa' AND `spp`='$spp' AND `ekstra`='$ekstra' AND `les`='$les' AND `PTS`='$pts' AND `PAS`='$pas' AND `US`='$us'");
+
+        if ($result && mysqli_num_rows($result) === 1) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Tambah kategori berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:penetapan.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data tidak ditemukan setelah ditambahkan");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        echo $queryInsertTabung;
+        header('location:penetapan.php');
+        exit;
+    }
+}
+
+// Edit Item Penetapan
+if(isset($_POST['editPenetapan'])){
+    $idPen = $_POST['idPen'];
+    $kelas = $_POST['kelas'];
+    $siswa = $_POST['siswa'];
+    $spp = $_POST['spp'];
+    $ekstra = $_POST['ekstra'];
+    $les = $_POST['les'];
+    $pts = $_POST['pts'];
+    $pas = $_POST['pas'];
+    $us = $_POST['us'];
+
+    // Menggunakan query untuk mendapatkan id_siswa berdasarkan nama_siswa yang dipilih
+    $queryGetSiswa = mysqli_query($conn, "SELECT id_siswa FROM siswa WHERE nama = '$siswa'");
+
+    if ($queryGetSiswa && mysqli_num_rows($queryGetSiswa) > 0) {
+        $siswaData = mysqli_fetch_assoc($queryGetSiswa);
+        $idSiswa = $siswaData['id_siswa'];
+    } else {
+        // siswa tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Siswa tidak ditemukan.' . $idSiswa;
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: penetapan.php');
+        exit;
+    }
+
+    try {
+        $queryUpdatePenetapan = "UPDATE `penetapan` 
+        SET `spp`='$spp',`ekstra`='$ekstra',`les`='$les',`PTS`='$pts',`PAS`='$pas',`US`='$us' WHERE `id_siswa`='$idSiswa'";
+              
+        $penetapan = mysqli_query($conn, $queryUpdatePenetapan);
+
+        if (!$penetapan) {
+            throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM penetapan WHERE `id_penetapan`='$idPen' AND `id_siswa`='$idSiswa' AND `spp`='$spp' AND `ekstra`='$ekstra' AND `les`='$les' AND `PTS`='$pts' AND `PAS`='$pas' AND `US`='$us'");
+
+        if ($result && mysqli_num_rows($result) === 1) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Update berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:penetapan.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data tidak ditemukan setelah diubah");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryUpdatePenetapan . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location:penetapan.php');
+        exit;
+    }
+}
+// Hapus Item Penetapan
+if(isset($_POST['hapusPenetapan'])){
+    $idPen = $_POST['idPen'];
+    $kelas = $_POST['kelas'];
+    $siswa = $_POST['siswa'];
+
+
+    // Menggunakan query untuk mendapatkan id_siswa berdasarkan nama_siswa yang dipilih
+    $queryGetSiswa = mysqli_query($conn, "SELECT id_siswa FROM siswa WHERE nama = '$siswa'");
+
+    if ($queryGetSiswa && mysqli_num_rows($queryGetSiswa) > 0) {
+        $siswaData = mysqli_fetch_assoc($queryGetSiswa);
+        $idSiswa = $siswaData['id_siswa'];
+    } else {
+        // siswa tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Siswa tidak ditemukan.' . $idSiswa;
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: penetapan.php');
+        exit;
+    }
+
+    try {
+        $queryUpdatePenetapan = "UPDATE `penetapan` 
+        SET `spp`='$spp',`ekstra`='$ekstra',`les`='$les',`PTS`='$pts',`PAS`='$pas',`US`='$us' WHERE `id_siswa`='$idSiswa'";
+              
+        $penetapan = mysqli_query($conn, $queryUpdatePenetapan);
+
+        if (!$penetapan) {
+            throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM penetapan WHERE `id_penetapan`='$idPen' AND `id_siswa`='$idSiswa' AND `spp`='$spp' AND `ekstra`='$ekstra' AND `les`='$les' AND `PTS`='$pts' AND `PAS`='$pas' AND `US`='$us'");
+
+        if ($result && mysqli_num_rows($result) === 1) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Update berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:penetapan.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data tidak ditemukan setelah diubah");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryUpdatePenetapan . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location:penetapan.php');
+        exit;
+    }
+}
 
     
 ?>
