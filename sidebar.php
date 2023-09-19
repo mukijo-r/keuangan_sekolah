@@ -1,3 +1,9 @@
+<?php
+include 'config.php';
+include 'sidebar_function.php';
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -28,10 +34,21 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="siswa.php">Kategori</a>
-                                    <a class="nav-link" href="guru.php">Penetapan</a>
+                                    <a class="nav-link" href="penetapan.php">Penetapan</a>
                                     <a class="nav-link" href="guru.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
+                                </nav>
+                            </div>
+                            <a class="nav-link col1lapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts1" aria-expanded="false" aria-controls="collapseLayouts1">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Tabungan
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLayouts1" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="tabung.php">Log Tabung</a>
+                                    <a class="nav-link" href="tabung_ambil.php">Log Ambil</a>
+                                    <a class="nav-link" href="tabung_list.php">Daftar Tabungan</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts2">
@@ -41,7 +58,6 @@
                             </a>
                             <div class="collapse" id="collapseLayouts2" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="siswa.php">Kategori</a>
                                     <a class="nav-link" href="guru.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
                                 </nav>
@@ -59,20 +75,34 @@
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
                                 </nav>
                             </div>
-                            <a class="nav-link" href="transaksi.php">
+                            <a class="nav-link collapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts4" aria-expanded="false" aria-controls="collapseLayouts4">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Konsolidasi
-                                <div></div>
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="sb-sidenav-menu-heading">Tabungan</div>
-                            <a class="nav-link" href="charts.html">
+                            <div class="collapse" id="collapseLayouts4" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="kategori_kas.php">Kategori Kas</a>
+                                    <a class="nav-link" href="#">Laporan</a>
+                                </nav>
+                            </div>
+
+
+
+                            <div class="sb-sidenav-menu-heading">Menu lain</div>
+                            <a class="nav-link" href="#">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Tabung
+                                ...
                             </a>
-                            <a class="nav-link" href="tables.html">
+                            <a class="nav-link" href="#">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Ambil
+                                ...
                             </a>
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                ...
+                            </a>
+
                             <div class="sb-sidenav-menu-heading">Data</div>
                             <a class="nav-link" href="guru.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
@@ -85,10 +115,54 @@
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        Start Bootstrap
+                        <div class="small">Tahun ajar:</div>
+                        <a href=# data-bs-toggle="modal" data-bs-target="#modalTahunAjar">
+                        <?=$tahun_ajar;?>
+                        </a>
                     </div>
                 </nav>
             </div>
+
+            <!-- Modal Ganti Tahun ajar-->
+    <div class="modal fade" id="modalTahunAjar">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Ganti Tahun Ajar</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->      
+                <form method="post">
+                <div class="modal-body">
+                    <h6>Tambahkan Tahun Ajar baru atau pilih dari menu<h6>
+                    <br>
+                    <input type="text" name="newTahunAjar" placeholder="Tahun/Tahun" class="form-control">
+                    <br>
+                    <div class="text-center">
+                    <button type="submit" class="btn btn-success" name="tambahTahunAjar">Tambah</button> 
+                    </div>
+                    <br>
+                    <select class="form-select" name="tahunAjar" aria-label="Pilih TA">
+                        <option selected>Pilih Tahun Ajar</option>
+                        <?php
+                            // Ambil data kelas dari tabel kelas
+                            $queryTA = mysqli_query($conn, "SELECT id_tahun_ajar, tahun_ajar FROM tahun_ajar");
+                            while ($ta = mysqli_fetch_assoc($queryTA)) {
+                                echo '<option value="' . $ta['tahun_ajar'] . '">' . $ta['tahun_ajar'] . '</option>';
+                            }
+                            ?>
+                    </select>
+                    <br>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary" name="ubahTahunAjar">Ubah</button> 
+                </div>
+                <br> 
+            </form>   
+            </div>
+        </div>
+    </div>
 
 

@@ -1,6 +1,7 @@
 <?php
 require 'function.php';
 require 'cek.php';
+require 'config.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -253,19 +254,9 @@ require 'cek.php';
         <!-- Modal body -->      
             <form method="post">
             <div class="modal-body">
-                <input type="text" name="nisn" placeholder="NISN" class="form-control">
+                <input type="text" name="nip" placeholder="NIP" class="form-control">
                 <br>
                 <input type="text" name="namaGuru" placeholder="Nama Guru" class="form-control" required>
-                <br>
-                <select class="form-select" name="kelas" aria-label="Pilih Kelas">
-                    <option selected>Kelas</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                </select>
                 <br>
                 <select class="form-select" name="jk" aria-label="Jenis Kelamin">
                     <option selected>Jenis Kelamin</option>
@@ -273,21 +264,12 @@ require 'cek.php';
                     <option value="P">P</option>
                 </select>
                 <br>
-                <input type="text" name="tempatLahir" placeholder="Tempat Lahir" class="form-control">
-                <br>
-                <input type="date" name="tanggalLahir" placeholder="Tanggal Lahir" class="form-control">
-                <br>
-                <select class="form-select" name="agama" aria-label="Agama">
-                    <option selected>Agama</option>
-                    <option value="Katolik">Katolik</option>
-                    <option value="Kristen">Kristen</option>
-                    <option value="Islam">Islam</option>
-                    <option value="Hindu">Hindu</option>
-                    <option value="Buddha">Buddha</option>
-                    <option value="Khonghucu">Khonghucu</option>
+                <select class="form-select" name="jabatan" aria-label="jabatan">
+                    <option selected>Jabatan</option>
+                    <option value="Guru">Guru</option>
+                    <option value="Bendahara Sekolah">Bendahara Sekolah</option>
+                    <option value="Kepala Sekolah">Kepala Sekolah</option>
                 </select>
-                <br>
-                <textarea name="alamat" rows="5" cols="60">Alamat</textarea>
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-success" name="tambahGuru">Tambah</button> 
