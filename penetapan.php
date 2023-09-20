@@ -54,159 +54,83 @@ require 'config.php';
                                 <i class="fas fa-table me-1"></i>
                                 Daftar Penetapan
                             </div>
-                            <div class="card-body">
-                                <table id="datatablesSimple">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Kelas</th>    
-                                            <th>Nama</th>
-                                            <th>SPP</th>
-                                            <th>Ekstrakurikuler</th>
-                                            <th>Les</th>
-                                            <th>PTS</th>
-                                            <th>PAS</th>
-                                            <th>US</th>
-                                            <th colspan='2'>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                            <div class="card-body">                                
                                     <?php 
-                                    $dataPenetapan = mysqli_query($conn, "SELECT pn.*, s.nama AS nama_siswa, k.nama_kelas AS kelas
-                                    FROM penetapan pn
-                                    LEFT JOIN siswa s ON pn.id_siswa = s.id_siswa
-                                    LEFT JOIN kelas k ON s.id_kelas = k.id_kelas
-                                    ORDER BY kelas ASC");
-                                    $i = 1;
-                                    while($data=mysqli_fetch_array($dataPenetapan)){
-                                        $idPenetapan = $data['id_penetapan'];
-                                        $idSiswa = $data['id_siswa'];
-                                        $spp = $data['spp'];
-                                        $ekstra = $data['ekstra'];
-                                        $les = $data['les'];
-                                        $pts = $data['PTS'];
-                                        $pas = $data['PAS'];
-                                        $us = $data['US'];
-                                        $namaSiswa = $data['nama_siswa'];
-                                        $kelas = $data['kelas'];                                       
-                                    ?>
-                                    <tr>
-                                        <td><?=$i++;?></td>
-                                        <td><?=$kelas;?></td>
-                                        <td><?=$namaSiswa;?></td>
-                                        <td><?=$spp;?></td>
-                                        <td><?=$ekstra;?></td>
-                                        <td><?=$les;?></td>
-                                        <td><?=$pts;?></td>
-                                        <td><?=$pas;?></td>
-                                        <td><?=$us;?></td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditPenetapan<?=$idPenetapan;?>">Edit</button>
-                                            <input type="hidden" name="idPen" value="<?=$idPenetapan;?>">
-                                            <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusPenetapan<?=$idPenetapan;?>">Hapus</button> 
-                                        </td>
-                                    </tr>
-                                    <!-- Modal Edit Penetapan-->
-                                    <div class="modal fade" id="modalEditPenetapan<?=$idPenetapan;?>">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
+                                        $dataPenetapan = mysqli_query($conn, "SELECT 
+                                        penetapan.*,
+                                        s.nama AS nama_siswa,
+                                        sks.id_kategori,
+                                        sks.nama_sub_kategori,
+                                        k.nama_kategori
+                                        FROM 
+                                            penetapan
+                                        LEFT JOIN 
+                                            siswa s ON penetapan.id_siswa = s.id_siswa
+                                        LEFT JOIN 
+                                            sub_kategori_siswa sks ON penetapan.id_sub_kategori = sks.id_sub_kategori
+                                        LEFT JOIN
+                                            kategori k ON sks.id_kategori = k.id_kategori
+                                        GROUP BY 
+                                            s.nama, sks.id_sub_kategori;"); 
+                                            
+                                    if ($dataPenetapan->num_rows > 0) {    
+                                        ?>
 
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Edit Penetapan</h4>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
+                                        <table id="datatablesSimple"><thead><tr><th>Nama Siswa</th>
+                                        
+                                        <?php
 
-                                            <!-- Modal body -->                                            
-                                            <form method="post">
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label for="kelas">Kelas :</label>
-                                                    <select class="form-select" name="kelas" id="kelas" aria-label="Kelas">
-                                                        <option selected <?=$kelas;?>><?=$kelas;?></option>
-                                                        <?php
-                                                        // Ambil data kelas dari tabel kelas
-                                                        $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
-                                                        while ($kelas = mysqli_fetch_assoc($queryKelas)) {
-                                                            echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
+                                        // Mengambil sub kategori unik dan membuat kolom HTML
+                                        $sub_kategori = array();
+                                        while ($row = $dataPenetapan->fetch_assoc()) {
+                                            $sub_kategori[$row["id_sub_kategori"]] = $row["nama_sub_kategori"];
+                                        }
+                                    
+                                        foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
+                                            echo "<th>" . $nama_sub_kategori . "</th>";
+                                        }
+                                        
+                                        echo "</tr></thead><tbody>";
+                                        
+                                        $current_nama_siswa = "";
+                                        foreach ($dataPenetapan as $row) {
+                                            if ($row["nama_siswa"] !== $current_nama_siswa) {
+                                                if (!empty($current_data)) {
+                                                    echo "<tr><td>" . $current_nama_siswa . "</td>";
+                                                    foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
+                                                        if (isset($current_data[$id_sub_kategori])) {
+                                                            echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
+                                                        } else {
+                                                            echo "<td>0</td>"; // Jika tidak ada data untuk sub kategori ini
                                                         }
-                                                        ?>
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="siswa">Siswa :</label>
-                                                    <select name="siswa" class="form-select" id="siswa" aria-label="Siswa">
-                                                        <option selected <?=$idSiswa;?>><?=$namaSiswa;?></option>
-                                                        <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
-                                                    </select>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="spp">SPP :</label>                        
-                                                    <input type="number" name="spp" value="<?=$spp;?>" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="ekstra">Ekstrakurikuler :</label>                        
-                                                    <input type="number" name="ekstra" value="<?=$ekstra;?>" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="les">Les :</label>                        
-                                                    <input type="number" name="les" value="<?=$les;?>" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="pts">PTS :</label>                        
-                                                    <input type="number" name="pts" value="<?=$pts;?>" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="pas">PAS :</label>                        
-                                                    <input type="number" name="pas" value="<?=$pas;?>" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="us">US :</label>                        
-                                                    <input type="number" name="us" value="<?=$us;?>" class="form-control">
-                                                </div>                                               
-                                            </div>
-                                            <div class="text-center">
-                                                <input type="hidden" name="idPen" value="<?=$idPenetapan;?>">
-                                                <button type="submit" class="btn btn-warning" name="editPenetapan">Edit</button> 
-                                            </div>
-                                            <br> 
-                                            </form>        
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Modal Hapus Item Penetapan-->
-                                    <div class="modal fade" id="modalHapusPenetapan<?=$idPenetapan;?>">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Hapus Item</h4>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <!-- Modal body -->                                            
-                                            <form method="post">
-                                            <div class="modal-body">
-                                                <h6>Anda yakin ingin menghapus item penetapan siswa <u><?=$namaSiswa;?></u>?</h6>
-                                                
-                                            </div>
-                                            <div class="text-center">
-                                                <input type="hidden" name="idPen" value="<?=$idPenetapan;?>">
-                                                <button type="submit" class="btn btn-danger" name="hapusPenetapan">Hapus</button> 
-                                            </div>
-                                            <br> 
-                                            </form>       
-                                            </div>
-                                        </div>
-                                    <?php
-                                    };
-
-                                    ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                                    }
+                                                    echo "</tr>";
+                                                }
+                                                $current_nama_siswa = $row["nama_siswa"];
+                                                $current_data = array();
+                                            }
+                                            $current_data[$row["id_sub_kategori"]] = $row["nominal"];
+                                        }
+                                        
+                                        // Menampilkan data untuk siswa terakhir
+                                        if (!empty($current_data)) {
+                                            echo "<tr><td>" . $current_nama_siswa . "</td>";
+                                            foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
+                                                if (isset($current_data[$id_sub_kategori])) {
+                                                    echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
+                                                } else {
+                                                    echo "<td>0</td>"; // Jika tidak ada data untuk sub kategori ini
+                                                }
+                                            }
+                                            echo "</tr>";
+                                        }
+                                        
+                                        echo "</tbody></table>";
+                                    } else {
+                                        echo "Tidak ada data ditemukan";
+                                    }
+                                    ?>                                
+                                </div>
                         </div>
                     </div>
                 </main>
@@ -246,53 +170,38 @@ require 'config.php';
                 </div>
                 <!-- Modal Body -->
                 <form method="post">
-                    <div class="modal-body">
+                    <div class="modal-body">                        
                         <div class="mb-3">
-                            <label for="kelas">Kelas :</label>
-                            <select class="form-select" name="kelas" id="kelas" aria-label="Kelas">
-                                <option selected disabled>Pilih Kelas</option>
+                            <label for="siswa">Siswa :</label>
+                            <select class="form-select" name="siswa" id="siswa" aria-label="Siswa">
+                                <option selected disabled>Pilih Siswa</option>
+                                <option value="0">Semua</option>
                                 <?php
                                 // Ambil data kelas dari tabel kelas
-                                $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
-                                while ($kelas = mysqli_fetch_assoc($queryKelas)) {
-                                    echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
+                                $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama FROM siswa");
+                                while ($siswa = mysqli_fetch_assoc($querySiswa)) {
+                                    echo '<option value="' . $siswa['id_siswa'] . '">' . $siswa['nama'] . '</option>';
                                 }
                                 ?>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="siswa">Siswa :</label>
-                            <select name="id_siswa" class="form-select" id="siswa" aria-label="Siswa">
-                                <option selected disabled>Pilih Kelas Terlebih Dahulu</option>
-                                <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
+                            <label for="subKategori">Kategori :</label>
+                            <select class="form-select" name="subKategori" id="subKategori" aria-label="subKategori">
+                                <option selected disabled>Pilih Kategori</option>
+                                <?php
+                                // Ambil data kelas dari tabel kelas
+                                $querySubKategori = mysqli_query($conn, "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa");
+                                while ($subKategori = mysqli_fetch_assoc($querySubKategori)) {
+                                    echo '<option value="' . $subKategori['id_sub_kategori'] . '">' . $subKategori['nama_sub_kategori'] . '</option>';
+                                }
+                                ?>
                             </select>
-                        </div>
+                        </div> 
                         <div class="mb-3">
-                            <label for="spp">SPP :</label>                        
-                            <input type="number" name="spp" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="ekstra">Ekstrakurikuler :</label>                        
-                            <input type="number" name="ekstra" value="50000" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="les">Les :</label>                        
-                            <input type="number" name="les" value="50000" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="pts">PTS :</label>                        
-                            <input type="number" name="pts" value="50000" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="pas">PAS :</label>                        
-                            <input type="number" name="pas" value="50000" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="us">US :</label>                        
-                            <input type="number" name="us" value="50000" class="form-control">
-                        </div>
-                        
-
+                            <label for="nominal">Nominal :</label>                        
+                            <input type="number" name="nominal" id="nominal" class="form-control">
+                        </div>                    
                     </div>
                     <!-- Modal Footer -->
                     <div class="modal-footer">
