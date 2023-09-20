@@ -66,6 +66,7 @@ require 'config.php';
                                             <th>Sub Kategori</th>
                                             <th>Periode</th>
                                             <th>Jumlah</th>
+                                            <th>Tunggakan</th>
                                             <th>Pencatat</th>
                                             <th>Keterangan</th>
                                             <th colspan='2'>Aksi</th>
@@ -104,6 +105,23 @@ require 'config.php';
                                         $nominal = $data['jumlah'];
                                         $keterangan = $data['keterangan'];
                                         $idSiswa = $data['id_siswa'];
+
+                                        // Menghitung saldo
+                                        $queryPenetapan = mysqli_query($conn, "SELECT  FROM penetapan WHERE id_siswa = $idSiswa AND id_tb_masuk <= $tanggal");
+                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa AND id_tb_ambil <= $tanggal");
+
+                                        $saldo_masuk = 0;
+                                        $saldo_ambil = 0;
+
+                                        if ($rowSaldo = mysqli_fetch_assoc($querySaldoTabung)) {
+                                            $saldo_masuk = $rowSaldo['total_masuk'];
+                                        }
+
+                                        if ($rowSaldoAmbil = mysqli_fetch_assoc($querySaldoAmbil)) {
+                                            $saldo_ambil = $rowSaldoAmbil['total_ambil'];
+                                        }
+
+                                        $saldo = $saldo_masuk - $saldo_ambil;
                                         
                                         ?>
                                         <tr>
@@ -367,21 +385,21 @@ require 'config.php';
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Temukan elemen "kelas" dan "siswa" pada Tambah Transaksi Tabungan
+        // Temukan elemen "kelas" dan "siswa" pada Tambah Transaksi Siswa
         var kelasDropdown = document.getElementById('kelas');
         var siswaDropdown = document.getElementById('siswa');
 
-        // Temukan elemen "kelas" dan "siswa" pada Edit Transaksi Tabungan
+        // Temukan elemen "kelas" dan "siswa" pada Edit Transaksi Siswa
         var kelasDropdown2 = document.getElementById('kelasEdit');
         var siswaDropdown2 = document.getElementById('siswaEdit');
 
-        // Temukan elemen "kelas" dan "siswa" pada Edit Transaksi Tabungan
-        var kelasDropdown2 = document.getElementById('kategori');
-        var siswaDropdown2 = document.getElementById('subKategori');
+        // Temukan elemen "kelas" dan "siswa" pada Edit Transaksi Siswa
+        var kategoriDropdown = document.getElementById('subKategori');
+        var nominalInput = document.getElementById('nominal');
 
 
 
-        // Tambahkan event listener ketika nilai "kelas" berubah pada Tambah Transaksi Tabungan
+        // Tambahkan event listener ketika nilai "kelas" berubah pada Tambah Transaksi Siswa
         kelasDropdown.addEventListener('change', function() {
             var selectedKelas = kelasDropdown.value;
 
@@ -424,6 +442,37 @@ require 'config.php';
             };
             xhr.send();
         });
+
+            // Tambahkan event listener ketika nilai "siswa" berubah
+        siswaDropdown.addEventListener('change', function() {
+            updateNominalValue();
+        });
+
+        // Tambahkan event listener ketika nilai "kategori" berubah
+        kategoriDropdown.addEventListener('change', function() {
+            updateNominalValue();
+        });
+
+        // Fungsi untuk mengambil nilai nominal yang sesuai
+        function updateNominalValue() {
+            // Dapatkan nilai terpilih dari dropdown
+            var selectedKelas = kelasDropdown.value;
+            var selectedSiswa = siswaDropdown.value;
+            var selectedKategori = kategoriDropdown.value;
+
+            // Lakukan AJAX request untuk mengambil nilai nominal
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'get_nominal.php?kelas=' + selectedKelas + '&siswa=' + selectedSiswa + '&kategori=' + selectedKategori, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Update nilai pada input "nominal"
+                    nominalInput.value = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
+
+
     });
 </script>
 
