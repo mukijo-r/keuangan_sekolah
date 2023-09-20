@@ -34,6 +34,12 @@ require 'config.php';
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPenetapan">
                                         Tambah Entry
+                                    </button><br><br>
+                                    <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditPenetapan">
+                                        Edit
+                                    </button><br><br>
+                                    <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusPenetapan">
+                                        Hapus
                                     </button>
                                 </div>
                                 <div class="col-md-8">
@@ -55,82 +61,87 @@ require 'config.php';
                                 Daftar Penetapan
                             </div>
                             <div class="card-body">                                
-                                    <?php 
-                                        $dataPenetapan = mysqli_query($conn, "SELECT 
-                                        penetapan.*,
-                                        s.nama AS nama_siswa,
-                                        sks.id_kategori,
-                                        sks.nama_sub_kategori,
-                                        k.nama_kategori
-                                        FROM 
-                                            penetapan
-                                        LEFT JOIN 
-                                            siswa s ON penetapan.id_siswa = s.id_siswa
-                                        LEFT JOIN 
-                                            sub_kategori_siswa sks ON penetapan.id_sub_kategori = sks.id_sub_kategori
-                                        LEFT JOIN
-                                            kategori k ON sks.id_kategori = k.id_kategori
-                                        GROUP BY 
-                                            s.nama, sks.id_sub_kategori;"); 
-                                            
-                                    if ($dataPenetapan->num_rows > 0) {    
-                                        ?>
+                                <?php 
+                                    $dataPenetapan = mysqli_query($conn, "SELECT 
+                                    penetapan.*,
+                                    s.nama AS nama_siswa,
+                                    sks.id_kategori,
+                                    sks.nama_sub_kategori,
+                                    k.nama_kategori
+                                    FROM 
+                                        penetapan
+                                    LEFT JOIN 
+                                        siswa s ON penetapan.id_siswa = s.id_siswa
+                                    LEFT JOIN 
+                                        sub_kategori_siswa sks ON penetapan.id_sub_kategori = sks.id_sub_kategori
+                                    LEFT JOIN
+                                        kategori k ON sks.id_kategori = k.id_kategori
+                                    GROUP BY 
+                                        s.nama, sks.id_sub_kategori;"); 
+                                        
+                                if ($dataPenetapan->num_rows > 0) {    
+                                ?>
 
-                                        <table id="datatablesSimple"><thead><tr><th>Nama Siswa</th>
-                                        
-                                        <?php
+                                <table id="datatablesSimple" class="table table-bordered"><thead><tr><th>Nama Siswa</th>
+                                
+                                <?php
 
-                                        // Mengambil sub kategori unik dan membuat kolom HTML
-                                        $sub_kategori = array();
-                                        while ($row = $dataPenetapan->fetch_assoc()) {
-                                            $sub_kategori[$row["id_sub_kategori"]] = $row["nama_sub_kategori"];
-                                        }
-                                    
-                                        foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
-                                            echo "<th>" . $nama_sub_kategori . "</th>";
-                                        }
-                                        
-                                        echo "</tr></thead><tbody>";
-                                        
-                                        $current_nama_siswa = "";
-                                        foreach ($dataPenetapan as $row) {
-                                            if ($row["nama_siswa"] !== $current_nama_siswa) {
-                                                if (!empty($current_data)) {
-                                                    echo "<tr><td>" . $current_nama_siswa . "</td>";
-                                                    foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
-                                                        if (isset($current_data[$id_sub_kategori])) {
-                                                            echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
-                                                        } else {
-                                                            echo "<td>0</td>"; // Jika tidak ada data untuk sub kategori ini
-                                                        }
-                                                    }
-                                                    echo "</tr>";
-                                                }
-                                                $current_nama_siswa = $row["nama_siswa"];
-                                                $current_data = array();
-                                            }
-                                            $current_data[$row["id_sub_kategori"]] = $row["nominal"];
-                                        }
-                                        
-                                        // Menampilkan data untuk siswa terakhir
+                                // Mengambil sub kategori unik dan membuat kolom HTML
+                                $sub_kategori = array();
+                                while ($row = $dataPenetapan->fetch_assoc()) {
+                                    $sub_kategori[$row["id_sub_kategori"]] = $row["nama_sub_kategori"];
+                                }
+
+                                foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
+                                    echo "<th>" . $nama_sub_kategori . "</th>";                                            
+                                }                                
+
+                                echo "</tr></thead><tbody>";
+
+                                $current_nama_siswa = "";
+                                foreach ($dataPenetapan as $row) {
+                                    if ($row["nama_siswa"] !== $current_nama_siswa) {
                                         if (!empty($current_data)) {
                                             echo "<tr><td>" . $current_nama_siswa . "</td>";
                                             foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
                                                 if (isset($current_data[$id_sub_kategori])) {
                                                     echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
                                                 } else {
-                                                    echo "<td>0</td>"; // Jika tidak ada data untuk sub kategori ini
+                                                    echo "<td>-</td>"; // Jika tidak ada data untuk sub kategori ini
                                                 }
                                             }
                                             echo "</tr>";
                                         }
-                                        
-                                        echo "</tbody></table>";
-                                    } else {
-                                        echo "Tidak ada data ditemukan";
+                                        $current_nama_siswa = $row["nama_siswa"];
+                                        $current_data = array();
                                     }
-                                    ?>                                
-                                </div>
+                                    $current_data[$row["id_sub_kategori"]] = $row["nominal"];
+                                }
+
+                                // Menampilkan data untuk siswa terakhir
+                                if (!empty($current_data)) {
+                                    echo "<tr><td>" . $current_nama_siswa . "</td>";
+                                    foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
+                                        if (isset($current_data[$id_sub_kategori])) {
+                                            echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
+                                        } else {
+                                            echo "<td>-</td>"; // Jika tidak ada data untuk sub kategori ini
+                                        }
+                                    }
+                                    ?>
+                                    </tr>
+
+                                    
+                                    
+                                <?php
+                                }                                        
+                                echo "</tbody></table>";
+                            } else {
+                                echo "Tidak ada data ditemukan";
+                            }
+                            ?>                                
+                            </div>
+
                         </div>
                     </div>
                 </main>
@@ -212,6 +223,110 @@ require 'config.php';
             </div>
         </div>
     </div>
+
+    <!-- Modal edit Item Penetapan -->
+    <div class="modal fade" id="modalEditPenetapan">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Item Penetapan</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal Body -->
+                <form method="post">
+                    <div class="modal-body">                        
+                        <div class="mb-3">
+                            <label for="siswa">Siswa :</label>
+                            <select class="form-select" name="siswa" id="siswa" aria-label="Siswa">
+                                <option selected disabled>Pilih Siswa</option>
+                                <option value="0">Semua</option>
+                                <?php
+                                // Ambil data kelas dari tabel kelas
+                                $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama FROM siswa");
+                                while ($siswa = mysqli_fetch_assoc($querySiswa)) {
+                                    echo '<option value="' . $siswa['id_siswa'] . '">' . $siswa['nama'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subKategori">Kategori :</label>
+                            <select class="form-select" name="subKategori" id="subKategori" aria-label="subKategori">
+                                <option selected disabled>Pilih Kategori</option>
+                                <?php
+                                // Ambil data kelas dari tabel kelas
+                                $querySubKategori = mysqli_query($conn, "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa");
+                                while ($subKategori = mysqli_fetch_assoc($querySubKategori)) {
+                                    echo '<option value="' . $subKategori['id_sub_kategori'] . '">' . $subKategori['nama_sub_kategori'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div> 
+                        <div class="mb-3">
+                            <label for="nominal">Nominal :</label>                        
+                            <input type="number" name="nominal" id="nominal" class="form-control">
+                        </div>                    
+                    </div>
+                        <!-- Modal Footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary" name="editPenetapan">Simpan</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+                                    
+    <!-- Modal Hapus Item Penetapan -->
+    <div class="modal fade" id="modalHapusPenetapan">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Item Penetapan</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal Body -->
+                <form method="post">
+                    <div class="modal-body">                        
+                        <div class="mb-3">
+                            <label for="siswa">Siswa :</label>
+                            <select class="form-select" name="siswa" id="siswa" aria-label="Siswa">
+                                <option selected disabled>Pilih Siswa</option>
+                                <option value="0">Semua</option>
+                                <?php
+                                // Ambil data kelas dari tabel kelas
+                                $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama FROM siswa");
+                                while ($siswa = mysqli_fetch_assoc($querySiswa)) {
+                                    echo '<option value="' . $siswa['id_siswa'] . '">' . $siswa['nama'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subKategori">Kategori :</label>
+                            <select class="form-select" name="subKategori" id="subKategori" aria-label="subKategori">
+                                <option selected disabled>Pilih Kategori</option>
+                                <?php
+                                // Ambil data kelas dari tabel kelas
+                                $querySubKategori = mysqli_query($conn, "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa");
+                                while ($subKategori = mysqli_fetch_assoc($querySubKategori)) {
+                                    echo '<option value="' . $subKategori['id_sub_kategori'] . '">' . $subKategori['nama_sub_kategori'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>                  
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary" name="hapusPenetapan">Hapus</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> 
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

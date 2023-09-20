@@ -688,15 +688,18 @@ if(isset($_POST['tambahPenetapan'])){
             VALUES ('$siswa','$subKategori','$nominal')";
             // Eksekusi query di sini
             $penetapan = mysqli_query($conn, $queryInsertPenetapan);
-        }        
+        }
+        
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM penetapan WHERE `id_sub_kategori`='$subKategori' AND id_siswa=$siswa");      
 
         if (!$penetapan) {
             throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
         }
 
-        if ($penetapan) {
+        if ($result && mysqli_num_rows($result) >= 1) {
             // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
-            $_SESSION['flash_message'] = 'Tambah kategori berhasil';
+            $_SESSION['flash_message'] = 'Tambah penetapan berhasil';
             $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
             header('location:penetapan.php');
             exit;
@@ -714,93 +717,94 @@ if(isset($_POST['tambahPenetapan'])){
 }
 
 // Edit Item Penetapan
-if(isset($_POST['editPenetapan'])){
-    $idPen = $_POST['idPen'];
-    $kelas = $_POST['kelas'];
+if(isset($_POST['editPenetapan'])){    
     $siswa = $_POST['siswa'];
-    $spp = $_POST['spp'];
-    $ekstra = $_POST['ekstra'];
-    $les = $_POST['les'];
-    $pts = $_POST['pts'];
-    $pas = $_POST['pas'];
-    $us = $_POST['us'];
-
-    // Menggunakan query untuk mendapatkan id_siswa berdasarkan nama_siswa yang dipilih
-    $queryGetSiswa = mysqli_query($conn, "SELECT id_siswa FROM siswa WHERE nama = '$siswa'");
-
-    if ($queryGetSiswa && mysqli_num_rows($queryGetSiswa) > 0) {
-        $siswaData = mysqli_fetch_assoc($queryGetSiswa);
-        $idSiswa = $siswaData['id_siswa'];
-    } else {
-        // siswa tidak ditemukan, tangani kesalahan di sini
-        $_SESSION['flash_message'] = 'Siswa tidak ditemukan.' . $idSiswa;
-        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
-        header('location: penetapan.php');
-        exit;
-    }
+    $subKategori = $_POST['subKategori'];
+    $nominal = $_POST['nominal'];
 
     try {
-        $queryUpdatePenetapan = "UPDATE `penetapan` 
-        SET `spp`='$spp',`ekstra`='$ekstra',`les`='$les',`PTS`='$pts',`PAS`='$pas',`US`='$us' WHERE `id_siswa`='$idSiswa'";
-              
-        $penetapan = mysqli_query($conn, $queryUpdatePenetapan);
+        if ($siswa == '0') {
+            // Jika "Semua" dipilih, maka query insert akan diterapkan untuk semua siswa
+            $querySiswa = mysqli_query($conn, "SELECT id_siswa FROM siswa");
+            while ($row = mysqli_fetch_assoc($querySiswa)) {
+                $id_siswa = $row['id_siswa'];
+                $queryUpdatePenetapan = "UPDATE `penetapan` SET `nominal`='$nominal' WHERE `id_sub_kategori`='$subKategori'"; 
+                $penetapan = mysqli_query($conn, $queryUpdatePenetapan);
+            }
+        } else {
+            // Jika siswa tertentu dipilih, maka query insert akan diterapkan hanya untuk siswa tersebut
+            $queryUpdatePenetapan = "UPDATE `penetapan` SET `nominal`='$nominal' WHERE `id_sub_kategori`='$subKategori' AND `id_siswa`='$siswa'";           
+            $penetapan = mysqli_query($conn, $queryUpdatePenetapan);
+        }        
 
         if (!$penetapan) {
-            throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+            throw new Exception("Query Update gagal"); // Lempar exception jika query gagal
         }
 
         // Query SELECT untuk memeriksa apakah data sudah masuk ke database
-        $result = mysqli_query($conn, "SELECT * FROM penetapan WHERE `id_penetapan`='$idPen' AND `id_siswa`='$idSiswa' AND `spp`='$spp' AND `ekstra`='$ekstra' AND `les`='$les' AND `PTS`='$pts' AND `PAS`='$pas' AND `US`='$us'");
+        $result = mysqli_query($conn, "SELECT * FROM penetapan WHERE `id_sub_kategori`='$subKategori' AND `nominal`='$nominal'");
 
-        if ($result && mysqli_num_rows($result) === 1) {
+        if ($result && mysqli_num_rows($result) >= 1) {
             // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
-            $_SESSION['flash_message'] = 'Update berhasil';
+            $_SESSION['flash_message'] = 'Update kategori berhasil';
             $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
             header('location:penetapan.php');
             exit;
         } else {
             // Data tidak ada dalam database, itu berarti gagal
-            throw new Exception("Data tidak ditemukan setelah diubah");
+            throw new Exception("Data tidak ditemukan setelah diupdate");
         }
     } catch (Exception $e) {
         // Tangani exception jika terjadi kesalahan
-        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryUpdatePenetapan . $e->getMessage();
-        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
         header('location:penetapan.php');
         exit;
     }
 }
 
 // Hapus Item Penetapan
-if(isset($_POST['hapusPenetapan'])){
-    $idPen = $_POST['idPen'];
+if(isset($_POST['hapusPenetapan'])){    
+    $siswa = $_POST['siswa'];
+    $subKategori = $_POST['subKategori'];
+    $nominal = $_POST['nominal'];
 
     try {
-        $queryHapusPenetapan = "DELETE from `penetapan` WHERE `id_penetapan`='$idPen'";
-          
-        $hapusPenetapan = mysqli_query($conn, $queryHapusPenetapan);
+        if ($siswa == '0') {
+            // Jika "Semua" dipilih, maka query delete akan diterapkan untuk semua siswa
+            $querySiswa = mysqli_query($conn, "SELECT id_siswa FROM siswa");
+            while ($row = mysqli_fetch_assoc($querySiswa)) {
+                $id_siswa = $row['id_siswa'];
+                $queryHapusPenetapan = "DELETE FROM `penetapan` WHERE `id_sub_kategori`='$subKategori'"; 
+                $penetapan = mysqli_query($conn, $queryHapusPenetapan);
+            }
+        } else {
+            // Jika siswa tertentu dipilih, maka query insert akan diterapkan hanya untuk siswa tersebut
+            $queryHapusPenetapan = "DELETE FROM `penetapan` WHERE `id_sub_kategori`='$subKategori' AND `id_siswa`='$siswa'";           
+            $penetapan = mysqli_query($conn, $queryHapusPenetapan);
+        }        
 
-        if (!$hapusPenetapan) {
-            throw new Exception("Query hapus gagal"); // Lempar exception jika query gagal
+        if (!$penetapan) {
+            throw new Exception("Query Update gagal"); // Lempar exception jika query gagal
         }
 
         // Query SELECT untuk memeriksa apakah data sudah masuk ke database
-        $result = mysqli_query($conn, "SELECT * FROM `penetapan` WHERE `id_penetapan`='$idPen'");
+        $result = mysqli_query($conn, "SELECT * FROM penetapan WHERE `id_sub_kategori`='$subKategori' AND `id_siswa`='$siswa' ");
 
-        if ($result && mysqli_num_rows($result) === 0) {
+        if ($result && mysqli_num_rows($result) === 0) {        
             // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
-            $_SESSION['flash_message'] = 'Hapus item penetapan berhasil';
+            $_SESSION['flash_message'] = 'Hapus kategori berhasil';
             $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
             header('location:penetapan.php');
             exit;
         } else {
-            // Data masih ada dalam database, itu berarti gagal
+            // Data tidak ada dalam database, itu berarti gagal
             throw new Exception("Data masih ada setelah dihapus");
         }
     } catch (Exception $e) {
         // Tangani exception jika terjadi kesalahan
         $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
-        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
         header('location:penetapan.php');
         exit;
     }
