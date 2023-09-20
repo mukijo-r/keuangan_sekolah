@@ -117,8 +117,7 @@ require 'config.php';
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
 
-                                            <!-- Modal body -->
-                                            
+                                            <!-- Modal body -->                                            
                                             <form method="post">
                                             <div class="modal-body">
                                                 <div class="mb-3">
@@ -176,27 +175,26 @@ require 'config.php';
                                         </div>
                                     </div>
 
-                                    <!-- Modal Hapus Guru-->
-                                    <div class="modal fade" id="modalHapusGuru<?=$idg;?>">
+                                    <!-- Modal Hapus Item Penetapan-->
+                                    <div class="modal fade" id="modalHapusPenetapan<?=$idPenetapan;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
 
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                                <h4 class="modal-title">Hapus Guru?</h4>
+                                                <h4 class="modal-title">Hapus Item</h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
 
-                                            <!-- Modal body -->
-                                            
+                                            <!-- Modal body -->                                            
                                             <form method="post">
                                             <div class="modal-body">
-                                                <h4>Anda yakin ingin menghapus data guru <?=$namaGuru;?>?</h4>
+                                                <h6>Anda yakin ingin menghapus item penetapan siswa <u><?=$namaSiswa;?></u>?</h6>
                                                 
                                             </div>
                                             <div class="text-center">
-                                                <input type="hidden" name="idg" value="<?=$idg;?>">
-                                                <button type="submit" class="btn btn-danger" name="hapusGuru">Hapus</button> 
+                                                <input type="hidden" name="idPen" value="<?=$idPenetapan;?>">
+                                                <button type="submit" class="btn btn-danger" name="hapusPenetapan">Hapus</button> 
                                             </div>
                                             <br> 
                                             </form>       
