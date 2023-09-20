@@ -634,8 +634,7 @@ if(isset($_POST['hapusKategoriKas'])){
     $idKas = $_POST['idk'];
 
     try {
-        $queryHapusKategori = "DELETE from `kategori` WHERE `id_kategori`='$idKas'";
-          
+        $queryHapusKategori = "DELETE from `kategori` WHERE `id_kategori`='$idKas'";          
         $kategori = mysqli_query($conn, $queryHapusKategori);
 
         if (!$kategori) {
@@ -745,9 +744,9 @@ if(isset($_POST['editPenetapan'])){
         $result = mysqli_query($conn, "SELECT * FROM penetapan WHERE `id_sub_kategori`='$subKategori' AND `nominal`='$nominal'");
 
         if ($result && mysqli_num_rows($result) >= 1) {
-            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            // Data sudah masuk ke database, pesan flash message berhasil
             $_SESSION['flash_message'] = 'Update kategori berhasil';
-            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            $_SESSION['flash_message_class'] = 'alert-success'; 
             header('location:penetapan.php');
             exit;
         } else {
@@ -758,7 +757,7 @@ if(isset($_POST['editPenetapan'])){
         // Tangani exception jika terjadi kesalahan
         $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
         $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
-        header('location:penetapan.php');
+        header('location:penetapan.php');.
         exit;
     }
 }

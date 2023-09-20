@@ -26,8 +26,7 @@ require 'config.php';
                         <h2 class="mt-4">Daftar Penetapan</h2>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">Transaksi Siswa / Penetapan</li>                            
-                        </ol>                       
-                        
+                        </ol>                 
                         <br>
                         <div class="container-fluid px-4">
                             <div class="row">
@@ -48,8 +47,7 @@ require 'config.php';
                                         $message_class = isset($_SESSION['flash_message_class']) ? $_SESSION['flash_message_class'] : 'alert-success';
                                         echo '<div class="alert ' . $message_class . ' text-center">' . $_SESSION['flash_message'] . '</div>';
                                         unset($_SESSION['flash_message']); // Hapus pesan flash setelah ditampilkan
-                                    }
-                                    
+                                    }                                    
                                     ?>
                                 </div>
                             </div>
@@ -129,10 +127,7 @@ require 'config.php';
                                         }
                                     }
                                     ?>
-                                    </tr>
-
-                                    
-                                    
+                                    </tr>                                   
                                 <?php
                                 }                                        
                                 echo "</tbody></table>";
@@ -237,7 +232,7 @@ require 'config.php';
                 <form method="post">
                     <div class="modal-body">                        
                         <div class="mb-3">
-                            <label for="siswa">Siswa :</label>
+                            <label for="siswa">Siswa : </label>
                             <select class="form-select" name="siswa" id="siswa" aria-label="Siswa">
                                 <option selected disabled>Pilih Siswa</option>
                                 <option value="0">Semua</option>
