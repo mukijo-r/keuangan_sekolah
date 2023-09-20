@@ -7,7 +7,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
 $idKategori = $_GET['kategori'];
 
 // Query untuk mengambil data siswa berdasarkan kelas
-$queryKategori = "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa WHERE id_kategori = $idKategori";
+$queryKategori = "SELECT $idKategori FROM penetapan WHERE id_siswa = $idSiswa";
 $result = mysqli_query($conn, $queryKategori);
 
 $dataSubKategori = array();
