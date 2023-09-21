@@ -696,7 +696,8 @@ if(isset($_POST['tambahPenetapan'])){
             throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
         }
 
-        if ($result && mysqli_num_rows($result) >= 1) {
+        // if ($result && mysqli_num_rows($result) === 1) {
+        if ($result) {    
             // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
             $_SESSION['flash_message'] = 'Tambah penetapan berhasil';
             $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
@@ -809,7 +810,7 @@ if(isset($_POST['hapusPenetapan'])){
     }
 }
 
-// Tabungan Masuk
+// Transaksi Masuk Siswa
 if(isset($_POST['tambahTransSiswa'])){
     $tanggal = $_POST['tanggal'];
     $tanggalBayar = date("Y-m-d", strtotime($tanggal));
@@ -848,6 +849,7 @@ if(isset($_POST['tambahTransSiswa'])){
     // Menggunakan query untuk mendapatkan id_kategori berdasarkan id_subkategori yang dipilih
     $queryGetKategori = mysqli_query($conn, "SELECT id_kategori FROM sub_kategori_siswa WHERE id_sub_kategori = '$idSubKategori'");
     $rowKategori = mysqli_fetch_assoc($queryGetKategori);
+
     $id_kategori = $rowKategori['id_kategori'];
     $bulan = $_POST['bulan'];
     $penetapan = $_POST['nominal'];

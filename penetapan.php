@@ -80,8 +80,11 @@ require 'config.php';
                                 if ($dataPenetapan->num_rows > 0) {    
                                 ?>
 
-                                <table id="datatablesSimple" class="table table-bordered"><thead><tr><th>Nama Siswa</th>
-                                
+                                <table id="datatablesSimple" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Nama Siswa</th>                                
                                 <?php
 
                                 // Mengambil sub kategori unik dan membuat kolom HTML
@@ -97,10 +100,13 @@ require 'config.php';
                                 echo "</tr></thead><tbody>";
 
                                 $current_nama_siswa = "";
+                                $nomor_baris = 1;
                                 foreach ($dataPenetapan as $row) {
                                     if ($row["nama_siswa"] !== $current_nama_siswa) {
-                                        if (!empty($current_data)) {
-                                            echo "<tr><td>" . $current_nama_siswa . "</td>";
+                                        if (!empty($current_data)) {                                            
+                                            echo "<tr>";
+                                            echo "<td>" . $nomor_baris++ . "</td>";
+                                            echo "<td>" . $current_nama_siswa . "</td>";
                                             foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
                                                 if (isset($current_data[$id_sub_kategori])) {
                                                     echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
