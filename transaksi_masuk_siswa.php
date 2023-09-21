@@ -88,7 +88,8 @@ require 'config.php';
                                     LEFT JOIN siswa s ON tms.id_siswa = s.id_siswa
                                     LEFT JOIN guru g ON tms.id_guru = g.id_guru
                                     LEFT JOIN kategori kat ON tms.id_kategori = kat.id_kategori
-                                    LEFT JOIN sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_kategori;");
+                                    LEFT JOIN sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_kategori
+                                    ORDER BY tms.id_tms DESC;");
 
                                     $totalEntries = mysqli_num_rows($dataTransaksiSiswa);
                                     $i = $totalEntries;
@@ -146,83 +147,109 @@ require 'config.php';
                                         </tr>
 
 
-                                        <!-- Modal edit Transaksi Tabungan -->
-                                    <div class="modal fade" id="modalEditTransTabung<?=$idTbMasuk;?>">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <!-- Modal Header -->
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title">Edit Transaksi Tabungan</h4>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        <!-- Modal edit Transaksi Masuk Siswa -->
+                                        <div class="modal fade" id="modalEditTransSiswa<?=$idTransaksiMasukSiswa;?>">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Edit Transaksi Masuk Siswa</h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <!-- Modal Body -->
+                                                    <form method="post">
+                                                        <div class="modal-body">
+                                                            <div>
+                                                                <label for="tanggal">Tanggal Bayar :</label>       
+                                                                <input type="date" name="tanggal" value="<?=$tanggalBayar; ?>" class="form-control">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="kelas">Kelas :</label>
+                                                                <select class="form-select" name="kelas" id="kelasEdit" aria-label="Kelas">
+                                                                    <option selected><?=$kelas;?></option>
+                                                                    <?php
+                                                                    // Ambil data kelas dari tabel kelas
+                                                                    $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
+                                                                    while ($kelas = mysqli_fetch_assoc($queryKelas)) {
+                                                                        echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
+                                                                    }
+                                                                    ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="siswa">Siswa :</label>
+                                                                <select name="id_siswa" class="form-select" id="siswaEdit" aria-label="Siswa">
+                                                                    <option selected><?=$namaSiswa;?></option>
+                                                                    <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="subKategori">Kategori :</label>
+                                                                <select class="form-select" name="subKategori" id="subKategori" aria-label="subKategori">
+                                                                    <option selected disabled><?=$subKategori;?></option>
+                                                                    <?php
+                                                                    // Ambil data kelas dari tabel kelas
+                                                                    $querySubKategori = mysqli_query($conn, "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa");
+                                                                    while ($subKategori = mysqli_fetch_assoc($querySubKategori)) {
+                                                                        echo '<option value="' . $subKategori['id_sub_kategori'] . '">' . $subKategori['nama_sub_kategori'] . '</option>';
+                                                                    }
+                                                                    ?>
+                                                                </select>
+                                                            </div>                                                           
+                                                            <div class="mb-3">
+                                                                <label for="bulan">Bulan :</label>
+                                                                <select class="form-select" name="bulan" id="bulanEdit" aria-label="Bulan">
+                                                                    <option selected><?=$bulan;?></option>
+                                                                    <option value="Januari">Januari</option>
+                                                                    <option value="Februari">Februari</option>
+                                                                    <option value="Maret">Maret</option>
+                                                                    <option value="April">April</option>
+                                                                    <option value="Mei">Mei</option>
+                                                                    <option value="Juni">Juni</option>
+                                                                    <option value="Juli">Juli</option>
+                                                                    <option value="Agustus">Agustus</option>
+                                                                    <option value="September">September</option>
+                                                                    <option value="Oktober">Oktober</option>
+                                                                    <option value="November">November</option>
+                                                                    <option value="Desember">Desember</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="nominal">Penetapan :</label>                        
+                                                                <input type="text" name="nominal" id="nominal" value="<?=$penetapan;?>" class="form-control" readonly>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="jumlah">jumlah Pembayaran :</label>                        
+                                                                <input type="number" name="jumlah" id="jumlah" value="<?=$nominal;?>" class="form-control">
+                                                            </div>
+                                                            <div class="mb-3">   
+                                                                <label for="guru">Penerima :</label>                     
+                                                                <select name="guru" class="form-select" id="guruEdit" value="<?=$namaGuru;?>" aria-label="Guru">>
+                                                                <option selected><?=$namaGuru;?></option>
+                                                                    <?php
+                                                                    // Ambil data guru dari tabel guru
+                                                                    $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
+                                                                    while ($guru = mysqli_fetch_assoc($queryGuru)) {
+                                                                        echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
+                                                                    }
+                                                                    ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                            <label for="keterangan">Keterangan :</label>   
+                                                                <textarea name="keterangan" class="form-control" id="keterangan" value="<?=$keterangan;?>" rows="2"><?=$keterangan;?></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Modal Footer -->
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                            <input type="hidden" name="id_tb_masuk" value="<?=$idTransaksiMasukSiswa;?>">
+                                                            <button type="submit" class="btn btn-primary" name="editTransTabung">Simpan</button>
+                                                        </div>
+                                                    </form>
                                                 </div>
-                                                <!-- Modal Body -->
-                                                <form method="post">
-                                                    <div class="modal-body">
-                                                    <div class="mb-3">
-                                                            <label for="bulan">Bulan :</label>
-                                                            <select class="form-select" name="bulan" id="bulanEdit" aria-label="Bulan">
-                                                                <option selected><?=$bulan;?></option>
-                                                                <?php
-                                                                // Ambil data bulan dari tabel tabung_masuk
-                                                                $queryBulan = mysqli_query($conn, "SELECT bulan FROM tabung_masuk");
-                                                                while ($bulan = mysqli_fetch_assoc($queryBulan)) {
-                                                                    echo '<option value="' . $bulan['bulan'] . '">' . $bulan['bulan'] . '</option>';
-                                                                }
-                                                                ?>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="kelas">Kelas :</label>
-                                                            <select class="form-select" name="kelas" id="kelasEdit" aria-label="Kelas">
-                                                                <option selected><?=$kelas;?></option>
-                                                                <?php
-                                                                // Ambil data kelas dari tabel kelas
-                                                                $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
-                                                                while ($kelas = mysqli_fetch_assoc($queryKelas)) {
-                                                                    echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
-                                                                }
-                                                                ?>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="siswa">Siswa :</label>
-                                                            <select name="id_siswa" class="form-select" id="siswaEdit" aria-label="Siswa">
-                                                                <option selected><?=$namaSiswa;?></option>
-                                                                <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="nominal">Nominal :</label>                        
-                                                            <input type="number" name="nominal" value="<?=$nominal;?>" class="form-control">
-                                                        </div>
-                                                        <div class="mb-3">   
-                                                            <label for="guru">Penerima :</label>                     
-                                                            <select name="guru" class="form-select" id="guruEdit" aria-label="Guru">>
-                                                            <option selected><?=$namaGuru;?></option>
-                                                                <?php
-                                                                // Ambil data guru dari tabel guru
-                                                                $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
-                                                                while ($guru = mysqli_fetch_assoc($queryGuru)) {
-                                                                    echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
-                                                                }
-                                                                ?>
-                                                            </select>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                        <label for="keterangan">Keterangan :</label>   
-                                                            <textarea name="keterangan" class="form-control" id="keterangan" rows="2"><?=$keterangan;?></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Modal Footer -->
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                        <input type="hidden" name="id_tb_masuk" value="<?=$idTbMasuk;?>">
-                                                        <button type="submit" class="btn btn-primary" name="editTransTabung">Simpan</button>
-                                                    </div>
-                                                </form>
                                             </div>
                                         </div>
-                                    </div>
 
                                     <!-- Modal Hapus Transaksi Tabungan-->
                                     <div class="modal fade" id="modalHapusTransTabung<?=$idTbMasuk;?>">
