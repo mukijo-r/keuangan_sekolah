@@ -124,7 +124,7 @@ require 'config.php';
 
                                 // Menampilkan data untuk siswa terakhir
                                 if (!empty($current_data)) {
-                                    echo "<tr><td>" . $current_nama_siswa . "</td>";
+                                    echo "<tr><td>" . $nomor_baris++ . "</td><td>" . $current_nama_siswa . "</td>";
                                     foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
                                         if (isset($current_data[$id_sub_kategori])) {
                                             echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
