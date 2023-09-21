@@ -105,7 +105,7 @@ require 'config.php';
                                                 if (isset($current_data[$id_sub_kategori])) {
                                                     echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
                                                 } else {
-                                                    echo "<td>-</td>"; // Jika tidak ada data untuk sub kategori ini
+                                                    echo "<td>0</td>"; // Jika tidak ada data untuk sub kategori ini
                                                 }
                                             }
                                             echo "</tr>";
@@ -123,7 +123,7 @@ require 'config.php';
                                         if (isset($current_data[$id_sub_kategori])) {
                                             echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
                                         } else {
-                                            echo "<td>-</td>"; // Jika tidak ada data untuk sub kategori ini
+                                            echo "<td>0</td>"; // Jika tidak ada data untuk sub kategori ini
                                         }
                                     }
                                     ?>

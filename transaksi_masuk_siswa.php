@@ -65,7 +65,9 @@ require 'config.php';
                                             <th>Kategori</th>
                                             <th>Sub Kategori</th>
                                             <th>Periode</th>
+                                            <th>Penetapan</th>
                                             <th>Jumlah</th>
+                                            <th>Tunggakan</th>
                                             <th>Pencatat</th>
                                             <th>Keterangan</th>
                                             <th colspan='2'>Aksi</th>
@@ -91,37 +93,55 @@ require 'config.php';
                                     $totalEntries = mysqli_num_rows($dataTransaksiSiswa);
                                     $i = $totalEntries;
                                     
-                                    while($data=mysqli_fetch_array($dataTransaksiSiswa)){                                        
+                                    while($data=mysqli_fetch_array($dataTransaksiSiswa)){
+                                        $idTransaksiMasukSiswa = $data['id_tms'];                                         
                                         $tanggal =  $data['tanggal'];
-                                        $tanggalTabung = date("Y-m-d", strtotime($tanggal));
+                                        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
                                         $tahunAjar = $data['tahun_ajar'];                                        
                                         $kelas = $data['id_kelas'];
+                                        $idSiswa = $data['id_siswa'];
                                         $namaSiswa = $data['nama_siswa'];                                        
                                         $kategori = $data['kategori'];
-                                        $subKategori = $data['sub_kategori_siswa'];                                        
+                                        $idSubKategori = $data['id_sub_kategori'];
+                                        
+                                        // Menggunakan query untuk mendapatkan subkategori berdasarkan id_subkategori yang dipilih
+                                        $queryGetSubKategori = mysqli_query($conn, "SELECT nama_sub_kategori FROM sub_kategori_siswa WHERE id_sub_kategori = '$idSubKategori'");
+                                        $rowSubKategori = mysqli_fetch_assoc($queryGetSubKategori);
+                                        $subKategori = $rowSubKategori['nama_sub_kategori'];  
+
                                         $namaGuru = $data['nama_guru'];
                                         $bulan = $data['bulan'];
                                         $nominal = $data['jumlah'];
                                         $keterangan = $data['keterangan'];
                                         $idSiswa = $data['id_siswa'];
-                                        
+
+                                        // Ambil nominal penetapan
+                                        $queryPenetapan = mysqli_query($conn, "SELECT nominal FROM penetapan WHERE id_siswa = '$idSiswa' AND id_sub_kategori = '$idSubKategori'");
+                                        $rowPenetapan = mysqli_fetch_assoc($queryPenetapan);
+                                        $penetapan = $rowPenetapan['nominal'];
+
+                                        // Hitung tunggakan
+                                        $tunggakan = $penetapan - $nominal;
+
                                         ?>
                                         <tr>
                                             <td><?=$i--;?></td>
-                                            <td><?=$tanggalTabung;?></td>
+                                            <td><?=$tanggalBayar;?></td>
                                             <td><?=$tahunAjar;?></td>
-                                            <td><?=$namaSiswa;?></td>
                                             <td><?=$kelas;?></td>
+                                            <td><?=$namaSiswa;?></td>                                            
                                             <td><?=$kategori;?></td>
                                             <td><?=$subKategori;?></td>
                                             <td><?=$bulan;?></td>
+                                            <td><?="Rp " . number_format($penetapan, 0, ',', '.');?></td>
                                             <td><?="Rp " . number_format($nominal, 0, ',', '.');?></td>
+                                            <td><?="Rp " . number_format($tunggakan, 0, ',', '.');?></td>
                                             <td><?=$namaGuru;?></td>
                                             <td><?=$keterangan;?></td>
                                             <td>
-                                                <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditTransSiswa<?=$idTbMasuk;?>">Edit</button>
-                                                <input type="hidden" name="idSis" value="<?=$idSiswa;?>">
-                                                <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusTransSiswa<?=$idTbMasuk;?>">Hapus</button> 
+                                                <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditTransSiswa<?=$idTransaksiMasukSiswa;?>">Edit</button>
+                                                <input type="hidden" name="idTms" value="<?=$idTransaksiMasukSiswa;?>">
+                                                <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusTransSiswa<?=$idTransaksiMasukSiswa;?>">Hapus</button> 
                                             </td>
                                         </tr>
 
@@ -278,7 +298,7 @@ require 'config.php';
             <form method="post">
                 <div class="modal-body">
                     <div>
-                        <label for="tanggal">Tanggal Input :</label>       
+                        <label for="tanggal">Tanggal Bayar :</label>       
                         <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
                     </div> 
                     <div class="mb-3">
@@ -296,14 +316,14 @@ require 'config.php';
                     </div>
                     <div class="mb-3">
                             <label for="siswa">Siswa :</label>
-                            <select name="id_siswa" class="form-select" id="siswa" aria-label="Siswa">
+                            <select name="siswa" class="form-select" id="siswa" aria-label="Siswa">
                                 <option selected disabled>Pilih Kelas Terlebih Dahulu</option>
                                 <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
                             </select>
                     </div>
                     <div class="mb-3">
                             <label for="subKategori">Kategori :</label>
-                            <select class="form-select" name="kelas" id="subKategori" aria-label="subKategori">
+                            <select class="form-select" name="subKategori" id="subKategori" aria-label="subKategori">
                                 <option selected disabled>Pilih Kategori</option>
                                 <?php
                                 // Ambil data kelas dari tabel kelas
@@ -331,11 +351,14 @@ require 'config.php';
                             <option value="November">November</option>
                             <option value="Desember">Desember</option>
                             </select>
-                    </div>                 
-                    
+                    </div>              
                     <div class="mb-3">
-                        <label for="nominal">Nominal :</label>                        
-                        <input type="number" name="nominal" id="nominal" class="form-control">
+                        <label for="nominal">Penetapan :</label>                        
+                        <input type="text" name="nominal" id="nominal" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jumlah">jumlah Pembayaran :</label>                        
+                        <input type="number" name="jumlah" id="jumlah" class="form-control">
                     </div>
                     <div class="mb-3">   
                         <label for="guru">Penerima :</label>                     
@@ -358,7 +381,7 @@ require 'config.php';
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary" name="tambahTransTabung">Simpan</button>
+                    <button type="submit" class="btn btn-primary" name="tambahTransSiswa">Simpan</button>
                 </div>
             </form>
         </div>
@@ -371,19 +394,13 @@ require 'config.php';
         var kelasDropdown = document.getElementById('kelas');
         var siswaDropdown = document.getElementById('siswa');
 
-        // Temukan elemen "kelas" dan "siswa" pada Edit Transaksi Tabungan
-        var kelasDropdown2 = document.getElementById('kelasEdit');
-        var siswaDropdown2 = document.getElementById('siswaEdit');
-
-        // Temukan elemen "kelas" dan "siswa" pada Edit Transaksi Tabungan
-        var kelasDropdown2 = document.getElementById('kategori');
-        var siswaDropdown2 = document.getElementById('subKategori');
-
-
+        // Temukan elemen "subkategori" dan "nominal"
+        var kategoriDropdown = document.getElementById('subKategori');
+        var nominalInput = document.getElementById('nominal');
 
         // Tambahkan event listener ketika nilai "kelas" berubah pada Tambah Transaksi Tabungan
         kelasDropdown.addEventListener('change', function() {
-            var selectedKelas = kelasDropdown.value;
+            var selectedKelas = kelasDropdown.value;            
 
             // Gunakan AJAX untuk mengambil data siswa berdasarkan kelas
             var xhr = new XMLHttpRequest();
@@ -392,40 +409,50 @@ require 'config.php';
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     // Parse data JSON yang diterima
                     var dataSiswa = JSON.parse(xhr.responseText);
+                    
 
                     // Bersihkan dropdown "siswa" dan tambahkan opsi-opsi baru
                     siswaDropdown.innerHTML = '<option selected disabled>Pilih Siswa</option>';
                     dataSiswa.forEach(function(siswa) {
                         siswaDropdown.innerHTML += '<option value="' + siswa.id_siswa + '">' + siswa.nama + '</option>';
-                    });
+                        
+                    });                
+                                      
                 }
             };
             xhr.send();
         });
 
-        // Tambahkan event listener ketika nilai "kelas" berubah pada Edit Transaksi Tabungan
-        kelasDropdown2.addEventListener('change', function() {
-            var selectedKelas = kelasDropdown2.value;
+        // Tambahkan event listener ketika nilai "kategori" berubah
+        kategoriDropdown.addEventListener('change', function() {
+            updateNominalValue();
+        });
 
-            // Gunakan AJAX untuk mengambil data siswa berdasarkan kelas
+        // Fungsi untuk mengambil nilai nominal yang sesuai
+        function updateNominalValue() {
+            // Dapatkan nilai terpilih dari dropdown
+            var selectedSiswa = siswaDropdown.value;
+            var selectedKategori = kategoriDropdown.value;
+
+            // Lakukan AJAX request untuk mengambil nilai nominal
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'get_siswa_by_kelas.php?kelas=' + selectedKelas, true);
+            xhr.open('GET', 'get_nominal.php?siswa=' + selectedSiswa + '&subKategori=' + selectedKategori, true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Parse data JSON yang diterima
-                    var dataSiswa = JSON.parse(xhr.responseText);
-
-                    // Bersihkan dropdown "siswa" dan tambahkan opsi-opsi baru
-                    siswaDropdown2.innerHTML = '<option selected disabled>Pilih Siswa</option>';
-                    dataSiswa.forEach(function(siswa) {
-                        siswaDropdown2.innerHTML += '<option value="' + siswa.id_siswa + '">' + siswa.nama + '</option>';
-                    });
+                    var responseText = xhr.responseText.trim(); // Hapus spasi di awal dan akhir
+                    if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
+                        var nominalValue = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
+                        nominalInput.value = nominalValue;
+                    } else {
+                        console.error('Nilai nominal tidak valid: ' + responseText);
+                    }
                 }
             };
             xhr.send();
-        });
+        }
     });
 </script>
+
 
     
 </html>

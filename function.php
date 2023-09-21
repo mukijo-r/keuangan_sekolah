@@ -757,7 +757,7 @@ if(isset($_POST['editPenetapan'])){
         // Tangani exception jika terjadi kesalahan
         $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
         $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
-        header('location:penetapan.php');.
+        header('location:penetapan.php');
         exit;
     }
 }
@@ -805,6 +805,85 @@ if(isset($_POST['hapusPenetapan'])){
         $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
         $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
         header('location:penetapan.php');
+        exit;
+    }
+}
+
+// Tabungan Masuk
+if(isset($_POST['tambahTransSiswa'])){
+    $tanggal = $_POST['tanggal'];
+    $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+
+    // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
+    $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+    if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+        $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+        $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+    } else {
+        // Kelas tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Tahun ajar tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: tabung.php');
+        exit;
+    }
+    
+    $kelas = $_POST['kelas'];
+    // Menggunakan query untuk mendapatkan id_kelas berdasarkan nama_kelas yang dipilih
+    $queryGetKelas = mysqli_query($conn, "SELECT id_kelas FROM kelas WHERE nama_kelas = '$kelas'");
+
+    if ($queryGetKelas && mysqli_num_rows($queryGetKelas) > 0) {
+        $kelasData = mysqli_fetch_assoc($queryGetKelas);
+        $id_kelas = $kelasData['id_kelas'];
+    } else {
+        // Kelas tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Kelas tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: tabung.php');
+        exit;
+    }
+
+    $idSiswa = $_POST['siswa'];
+    $idSubKategori = $_POST['subKategori']; 
+    // Menggunakan query untuk mendapatkan id_kategori berdasarkan id_subkategori yang dipilih
+    $queryGetKategori = mysqli_query($conn, "SELECT id_kategori FROM sub_kategori_siswa WHERE id_sub_kategori = '$idSubKategori'");
+    $rowKategori = mysqli_fetch_assoc($queryGetKategori);
+    $id_kategori = $rowKategori['id_kategori'];
+    $bulan = $_POST['bulan'];
+    $penetapan = $_POST['nominal'];
+    $jumlah = $_POST['jumlah'];
+    $idGuru = $_POST['guru'];
+    $keterangan = $_POST['keterangan'];    
+
+    try {
+        $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `jumlah`, `id_guru`, `keterangan`) 
+        VALUES 
+        ('$tanggalBayar','$idTahunAjar','$idSiswa','$id_kategori','$idSubKategori','$bulan','$jumlah','$idGuru','$keterangan')";
+              
+        $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
+
+        if (!$insertTransSiswa) {
+            throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $result = mysqli_query($conn, "SELECT * FROM `transaksi_masuk_siswa` WHERE bulan = '$bulan' and id_siswa = $idSiswa and jumlah=$jumlah");
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Tambah transaksi siswa berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:transaksi_masuk_siswa.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data transaksi tidak ditemukan setelah ditambahkan");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryInsertTransSiswa . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
+        header('location:transaksi_masuk_siswa.php');
         exit;
     }
 }
