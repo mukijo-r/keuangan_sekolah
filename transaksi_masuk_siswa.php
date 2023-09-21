@@ -164,8 +164,8 @@ require 'config.php';
                                                                 <input type="date" name="tanggal" value="<?=$tanggalBayar; ?>" class="form-control">
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="kelas">Kelas :</label>
-                                                                <select class="form-select" name="kelas" id="kelasEdit" aria-label="Kelas">
+                                                                <label for="kelasEdit">Kelas :</label>
+                                                                <select class="form-select" name="kelasEdit" id="kelasEdit" aria-label="Kelas">
                                                                     <option selected><?=$kelas;?></option>
                                                                     <?php
                                                                     // Ambil data kelas dari tabel kelas
@@ -177,15 +177,15 @@ require 'config.php';
                                                                 </select>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="siswa">Siswa :</label>
-                                                                <select name="id_siswa" class="form-select" id="siswaEdit" aria-label="Siswa">
+                                                                <label for="siswaEdit">Siswa :</label>
+                                                                <select name="siswaEdit" class="form-select" id="siswaEdit" aria-label="Siswa">
                                                                     <option selected><?=$namaSiswa;?></option>
                                                                     <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript -->
                                                                 </select>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="subKategori">Kategori :</label>
-                                                                <select class="form-select" name="subKategori" id="subKategori" aria-label="subKategori">
+                                                                <label for="subKategoriEdit">Kategori :</label>
+                                                                <select class="form-select" name="subKategoriEdit" id="subKategoriEdit" aria-label="Edit subKategori">
                                                                     <option selected disabled><?=$subKategori;?></option>
                                                                     <?php
                                                                     // Ambil data kelas dari tabel kelas
@@ -197,8 +197,8 @@ require 'config.php';
                                                                 </select>
                                                             </div>                                                           
                                                             <div class="mb-3">
-                                                                <label for="bulan">Bulan :</label>
-                                                                <select class="form-select" name="bulan" id="bulanEdit" aria-label="Bulan">
+                                                                <label for="bulanEdit">Bulan :</label>
+                                                                <select class="form-select" name="bulanEdit" id="bulanEdit" aria-label="Edit Bulan">
                                                                     <option selected><?=$bulan;?></option>
                                                                     <option value="Januari">Januari</option>
                                                                     <option value="Februari">Februari</option>
@@ -215,16 +215,16 @@ require 'config.php';
                                                                 </select>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="nominal">Penetapan :</label>                        
-                                                                <input type="text" name="nominal" id="nominal" value="<?=$penetapan;?>" class="form-control" readonly>
+                                                                <label for="nominalEdit">Penetapan :</label>                     
+                                                                <input type="text" name="nominalEdit" id="nominalEdit" value="<?=$penetapan;?>" class="form-control" readonly>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="jumlah">jumlah Pembayaran :</label>                        
-                                                                <input type="number" name="jumlah" id="jumlah" value="<?=$nominal;?>" class="form-control">
+                                                                <label for="jumlahEdit">jumlah Pembayaran :</label>                        
+                                                                <input type="number" name="jumlahEdit" id="jumlahEdit" value="<?=$nominal;?>" class="form-control">
                                                             </div>
                                                             <div class="mb-3">   
-                                                                <label for="guru">Penerima :</label>                     
-                                                                <select name="guru" class="form-select" id="guruEdit" value="<?=$namaGuru;?>" aria-label="Guru">>
+                                                                <label for="guruEdit">Penerima :</label>                     
+                                                                <select name="guruEdit" class="form-select" id="guruEdit" value="<?=$namaGuru;?>" aria-label="Guru">>
                                                                 <option selected><?=$namaGuru;?></option>
                                                                     <?php
                                                                     // Ambil data guru dari tabel guru
@@ -236,15 +236,15 @@ require 'config.php';
                                                                 </select>
                                                             </div>
                                                             <div class="mb-3">
-                                                            <label for="keterangan">Keterangan :</label>   
-                                                                <textarea name="keterangan" class="form-control" id="keterangan" value="<?=$keterangan;?>" rows="2"><?=$keterangan;?></textarea>
+                                                            <label for="keteranganEdit">Keterangan :</label>   
+                                                                <textarea name="keteranganEdit" class="form-control" id="keteranganEdit" value="<?=$keterangan;?>" rows="2"><?=$keterangan;?></textarea>
                                                             </div>
                                                         </div>
                                                         <!-- Modal Footer -->
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                                             <input type="hidden" name="id_tb_masuk" value="<?=$idTransaksiMasukSiswa;?>">
-                                                            <button type="submit" class="btn btn-primary" name="editTransTabung">Simpan</button>
+                                                            <button type="submit" class="btn btn-primary" name="editTransSiswa">Simpan</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -421,11 +421,17 @@ require 'config.php';
         var kelasDropdown = document.getElementById('kelas');
         var siswaDropdown = document.getElementById('siswa');
 
+        var kelasDropdownEdit = document.getElementById('kelasEdit');
+        var siswaDropdownEdit = document.getElementById('siswaEdit');
+
         // Temukan elemen "subkategori" dan "nominal"
         var kategoriDropdown = document.getElementById('subKategori');
         var nominalInput = document.getElementById('nominal');
 
-        // Tambahkan event listener ketika nilai "kelas" berubah pada Tambah Transaksi Tabungan
+        var kategoriDropdownEdit = document.getElementById('subKategoriEdit');
+        var nominalInputEdit = document.getElementById('nominalEdit');
+
+        // Tambahkan event listener ketika nilai "kelas" berubah pada Tambah Transaksi siswa
         kelasDropdown.addEventListener('change', function() {
             var selectedKelas = kelasDropdown.value;            
 
@@ -435,13 +441,36 @@ require 'config.php';
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     // Parse data JSON yang diterima
-                    var dataSiswa = JSON.parse(xhr.responseText);
-                    
+                    var dataSiswa = JSON.parse(xhr.responseText);                    
 
                     // Bersihkan dropdown "siswa" dan tambahkan opsi-opsi baru
                     siswaDropdown.innerHTML = '<option selected disabled>Pilih Siswa</option>';
                     dataSiswa.forEach(function(siswa) {
                         siswaDropdown.innerHTML += '<option value="' + siswa.id_siswa + '">' + siswa.nama + '</option>';
+                        
+                    });                
+                                      
+                }
+            };
+            xhr.send();
+        });
+
+        // Tambahkan event listener ketika nilai "kelas" berubah pada Edit Transaksi siswa
+        kelasDropdownEdit.addEventListener('change', function() {
+            var selectedKelasEdit = kelasDropdownEdit.value;            
+
+            // Gunakan AJAX untuk mengambil data siswa berdasarkan kelas
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'get_siswa_by_kelas.php?kelas=' + selectedKelasEdit, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Parse data JSON yang diterima
+                    var dataSiswaEdit = JSON.parse(xhr.responseText);                    
+
+                    // Bersihkan dropdown "siswa" dan tambahkan opsi-opsi baru
+                    siswaDropdownEdit.innerHTML = '<option selected disabled>Pilih Siswa</option>';
+                    dataSiswaEdit.forEach(function(siswa) {
+                        siswaDropdownEdit.innerHTML += '<option value="' + siswa.id_siswa + '">' + siswa.nama + '</option>';
                         
                     });                
                                       
@@ -477,6 +506,36 @@ require 'config.php';
             };
             xhr.send();
         }
+
+        // Tambahkan event listener ketika nilai "kategori" berubah
+        kategoriDropdownEdit.addEventListener('change', function() {
+            updateNominalValueEdit();
+        });
+
+        // Fungsi untuk mengambil nilai nominal yang sesuai
+        function updateNominalValueEdit() {
+            // Dapatkan nilai terpilih dari dropdown
+            var selectedSiswaEdit = siswaDropdownEdit.value;
+            var selectedKategoriEdit = kategoriDropdownEdit.value;
+
+            // Lakukan AJAX request untuk mengambil nilai nominal
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'get_nominal.php?siswa=' + selectedSiswaEdit + '&subKategori=' + selectedKategoriEdit, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var responseText = xhr.responseText.trim(); // Hapus spasi di awal dan akhir
+                    if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
+                        var nominalValueEdit = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
+                        nominalInputEdit.value = nominalValueEdit;
+                    } else {
+                        console.error('Nilai nominal tidak valid: ' + responseText);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+
     });
 </script>
 
