@@ -810,7 +810,7 @@ if(isset($_POST['hapusPenetapan'])){
     }
 }
 
-// Transaksi Masuk Siswa
+// Tambah Transaksi Masuk Siswa
 if(isset($_POST['tambahTransSiswa'])){
     $tanggal = $_POST['tanggal'];
     $tanggalBayar = date("Y-m-d", strtotime($tanggal));
@@ -840,7 +840,7 @@ if(isset($_POST['tambahTransSiswa'])){
         // Kelas tidak ditemukan, tangani kesalahan di sini
         $_SESSION['flash_message'] = 'Kelas tidak ditemukan.';
         $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
-        header('location: tabung.php');
+        header('location: transaksi_masuk_siswa.php');
         exit;
     }
 
@@ -884,6 +884,177 @@ if(isset($_POST['tambahTransSiswa'])){
     } catch (Exception $e) {
         // Tangani exception jika terjadi kesalahan
         $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryInsertTransSiswa . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
+        header('location:transaksi_masuk_siswa.php');
+        exit;
+    }
+}
+
+// Edit Transaksi Masuk Siswa
+if(isset($_POST['editTransSiswa'])){
+    $idTransaksiMasukSiswa = $_POST['id_tms_masuk'];
+    $tanggal = $_POST['tanggal'];
+    $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+
+    // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
+    $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+    if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+        $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+        $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+    } else {
+        // Kelas tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Tahun ajar tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: transaksi_masuk_siswa.php');
+        exit;
+    }
+    
+    $kelas = $_POST['kelasEdit'];
+    // Menggunakan query untuk mendapatkan id_kelas berdasarkan nama_kelas yang dipilih
+    $queryGetKelas = mysqli_query($conn, "SELECT id_kelas FROM kelas WHERE nama_kelas = '$kelas'");
+
+    if ($queryGetKelas && mysqli_num_rows($queryGetKelas) > 0) {
+        $kelasData = mysqli_fetch_assoc($queryGetKelas);
+        $id_kelas = $kelasData['id_kelas'];
+    } else {
+        // Kelas tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Kelas tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: tabung.php');
+        exit;
+    }
+
+    $siswa = $_POST['siswaEdit'];
+    // Menggunakan query untuk mendapatkan id_siswa berdasarkan nama_siswa yang dipilih
+    $queryGetSiswa = mysqli_query($conn, "SELECT id_siswa FROM siswa WHERE nama = '$siswa'");
+
+    if ($queryGetSiswa) {
+        $siswaData = mysqli_fetch_assoc($queryGetSiswa);
+        $idSiswa = $siswaData['id_siswa'];
+    } else {
+        // siswa tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Siswa tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location: transaksi_masuk_siswa.php');
+        exit;
+    }
+
+    $idSubKategori = $_POST['subKategoriEdit'];
+    $getIdKategori = mysqli_query($conn, "SELECT id_kategori FROM sub_kategori_siswa WHERE id_sub_kategori = '$idSubKategori'");
+    $rowKategori = mysqli_fetch_assoc($getIdKategori);    
+    $idKategori = $rowKategori['id_kategori'];
+
+    $bulan = $_POST['bulanEdit'];
+    $penetapan = $_POST['nominalEdit'];
+    $jumlah = $_POST['jumlahEdit'];
+    $guru = $_POST['guruEdit'];
+    // Menggunakan query untuk mendapatkan id_guru berdasarkan nama_guru yang dipilih
+    $queryGetGuru = mysqli_query($conn, "SELECT id_guru FROM guru WHERE nama_lengkap = '$guru'");
+
+    if ($queryGetGuru && mysqli_num_rows($queryGetGuru) > 0) {
+        $guruData = mysqli_fetch_assoc($queryGetGuru);
+        $idGuru = $guruData['id_guru'];
+    } else {
+        // siswa tidak ditemukan, tangani kesalahan di sini
+        $_SESSION['flash_message'] = 'Guru tidak ditemukan.';
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location:transaksi_masuk_siswa.php');
+        exit;
+    }
+
+    $keterangan = $_POST['keteranganEdit'];    
+
+    try {
+        $queryEditTransSiswa = "UPDATE `transaksi_masuk_siswa` 
+        SET 
+        `tanggal`='$tanggalBayar', 
+        `id_tahun_ajar`='$idTahunAjar', 
+        `id_siswa`='$idSiswa',        
+        `id_sub_kategori`='$idSubKategori',
+        `id_kategori`='$idKategori',  
+        `bulan`='$bulan', 
+        `jumlah`='$jumlah', 
+        `id_guru`='$idGuru', 
+        `keterangan`='$keterangan'
+        WHERE 
+        `id_tms`= '$idTransaksiMasukSiswa'";      
+                      
+        $editTransSiswa = mysqli_query($conn, $queryEditTransSiswa);
+
+        if (!$editTransSiswa) {
+            throw new Exception("Query edit gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $queryCek = "SELECT * 
+        FROM `transaksi_masuk_siswa` 
+        WHERE
+        `tanggal`='$tanggalBayar' AND 
+        `id_tahun_ajar`='$idTahunAjar' AND 
+        `id_siswa`='$idSiswa' AND         
+        `id_sub_kategori`='$idSubKategori' AND
+        `id_kategori`='$idKategori' AND 
+        `bulan`='$bulan' AND 
+        `jumlah`='$jumlah' AND 
+        `id_guru`='$idGuru' AND 
+        `keterangan`='$keterangan'";
+
+        $result = mysqli_query($conn, $queryCek);
+        
+
+        if ($result && mysqli_num_rows($result) === 1) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Edit transaksi siswa berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:transaksi_masuk_siswa.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data transaksi tidak berubah setelah diedit");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryCek . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
+        header('location:transaksi_masuk_siswa.php');
+        exit;
+    }
+}
+
+// Edit Transaksi Masuk Siswa
+if(isset($_POST['hapusTransaksiSiswa'])){
+    $idTransaksiMasukSiswa = $_POST['idTms'];   
+
+    try {
+        $queryHapusTransSiswa = "DELETE FROM `transaksi_masuk_siswa` WHERE `id_tms`= '$idTransaksiMasukSiswa'";                     
+                      
+        $hapusTransSiswa = mysqli_query($conn, $queryHapusTransSiswa);
+
+        if (!$hapusTransSiswa) {
+            throw new Exception("Query hapus gagal"); // Lempar exception jika query gagal
+        }
+
+        // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+        $queryCek = "SELECT * FROM `transaksi_masuk_siswa` 
+        WHERE `id_tms`= '$idTransaksiMasukSiswa'";
+
+        $result = mysqli_query($conn, $queryCek);
+        
+
+        if ($result && mysqli_num_rows($result) === 0) {
+            // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+            $_SESSION['flash_message'] = 'Hapus transaksi siswa berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+            header('location:transaksi_masuk_siswa.php');
+            exit;
+        } else {
+            // Data tidak ada dalam database, itu berarti gagal
+            throw new Exception("Data transaksi belum terhapus");
+        }
+    } catch (Exception $e) {
+        // Tangani exception jika terjadi kesalahan
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryCek . $e->getMessage();
         $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
         header('location:transaksi_masuk_siswa.php');
         exit;

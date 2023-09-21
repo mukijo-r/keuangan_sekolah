@@ -146,7 +146,6 @@ require 'config.php';
                                             </td>
                                         </tr>
 
-
                                         <!-- Modal edit Transaksi Masuk Siswa -->
                                         <div class="modal fade" id="modalEditTransSiswa<?=$idTransaksiMasukSiswa;?>">
                                             <div class="modal-dialog">
@@ -184,9 +183,9 @@ require 'config.php';
                                                                 </select>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="subKategoriEdit">Kategori :</label>
-                                                                <select class="form-select" name="subKategoriEdit" id="subKategoriEdit" aria-label="Edit subKategori">
-                                                                    <option selected disabled><?=$subKategori;?></option>
+                                                                <label for="subKategoriEdit">Sub Kategori : </label>
+                                                                <select class="form-select" name="subKategoriEdit" id="subKategoriEdit" aria-label="subKategori">
+                                                                    <option value=<?=$idSubKategori;?>><?=$subKategori;?></option>
                                                                     <?php
                                                                     // Ambil data kelas dari tabel kelas
                                                                     $querySubKategori = mysqli_query($conn, "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa");
@@ -243,7 +242,7 @@ require 'config.php';
                                                         <!-- Modal Footer -->
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                            <input type="hidden" name="id_tb_masuk" value="<?=$idTransaksiMasukSiswa;?>">
+                                                            <input type="hidden" name="id_tms_masuk" value="<?=$idTransaksiMasukSiswa;?>">
                                                             <button type="submit" class="btn btn-primary" name="editTransSiswa">Simpan</button>
                                                         </div>
                                                     </form>
@@ -251,14 +250,14 @@ require 'config.php';
                                             </div>
                                         </div>
 
-                                    <!-- Modal Hapus Transaksi Tabungan-->
-                                    <div class="modal fade" id="modalHapusTransTabung<?=$idTbMasuk;?>">
+                                    <!-- Modal Hapus Transaksi Masuk Siswa-->
+                                    <div class="modal fade" id="modalHapusTransSiswa<?=$idTransaksiMasukSiswa;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
 
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                                <h4 class="modal-title">Hapus Transaksi Menabung ini?</h4>
+                                                <h4 class="modal-title">Hapus Transaksi Siswa ini?</h4>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
 
@@ -266,12 +265,12 @@ require 'config.php';
                                             
                                             <form method="post">
                                             <div class="modal-body">
-                                                <h5>Anda yakin ingin menghapus data menabung <u> <?=$namaSiswa;?> </u> dengan nominal Rp. <b><?=$nominal;?>?</h5>
+                                                <h5>Anda yakin ingin menghapus data pembayaran <u> <?=$namaSiswa;?> </u> dengan nominal Rp. <b><?=$nominal;?>?</h5>
                                                 
                                             </div>
                                             <div class="text-center">
-                                                <input type="hidden" name="id_tb_masuk" value="<?=$idTbMasuk;?>">
-                                                <button type="submit" class="btn btn-danger" name="hapusTransaksiMenabung">Hapus</button> 
+                                                <input type="hidden" name="idTms" value="<?=$idTransaksiMasukSiswa;?>">
+                                                <button type="submit" class="btn btn-danger" name="hapusTransaksiSiswa">Hapus</button> 
                                             </div>
                                             <br> 
                                             </form>       
@@ -349,7 +348,7 @@ require 'config.php';
                             </select>
                     </div>
                     <div class="mb-3">
-                            <label for="subKategori">Kategori :</label>
+                            <label for="subKategori">Sub Kategori :</label>
                             <select class="form-select" name="subKategori" id="subKategori" aria-label="subKategori">
                                 <option selected disabled>Pilih Kategori</option>
                                 <?php
