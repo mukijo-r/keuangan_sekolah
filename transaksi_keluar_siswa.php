@@ -128,7 +128,7 @@ require 'config.php';
                                             <td><?=$keterangan;?></td>
                                             <td>
                                                 <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditTransSiswa<?=$idTransaksiKeluarSiswa;?>">Edit</button>
-                                                <input type="hidden" name="idTks" value="<?=$$idTransaksiKeluarSiswa;?>">
+                                                <input type="hidden" name="idTks" value="<?=$idTransaksiKeluarSiswa;?>">
                                                 <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusTransSiswa<?=$idTransaksiKeluarSiswa;?>">Hapus</button> 
                                             </td>
                                         </tr>
