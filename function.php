@@ -249,7 +249,7 @@
         }
     }
 
-
+        // Import Excel
         if (isset($_POST['importExcel'])) {
             // Membaca file Excel yang diunggah
             $inputFileName = $_FILES['formFile']['tmp_name'];
@@ -1608,13 +1608,13 @@
 
             if ($result && mysqli_num_rows($result) === 1) {
                 // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
-                $_SESSION['flash_message'] = 'Ubah transaksi masuk berhasil';
+                $_SESSION['flash_message'] = 'Ubah pemasukan berhasil';
                 $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
                 header('location:transaksi_masuk_umum.php');
                 exit;
             } else {
                 // Data tidak ada dalam database, itu berarti gagal
-                throw new Exception("Data transaksi tidak ditemukan setelah ditambahkan");
+                throw new Exception("Data transaksi tidak ditemukan setelah diubah");
             }
         } catch (Exception $e) {
             // Tangani exception jika terjadi kesalahan
@@ -1662,6 +1662,196 @@
             $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryDeleteTransUmum . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
             header('location:transaksi_masuk_umum.php');
+            exit;
+        }
+    }
+
+    // Tambah Transaksi Keluar Umum
+    if(isset($_POST['tambahTransKeluarUmum'])){
+        $tanggal = $_POST['tanggal'];
+        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+
+        // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
+        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+        if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+            $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+            $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+        } else {
+            // Kelas tidak ditemukan, tangani kesalahan di sini
+            $_SESSION['flash_message'] = 'Tahun ajar tidak ditemukan.';
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location: transaksi_keluar_siswa.php');
+            exit;
+        }        
+        
+        $idKategori = $_POST['kategori'];
+        $bulan = $_POST['bulan'];
+        $uraian = $_POST['uraian'];
+        $jumlah = $_POST['jumlah'];
+        $idGuru = $_POST['guru'];
+        $keterangan = $_POST['keterangan'];    
+
+        try {
+            $queryInsertTransUmum = "INSERT INTO 
+            `transaksi_keluar_nonsiswa`(`tanggal`, `id_tahun_ajar`, `id_kategori`, `bulan`, `uraian`, `jumlah`, `id_guru`, `keterangan`) 
+            VALUES ('$tanggalBayar','$idTahunAjar','$idKategori','$bulan','$uraian','$jumlah','$idGuru','$keterangan')";
+                
+            $insertTransUmum = mysqli_query($conn, $queryInsertTransUmum);
+
+            if (!$insertTransUmum) {
+                throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * 
+            FROM `transaksi_keluar_nonsiswa` 
+            WHERE `tanggal` = '$tanggalBayar'
+            AND `id_tahun_ajar` = '$idTahunAjar'
+            AND `id_kategori` = '$idKategori'
+            AND `bulan` = '$bulan'
+            AND `uraian` = '$uraian'
+            AND `jumlah` = '$jumlah'
+            AND `id_guru` = '$idGuru'
+            AND `keterangan` = '$keterangan'";
+
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) === 1) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Tambah pengeluaran berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:transaksi_keluar_umum.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data transaksi tidak ditemukan setelah ditambahkan");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryInsertTransUmum . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
+            header('location:transaksi_keluar_umum.php');
+            exit;
+        }
+    }
+
+    // Edit Transaksi Keluar Umum
+    if(isset($_POST['editTransKeluarUmum'])){
+        $idTransaksiKeluarUmum = $_POST['idTkn'];
+        $tanggal = $_POST['tanggal'];
+        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+
+        // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
+        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+        if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+            $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+            $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+        } else {
+            // Kelas tidak ditemukan, tangani kesalahan di sini
+            $_SESSION['flash_message'] = 'Tahun ajar tidak ditemukan.';
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location: transaksi_keluar_siswa.php');
+            exit;
+        }        
+        
+        $idKategori = $_POST['kategori'];
+        $bulan = $_POST['bulan'];
+        $uraian = $_POST['uraian'];
+        $jumlah = $_POST['jumlah'];
+        $idGuru = $_POST['guru'];
+        $keterangan = $_POST['keterangan'];    
+
+        try {
+            $queryUpdateTransUmum = "UPDATE `transaksi_keluar_nonsiswa` SET
+            `tanggal`= '$tanggalBayar',
+            `id_tahun_ajar`= '$idTahunAjar',
+            `id_kategori`= '$idKategori',
+            `bulan`= '$bulan',
+            `uraian`= '$uraian',
+            `jumlah`= '$jumlah',
+            `id_guru`= '$idGuru',
+            `keterangan`= '$keterangan'
+            WHERE
+            id_tkn = '$idTransaksiKeluarUmum'";            
+                
+            $updateTransUmum = mysqli_query($conn, $queryUpdateTransUmum);
+
+            if (!$updateTransUmum) {
+                throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * 
+            FROM `transaksi_keluar_nonsiswa` 
+            WHERE `tanggal` = '$tanggalBayar'
+            AND `id_tahun_ajar` = '$idTahunAjar'
+            AND `id_kategori` = '$idKategori'
+            AND `bulan` = '$bulan'
+            AND `uraian` = '$uraian'
+            AND `jumlah` = '$jumlah'
+            AND `id_guru` = '$idGuru'
+            AND `keterangan` = '$keterangan'";
+
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) === 1) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Ubah transaksi pengeluaran berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:transaksi_keluar_umum.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data transaksi tidak ditemukan setelah diubah");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryUpdateTransUmum . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
+            header('location:transaksi_keluar_umum.php');
+            exit;
+        }
+    }
+
+    // Hapus Transaksi Keluar Umum
+    if(isset($_POST['hapusTransaksiKeluarUmum'])){
+        $idTransaksiKeluarUmum = $_POST['idTkn'];  
+
+        try {
+            $queryDeleteTransUmum = "DELETE FROM `transaksi_keluar_nonsiswa`
+            WHERE
+            id_tkn = '$idTransaksiKeluarUmum'";            
+                
+            $deleteTransUmum = mysqli_query($conn, $queryDeleteTransUmum);
+
+            if (!$deleteTransUmum) {
+                throw new Exception("Query delete gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * 
+            FROM `transaksi_keluar_nonsiswa` 
+            WHERE id_tkn = '$idTransaksiKeluarUmum'";
+
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) === 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Hapus pengeluaran berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:transaksi_keluar_umum.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data pengeluaran masih ada setelah dihapus");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryCek . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
+            header('location:transaksi_keluar_umum.php');
             exit;
         }
     }
