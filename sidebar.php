@@ -36,7 +36,7 @@ include 'sidebar_function.php';
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="penetapan.php">Penetapan</a>
                                     <a class="nav-link" href="transaksi_masuk_siswa.php">Transaksi Masuk</a>
-                                    <a class="nav-link" href="guru.php">Transaksi Keluar</a>
+                                    <a class="nav-link" href="transaksi_keluar_siswa.php">Transaksi Keluar</a>
                                 </nav>
                             </div>
                             <a class="nav-link col1lapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts1" aria-expanded="false" aria-controls="collapseLayouts1">
