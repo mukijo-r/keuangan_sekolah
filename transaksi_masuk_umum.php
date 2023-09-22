@@ -23,7 +23,7 @@ require 'config.php';
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h2 class="mt-4">Transaksi Umum</h2>
+                        <h2 class="mt-4">Pemasukan Umum</h2>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">Transaksi Umum / Transaksi Masuk</li>                            
                         </ol>                        
@@ -51,7 +51,7 @@ require 'config.php';
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Daftar Transaksi Keluar
+                                Daftar Transaksi Masuk
                             </div>
                             <div class="card-body">
                                 <table id="datatablesSimple">
@@ -177,7 +177,7 @@ require 'config.php';
                                                                 <input type="text" name="uraian" id="uraian" value="<?=$uraian;?>" class="form-control">
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="jumlah">Jumlah Pengeluaran :</label>                        
+                                                                <label for="jumlah">Jumlah Pemasukan :</label>                        
                                                                 <input type="number" name="jumlah" id="jumlah" value="<?=$jumlah;?>" class="form-control">
                                                             </div>
                                                             <div class="mb-3">   
@@ -270,7 +270,7 @@ require 'config.php';
         </script>
     </body>   
 
-    <!-- Modal Tambah Transaksi Keluar Siswa -->
+    <!-- Modal Tambah Transaksi Keluar Umum -->
     <div class="modal fade" id="modalTambahTransUmum">
         <div class="modal-dialog">
             <div class="modal-content">
