@@ -60,6 +60,7 @@ include 'sidebar_function.php';
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="transaksi_masuk_umum.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="transaksi_keluar_umum.php">Transaksi Keluar</a>
+                                    <a class="nav-link" href="laporan_transaksi_umum.php">Laporan</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts3" aria-expanded="false" aria-controls="collapseLayouts3">
