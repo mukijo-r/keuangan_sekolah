@@ -31,8 +31,8 @@ require 'config.php';
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTransSiswa">
-                                        Transaksi Baru
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalTambahTransSiswa">
+                                        Pengeluaran Baru
                                     </button>
                                 </div>
                                 <div class="col-md-8">

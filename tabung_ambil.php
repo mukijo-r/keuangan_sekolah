@@ -32,8 +32,8 @@ require 'config.php';
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTransTabung">
-                                        Menabung
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalAmbilTransTabung">
+                                        Mengambil
                                     </button>
                                 </div>
                                 <div class="col-md-8">
@@ -173,5 +173,58 @@ require 'config.php';
         <script>
         </script>
     </body>   
+
+    <!-- Modal Ambil-->
+    <div class="modal fade" id="modalAmbilTransTabung">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Ambil Tabungan</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            
+            <form method="post">
+            <div class="modal-body">
+                <h6>Ambil tabungan<h6>
+                <br>
+                <label for="tanggal">Tanggal Pengambilan :</label>       
+                <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                <br>
+                <label for="nama">Nama :</label>       
+                <input type="text" name="nama" class="form-control">
+                <br>
+                <label for="jumlahTab">Jumlah Tabungan :</label>       
+                <input type="text" name="jumlahTab" class="form-control" readonly>
+                <br>
+                <label for="jumlahAmbil">Jumlah Tabungan yang akan diambil :</label>
+                <input type="text" name="jumlahAmbil" class="form-control">
+                <br>
+                <label for="guru">Guru Pencatat :</label>                     
+                <select name="guru" class="form-select" id="guru" aria-label="Guru">>
+                <option selected disabled>Guru Pencatat</option>
+                    <?php
+                    // Ambil data guru dari tabel guru
+                    $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
+                    while ($guru = mysqli_fetch_assoc($queryGuru)) {
+                        echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
+                    }
+                    ?>
+                </select>
+                <br>                                                             
+            </div>
+            <div class="text-center">
+                <input type="hidden" name="ids" value="<?=$ids;?>">
+                <button type="submit" class="btn btn-warning" name="#ambilTab">Ambil</button> 
+            </div>
+            <br> 
+            </form>        
+            </div>
+        </div>
+    </div>
+
     
 </html>

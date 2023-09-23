@@ -31,8 +31,8 @@ require 'config.php';
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTransSiswa">
-                                        Transaksi Baru
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalTambahTransSiswa">
+                                        Pemasukan Baru
                                     </button>
                                 </div>
                                 <div class="col-md-8">
@@ -68,6 +68,7 @@ require 'config.php';
                                             <th>Penetapan</th>
                                             <th>Jumlah</th>
                                             <th>Tunggakan</th>
+                                            <th>Saldo</th>
                                             <th>Pencatat</th>
                                             <th>Keterangan</th>
                                             <th colspan='2'>Aksi</th>
@@ -88,7 +89,7 @@ require 'config.php';
                                     LEFT JOIN siswa s ON tms.id_siswa = s.id_siswa
                                     LEFT JOIN guru g ON tms.id_guru = g.id_guru
                                     LEFT JOIN kategori kat ON tms.id_kategori = kat.id_kategori
-                                    LEFT JOIN sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_kategori
+                                    LEFT JOIN sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
                                     ORDER BY tms.id_tms DESC;");
 
                                     $totalEntries = mysqli_num_rows($dataTransaksiSiswa);
@@ -124,6 +125,23 @@ require 'config.php';
                                         // Hitung tunggakan
                                         $tunggakan = $penetapan - $nominal;
 
+                                        // Menghitung saldo
+                                        $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_siswa WHERE id_sub_kategori = '$idSubKategori' AND tanggal <= '$tanggal'");
+                                        $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_siswa WHERE id_sub_kategori = '$idSubKategori' AND tanggal <= '$tanggal'");
+
+                                        $totalMasuk = 0;
+                                        $totalKeluar = 0;
+
+                                        if ($rowMasuk = mysqli_fetch_assoc($queryMasuk)) {
+                                            $totalMasuk = $rowMasuk['total_masuk'];
+                                        }
+
+                                        if ($rowKeluar = mysqli_fetch_assoc($queryKeluar)) {
+                                            $totalKeluar = $rowKeluar['total_keluar'];
+                                        }
+
+                                        $saldo = $totalMasuk - $totalKeluar;
+
                                         ?>
                                         <tr>
                                             <td><?=$i--;?></td>
@@ -137,6 +155,7 @@ require 'config.php';
                                             <td><?="Rp " . number_format($penetapan, 0, ',', '.');?></td>
                                             <td><?="Rp " . number_format($nominal, 0, ',', '.');?></td>
                                             <td><?="Rp " . number_format($tunggakan, 0, ',', '.');?></td>
+                                            <td><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
                                             <td><?=$namaGuru;?></td>
                                             <td><?=$keterangan;?></td>
                                             <td>
@@ -407,7 +426,7 @@ require 'config.php';
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary" name="tambahTransSiswa">Simpan</button>
+                    <button type="submit" class="btn btn-primary" name="tambahTransMasukSiswa">Simpan</button>
                 </div>
             </form>
         </div>
