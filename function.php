@@ -1643,5 +1643,14 @@
             exit;
         }
     }
+
+    function processForm() {
+        if(isset($_POST['btnTampilLapUmum'])){
+            $TahunAjarLap = $_POST['tahunAjar'];
+            $bulanLalu = $_POST['bulan'];
+            $idKategoriLap = $_POST['kategori'];   
+            // Lakukan pemrosesan data di sini
+        }
+    }
         
     ?>

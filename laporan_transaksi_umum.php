@@ -1,8 +1,8 @@
 <?php
-setlocale(LC_TIME, 'id_ID.UTF-8');
 require 'function.php';
 require 'cek.php';
 require 'config.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +13,13 @@ require 'config.php';
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Halaman Transaksi Umum</title>
+        <style>
+            .no-link-style {
+            text-decoration: none; /* Menghapus garis bawah */
+            color: inherit; /* Menggunakan warna teks bawaan dari elemen induk (h4) */
+            cursor: pointer; /* Mengubah ikon kursor menjadi tangan ketika mengarahkan tautan */
+            }
+        </style>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -23,103 +30,174 @@ require 'config.php';
             <?php include 'sidebar.php'; ?>
             <div id="layoutSidenav_content">
                 <main>
-                    <?php
-                         
-
-                    ?>
-
                     <div class="container-fluid px-4">
                         <h3 class="mt-4">Laporan Keuangan Kas Umum</h3>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Transaksi Umum / Laporan</li>                            
-                        </ol>                        
-                        <br>
-                        <div class="container-fluid px-4">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#">
-                                        Cetak
-                                    </button>
+                            <li class="breadcrumb-item active">Transaksi Umum / Laporan</li>
+                            <?php $queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
+                            $rowKategori = mysqli_fetch_assoc($queryKategori);
+                            $namaKategori = $rowKategori['nama_kategori'];
+
+                            $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahunAjarLap'");
+                            $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar'];
+                            
+                            echo $namaKategori;
+                            echo $tahunAjarLap;
+                            echo $bulanLalu;
+                            ?>                           
+                            
+                        </ol>
+  
+                        <div class="container-fluid px-1">
+                            <form method="post">    
+                                <div class="row row-cols-auto">                                
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="tahunAjar">Tahun Ajar</label>
+                                            </div>
+                                            <select class="custom-select" id="tahunAjar" name="tahunAjar">
+                                                <option value="">Pilih Tahun Ajar</option>
+                                                <?php
+                                                $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar, tahun_ajar FROM tahun_ajar");
+                                                while ($rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar)) {
+                                                    $selected = ($rowTahunAjar['id_tahun_ajar'] == $tahunAjarLap) ? 'selected' : '';
+                                                    echo '<option value="' . $rowTahunAjar['tahun_ajar'] . '" ' . $selected . '>' . $rowTahunAjar['tahun_ajar'] . '</option>';
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>                
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="bulan">Bulan</label>
+                                            </div>
+                                            <select class="custom-select" id="bulan" name="bulan">
+                                            <option value="">Pilih Bulan </option>                                                
+                                            <option value="Juli">Juli</option>
+                                            <option value="Agustus">Agustus</option>
+                                            <option value="September">September</option>
+                                            <option value="Oktober">Oktober</option>
+                                            <option value="November">November</option>
+                                            <option value="Desember">Desember</option>
+                                            <option value="Januari">Januari</option>
+                                            <option value="Februari">Februari</option>
+                                            <option value="Maret">Maret</option>
+                                            <option value="April">April</option>
+                                            <option value="Mei">Mei</option>
+                                            <option value="Juni">Juni</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                        <div class="col">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <label class="input-group-text" for="kategori">Kategori</label>
+                                                </div>
+                                                <select class="custom-select" name="kategori" id="kategori">
+                                                    <option value="">Pilih Kategori</option>
+                                                    <?php
+                                                    // Ambil data kelas dari tabel kelas
+                                                    $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum'");
+                                                    while ($kategori = mysqli_fetch_assoc($queryKategori)) {
+                                                        echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    <div div class="col">
+                                        <button type="submit" class="btn btn-primary" name="btnTampilLapUmum">
+                                            Tampilkan
+                                        </button>
+                                    </div>
+                                    <?php if(isset($_POST['btnTampilLapUmum'])) {
+                                        processForm();
+                                    }?>              
                                 </div>
-                                <div class="col-md-8" style="text-align: center;">
-                                    <?php                                        
-                                                                               
-                                        $bulanLalu = strftime('%B', strtotime(date('Y-m', strtotime('-1 month')))); 
-
-                                        if ($bulanLalu == 'January') {
-                                            $bulanLalu = 'Januari';
-                                        } elseif ($bulanLalu == 'February') {
-                                            $bulanLalu = 'Februari';
-                                        } elseif ($bulanLalu == 'March') {
-                                            $bulanLalu = 'Maret';
-                                        } elseif ($bulanLalu == 'April') {
-                                            $bulanLalu = 'April';
-                                        } elseif ($bulanLalu == 'May') {
-                                            $bulanLalu = 'Mei';
-                                        } elseif ($bulanLalu == 'June') {
-                                            $bulanLalu = 'Juni';
-                                        } elseif ($bulanLalu == 'July') {
-                                            $bulanLalu = 'Juli';
-                                        } elseif ($bulanLalu == 'August') {
-                                            $bulanLalu = 'Agustus';
-                                        } elseif ($bulanLalu == 'September') {
-                                            $bulanLalu = 'September';
-                                        } elseif ($bulanLalu == 'October') {
-                                            $bulanLalu = 'Oktober';
-                                        } elseif ($bulanLalu == 'November') {
-                                            $bulanLalu = 'November';
-                                        } elseif ($bulanLalu == 'December') {
-                                            $bulanLalu = 'Desember';
-                                        } else {
-                                            $bulanLalu = '';
-                                        }                                     
-                                         echo $bulanLalu;
-
-                                        
-                                    ?>
-                                    
-                                <h5>Laporan Keuangan Bulan <?=$bulanLalu;?> </h5>
+                            </form> 
+                        </div>
+                    </div><br><br>  
+                    <div class="container-fluid px-4">
+                              
+                    </div><br>                    
+                                
+                    <div class="card mb-4">
+                    <div class="row" style="text-align: center;">
+                        <h5>Laporan Keuangan <?=$idKategoriLap?> </h5>
+                        <h5>Bulan <?= $bulanLalu;?> </h5>
+                        <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>  
+                    </div>
 
 
-                                </div>
-                            </div>
-                        </div>                    
-                        <br>
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                Daftar Transaksi Masuk
-                            </div>
-                            <div class="card-body">
-                                <table id="datatablesSimple">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Tanggal</th>
-                                            <th>Uraian</th>                                            
-                                            <th>Jumlah</th>
-                                            <th>Saldo</th>
-                                            <th>Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                        <div class="card-body">
+                            <table id="datatablesSimple1" class="table table-bordered border-dark">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Uraian</th>                                            
+                                        <th>Debet</th>
+                                        <th>Kredit</th>
+                                        <th>Saldo</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     <?php 
-                                    $dataTransaksiUmum = mysqli_query($conn, "SELECT 
-                                    tanggal, uraian, jumlah AS jumlah_masuk, 0 AS jumlah_keluar, keterangan
-                                    FROM transaksi_masuk_nonsiswa WHERE id_tahun_ajar='$tahun_ajar' AND bulan='$bulanLalu' AND id_kategori=2
-                                    GROUP BY uraian
+                                    $queryTransaksiUmum = "SELECT
+                                    tmn.id_tmn, 
+                                    tmn.tanggal,
+                                    tmn.id_kategori,
+                                    k.nama_kategori AS kategori,
+                                    tmn.uraian,
+                                    tmn.jumlah AS jumlah_masuk,
+                                    0 AS jumlah_keluar,
+                                    tmn.keterangan
+                                    FROM 
+                                        transaksi_masuk_nonsiswa tmn
+                                    JOIN
+                                        kategori k ON tmn.id_kategori = k.id_kategori
+                                    WHERE 
+                                        tmn.id_tahun_ajar = '$idTahunAjar'
+                                        AND tmn.id_kategori = '$idKategoriLap'
+                                        AND tmn.bulan = '$bulanLalu'
+                                    GROUP BY 
+                                        tmn.uraian
                                     UNION ALL
-                                    SELECT tanggal, uraian, 0 AS jumlah_masuk, jumlah AS jumlah_keluar, keterangan
-                                    FROM transaksi_keluar_nonsiswa WHERE id_tahun_ajar='$tahun_ajar' AND bulan='$bulanLalu' AND id_kategori=2
-                                    GROUP BY uraian
-                                    ;");
+                                    SELECT
+                                        tkn.id_tkn,
+                                        tkn.tanggal,
+                                        tkn.id_kategori,
+                                        k.nama_kategori AS id_kategori,
+                                        tkn.uraian,
+                                        0 AS jumlah_masuk,
+                                        tkn.jumlah AS jumlah_keluar,
+                                        tkn.keterangan
+                                    FROM 
+                                        transaksi_keluar_nonsiswa tkn
+                                    JOIN
+                                        kategori k ON tkn.id_kategori = k.id_kategori
+                                    WHERE 
+                                        tkn.id_tahun_ajar = '$idTahunAjar'
+                                        AND tkn.id_kategori = '$idKategoriLap'
+                                        AND tkn.bulan = '$bulanLalu'
+                                    GROUP BY 
+                                        tkn.uraian
+                                    ORDER BY tanggal ASC";
+
+                                    $dataTransaksiUmum = mysqli_query($conn, $queryTransaksiUmum);
 
                                     $totalEntries = mysqli_num_rows($dataTransaksiUmum);
                                     $i = $totalEntries;
                                     
-                                    while($data=mysqli_fetch_array($dataTransaksiUmum)){                                                                                
+                                    while($data=mysqli_fetch_array($dataTransaksiUmum)){
+                                        $idTransaksiMasukUmum = $data['id_tmn'];
                                         $tanggal =  $data['tanggal'];
-                                        $tanggalMasuk = date("Y-m-d", strtotime($tanggal));                                         
+                                        $tanggalMasuk = date("Y-m-d", strtotime($tanggal));
+                                        $idKategori = $data['id_kategori']; 
+                                        $kategori = $data['kategori'];                                          
                                         $uraian = $data['uraian'];
                                         $jumlahMasuk = $data['jumlah_masuk'];
                                         $jumlahKeluar = $data['jumlah_keluar'];                                        
@@ -144,22 +222,21 @@ require 'config.php';
 
                                         ?>
                                         <tr>
-                                            <td><?=$i--;?></td>
-                                            <td><?=$tanggal;?></td>
+                                            <td><?=$tanggalMasuk;?></td>
                                             <td><?=$uraian;?></td>
-                                            <td><?="Rp " . number_format($jumlah, 0, ',', '.');?></td>
+                                            <td><?php echo ($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.');?></td>
+                                            <td><?php echo ($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.');?></td>
                                             <td><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
-                                            <td><?=$keterangan;?></td>
+                                            <td><?=$keterangan;?></tds>
                                         </tr>                                        
                                     <?php
                                     };
 
                                     ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
+                    </div>                       
                 </main>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
@@ -175,15 +252,13 @@ require 'config.php';
                 </footer>
             </div>
         </div>
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/chart-area-demo.js"></script>
         <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="js/datatables-simple-demo.js"></script>
-        <script>
-        </script>
-    </body>   
-    
+        <script src="js/datatables-simple-demo.js"></script> 
+    </body>
 </html>
