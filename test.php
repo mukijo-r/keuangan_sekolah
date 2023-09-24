@@ -24,9 +24,9 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     $idTahunAjar = $rowTahunAjar['id_tahun_ajar'];
                     
                     
-                    echo $tahunAjarLap . "\n";
-                    echo $bulanLalu . "\n";
-                    echo $namaKategori . "\n";
+                    echo "tahun ajar : " . $tahunAjarLap . "<br>\n";
+                    echo "bulan : " . $bulanLalu . "<br>\n";
+                    echo "kategori " . $namaKategori . "<br><br>\n";
                     ?>
                 
                 <div class="input-group mb-3">
@@ -34,11 +34,11 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         <label class="input-group-text" for="tahunAjar">Tahun Ajar</label>
                     </div>
                     <select id="tahunAjar" name="tahunAjar">
-                        <option value="<?=$idTahunAjar;?>"><?=$tahunAjarLap;?></option>
+                        <option value="<?=$tahunAjarLap;?>"><?=$tahunAjarLap;?></option>
                         <?php
                             $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar, tahun_ajar FROM tahun_ajar");
                             while ($rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar)) {
-                                echo '<option value="' . $rowTahunAjar['id_tahun_ajar'] . '">' . $rowTahunAjar['tahun_ajar'] . '</option>';
+                                echo '<option value="' . $rowTahunAjar['tahun_ajar'] . '">' . $rowTahunAjar['tahun_ajar'] . '</option>';
                             }
                             ?>
                     </select>

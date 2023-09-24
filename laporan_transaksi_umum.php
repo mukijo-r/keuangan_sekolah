@@ -34,18 +34,11 @@ require 'config.php';
                         <h3 class="mt-4">Laporan Keuangan Kas Umum</h3>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">Transaksi Umum / Laporan</li>
-                            <?php $queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
-                            $rowKategori = mysqli_fetch_assoc($queryKategori);
-                            $namaKategori = $rowKategori['nama_kategori'];
-
-                            $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahunAjarLap'");
+                            <?php
+                            $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahun_ajar'");
                             $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
-                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar'];
-                            
-                            echo $namaKategori;
-                            echo $tahunAjarLap;
-                            echo $bulanLalu;
-                            ?>                           
+                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar']; 
+                            ?>           
                             
                         </ol>
   
@@ -62,7 +55,7 @@ require 'config.php';
                                                 <?php
                                                 $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar, tahun_ajar FROM tahun_ajar");
                                                 while ($rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar)) {
-                                                    $selected = ($rowTahunAjar['id_tahun_ajar'] == $tahunAjarLap) ? 'selected' : '';
+                                                    $selected = ($rowTahunAjar['tahun_ajar'] == $tahunAjarLap) ? 'selected' : '';
                                                     echo '<option value="' . $rowTahunAjar['tahun_ajar'] . '" ' . $selected . '>' . $rowTahunAjar['tahun_ajar'] . '</option>';
                                                 }
                                                 ?>
@@ -75,58 +68,69 @@ require 'config.php';
                                                 <label class="input-group-text" for="bulan">Bulan</label>
                                             </div>
                                             <select class="custom-select" id="bulan" name="bulan">
-                                            <option value="">Pilih Bulan </option>                                                
-                                            <option value="Juli">Juli</option>
-                                            <option value="Agustus">Agustus</option>
-                                            <option value="September">September</option>
-                                            <option value="Oktober">Oktober</option>
-                                            <option value="November">November</option>
-                                            <option value="Desember">Desember</option>
-                                            <option value="Januari">Januari</option>
-                                            <option value="Februari">Februari</option>
-                                            <option value="Maret">Maret</option>
-                                            <option value="April">April</option>
-                                            <option value="Mei">Mei</option>
-                                            <option value="Juni">Juni</option>
+                                                <option value="">Pilih Bulan </option>                                                
+                                                <option value="Juli">Juli</option>
+                                                <option value="Agustus">Agustus</option>
+                                                <option value="September">September</option>
+                                                <option value="Oktober">Oktober</option>
+                                                <option value="November">November</option>
+                                                <option value="Desember">Desember</option>
+                                                <option value="Januari">Januari</option>
+                                                <option value="Februari">Februari</option>
+                                                <option value="Maret">Maret</option>
+                                                <option value="April">April</option>
+                                                <option value="Mei">Mei</option>
+                                                <option value="Juni">Juni</option>
                                             </select>
                                         </div>
                                     </div>
-                                        <div class="col">
-                                            <div class="input-group mb-3">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text" for="kategori">Kategori</label>
-                                                </div>
-                                                <select class="custom-select" name="kategori" id="kategori">
-                                                    <option value="">Pilih Kategori</option>
-                                                    <?php
-                                                    // Ambil data kelas dari tabel kelas
-                                                    $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum'");
-                                                    while ($kategori = mysqli_fetch_assoc($queryKategori)) {
-                                                        echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
-                                                    }
-                                                    ?>
-                                                </select>
+                                    <div class="col">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="kategori">Kategori</label>
                                             </div>
+                                            <select class="custom-select" name="kategori" id="kategori">
+                                                <option value="">Pilih Kategori</option>
+                                                <?php
+                                                // Ambil data kelas dari tabel kelas
+                                                $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum'");
+                                                while ($kategori = mysqli_fetch_assoc($queryKategori)) {
+                                                    echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
+                                                }
+                                                ?>
+                                            </select>
                                         </div>
-                                    <div div class="col">
-                                        <button type="submit" class="btn btn-primary" name="btnTampilLapUmum">
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-primary" name="btnTampilLapUmum" id="btnTampilLapUmum">
                                             Tampilkan
                                         </button>
-                                    </div>
-                                    <?php if(isset($_POST['btnTampilLapUmum'])) {
-                                        processForm();
-                                    }?>              
+                                    </div>            
                                 </div>
                             </form> 
                         </div>
                     </div><br><br>  
                     <div class="container-fluid px-4">
-                              
+                    <?php
+                    // Tampilkan Laporan Umum
+                    if(isset($_POST['btnTampilLapUmum'])){
+                        $tahunAjarLap = $_POST['tahunAjar'];
+                        $bulanLalu = $_POST['bulan'];
+                        $idKategoriLap = $_POST['kategori'];
+                    } 
+
+                    $queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
+                    $rowKategori = mysqli_fetch_assoc($queryKategori);
+                    $namaKategori = $rowKategori['nama_kategori'];
+
+                    ?>    
                     </div><br>                    
                                 
                     <div class="card mb-4">
                     <div class="row" style="text-align: center;">
-                        <h5>Laporan Keuangan <?=$idKategoriLap?> </h5>
+
+
+                        <h5>Laporan Keuangan <?=$namaKategori?> </h5>
                         <h5>Bulan <?= $bulanLalu;?> </h5>
                         <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>  
                     </div>
@@ -260,5 +264,27 @@ require 'config.php';
         <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script> 
+        <script>
+            // Ambil referensi ke elemen-elemen dropdown
+            var tahunAjarDropdown = document.getElementById('tahunAjar');
+            var bulanDropdown = document.getElementById('bulan');
+            var kategoriDropdown = document.getElementById('kategori');
+            var tampilkanButton = document.getElementById('btnTampilLapUmum');
+
+            // Tambahkan event listener ke setiap dropdown
+            tahunAjarDropdown.addEventListener('change', checkDropdowns);
+            bulanDropdown.addEventListener('change', checkDropdowns);
+            kategoriDropdown.addEventListener('change', checkDropdowns);
+
+            // Fungsi untuk memeriksa setiap dropdown
+            function checkDropdowns() {
+                if (tahunAjarDropdown.value !== '' && bulanDropdown.value !== '' && kategoriDropdown.value !== '') {
+                    tampilkanButton.disabled = false;
+                } else {
+                    tampilkanButton.disabled = true;
+                }
+            }
+        </script>
+    
     </body>
 </html>
