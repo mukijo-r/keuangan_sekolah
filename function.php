@@ -211,9 +211,7 @@
             header('location:guru.php');
             exit;
         }
-    }
-    
-
+    }   
 
     // Hapus Guru
     if(isset($_POST['hapusGuru'])){
@@ -1642,14 +1640,136 @@
             header('location:transaksi_keluar_umum.php');
             exit;
         }
+    } 
+
+    // Tambah Kategori Cashflow
+    if(isset($_POST['tambahKategoriCashflow'])){
+        $kelompok = $_POST['kelompok'];
+        $kategori = $_POST['kategori'];
+        $keterangan = $_POST['keterangan'];
+
+        try {
+            $queryInsertKategori = "INSERT INTO `kategori_cashflow`
+            (`grup`, `nama_kategori`, `keterangan`) 
+            VALUES 
+            ('$kelompok','$kategori','$keterangan')";
+                
+            $insertKategori = mysqli_query($conn, $queryInsertKategori);
+
+            if (!$insertKategori) {
+                throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM kategori_cashflow WHERE nama_kategori='$kategori'";
+            
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Tambah kategori berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:kategori_cashflow.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data tidak ditemukan setelah ditambahkan");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:kategori_cashflow.php');
+            exit;
+        }
     }
 
-    function processForm() {
-        if(isset($_POST['btnTampilLapUmum'])){
-            $TahunAjarLap = $_POST['tahunAjar'];
-            $bulanLalu = $_POST['bulan'];
-            $idKategoriLap = $_POST['kategori'];   
-            // Lakukan pemrosesan data di sini
+    // Ubah Kategori Cashflow
+    if(isset($_POST['ubahKategoriCashflow'])){
+        $idKatCashflow = $_POST['idKatCashflow'];
+        $kelompok = $_POST['kelompok'];
+        $kategori = $_POST['kategori'];
+        $keterangan = $_POST['keterangan'];
+
+        try {
+            $queryUpdateKategori = "UPDATE `kategori_cashflow` 
+            SET 
+            `grup`='$kelompok',
+            `nama_kategori`='$kategori',
+            `keterangan`='$keterangan' 
+            WHERE 
+            `id_kategori_cashflow`='$idKatCashflow'";
+                
+            $updateKategori = mysqli_query($conn, $queryUpdateKategori);
+
+            if (!$updateKategori) {
+                throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM `kategori_cashflow` 
+            WHERE 
+            `grup`='$kelompok' AND
+            `nama_kategori`='$kategori' AND
+            `keterangan`='$keterangan'";
+            
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Update kategori berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:kategori_cashflow.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data tidak berubah setelah diupdate");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:kategori_cashflow.php');
+            exit;
+        }
+    }
+
+    // Hapus Kategori Cashflow
+    if(isset($_POST['hapusKategoriCashflow'])){
+        $idKatCashflow = $_POST['idKatCashflow'];
+
+        try {
+            $queryDeleteKategori = "DELETE FROM `kategori_cashflow` WHERE `id_kategori_cashflow`='$idKatCashflow'";
+                
+            $deleteKategori = mysqli_query($conn, $queryDeleteKategori);
+
+            if (!$deleteKategori) {
+                throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM `kategori_cashflow` 
+            WHERE 
+            `id_kategori_cashflow`='$idKatCashflow'";
+            
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) === 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Hapus kategori berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:kategori_cashflow.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data masih ada setelah dihapus");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:kategori_cashflow.php');
+            exit;
         }
     }
         

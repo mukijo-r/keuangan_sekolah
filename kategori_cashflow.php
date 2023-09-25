@@ -32,7 +32,7 @@ require 'config.php';
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahKategoriKas">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahKategoriCashflow">
                                         Tambah Kategori
                                     </button>
                                 </div>
@@ -88,55 +88,43 @@ require 'config.php';
                                     </tr>
 
                                     <!-- Modal Edit Kategori-->
-                                    <div class="modal fade" id="modalEditKategori<?=$idKat;?>">
+                                    <div class="modal fade" id="modalEditKategori<?=$idKatCashflow;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
 
                                         <!-- Modal Header -->
                                         <div class="modal-header">
-                                            <h4 class="modal-title">Edit Kategori Kas</h4>
+                                            <h4 class="modal-title">Edit Kategori Cash Flow</h4>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
                                         <!-- Modal body -->      
                                             <form method="post">
                                             <div class="modal-body">
-                                                <label for="jenisKas">Nama Kas :</label> 
-                                                <input type="text" name="jenisKas" value="<?=$kategoriKas;?>" class="form-control" required>
-                                                <br>
                                                 <label for="kelompok">Kelompok :</label> 
                                                 <select class="form-select" name="kelompok" aria-label="Pilih Kelompok">
-                                                        <option selected><?=$kelompok;?></option>
-                                                        <option value="siswa">Siswa</option>
-                                                        <option value="umum">Umum</option>
-                                                    </select>
+                                                    <option selected><?=$grup;?></option>
+                                                    <option value="Pendapatan">Pendapatan</option>
+                                                    <option value="Pengeluaran">Pengeluaran</option>
+                                                </select>
                                                 <br>
-                                                <label for="guru">Penannggung Jawab :</label>                     
-                                                <select name="guru" class="form-select" id="guru" aria-label="Guru">>
-                                                    <option selected><?=$namaGuru;?></option>
-                                                    <?php
-                                                        // Ambil data guru dari tabel guru
-                                                        $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
-                                                        while ($guru = mysqli_fetch_assoc($queryGuru)) {
-                                                            echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
-                                                        }
-                                                    ?>
-                                                    </select>
+                                                <label for="kategori">Nama Kategori :</label> 
+                                                <input type="text" name="kategori" value="<?=$kategoriCashflow;?>" class="form-control" required>
                                                 <br>
                                                 <label for="keterangan">Keterangan :</label>   
                                                 <textarea name="keterangan" class="form-control" value="<?=$keterangan;?>" id="keterangan" rows="2"></textarea>
                                             </div>
                                             <div class="text-center">
-                                                <input type="hidden" name="idk" value="<?=$idKat;?>">
-                                                <button type="submit" class="btn btn-success" name="ubahKategoriKas">Ubah</button> 
+                                                <input type="hidden" name="idKatCashflow" value="<?=$idKatCashflow;?>">
+                                                <button type="submit" class="btn btn-success" name="ubahKategoriCashflow">Ubah</button><br> 
                                             </div>
                                             <br> 
-                                        </form>   
-                                        </div>
-                                    </div>
+                                        </form><br>   
+                                        </div><br> 
+                                    </div><br> 
                                     </div>
 
                                     <!-- Modal Hapus Kategori-->
-                                    <div class="modal fade" id="modalHapusKategori<?=$idKat;?>">
+                                    <div class="modal fade" style="text-align: center;" id="modalHapusKategori<?=$idKatCashflow;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
 
@@ -150,14 +138,14 @@ require 'config.php';
                                             
                                             <form method="post">
                                             <div class="modal-body">
-                                                <h6>Anda yakin ingin menghapus kategori kas <?=$kategoriKas;?>?</h6>
+                                                <h6>Anda yakin ingin menghapus kategori Cash Flow <br><u><?=$kategoriCashflow;?></u>?</h6>
                                                 
                                             </div>
                                             <div class="text-center">
-                                                <input type="hidden" name="idk" value="<?=$idKat;?>">
-                                                <button type="submit" class="btn btn-danger" name="hapusKategoriKas">Hapus</button> 
+                                                <input type="hidden" name="idKatCashflow" value="<?=$idKatCashflow;?>">
+                                                <button type="submit" class="btn btn-danger" name="hapusKategoriCashflow">Hapus</button> 
                                             </div>
-                                            <br> 
+                                            <div></div>  
                                             </form>       
                                             </div>
                                         </div>
@@ -207,19 +195,23 @@ require 'config.php';
         </div>
         <!-- Modal body -->      
             <form method="post">
-            <div class="modal-body">                
-                <label for="kelompok">Kelompok :</label> 
-                <select class="form-select" name="kelompok" aria-label="Pilih Kelompok">
-                        <option selected>Kelompok</option>
-                        <option value="Pendapatan">Pendapatan</option>
-                        <option value="Pengeluaran">Pengeluaran</option>
-                    </select>
-                <br>
+            <div class="modal-body">
+                <div class="mb-3">               
+                    <label for="kelompok">Kelompok :</label> 
+                    <select class="form-select" name="kelompok" aria-label="Pilih Kelompok">
+                            <option selected>Kelompok</option>
+                            <option value="Pendapatan">Pendapatan</option>
+                            <option value="Pengeluaran">Pengeluaran</option>
+                        </select>
+                </div>
+                <div class="mb-3">
                 <label for="kategori">Nama Kategori :</label> 
                 <input type="text" name="kategori" placeholder="Nama Kategori" class="form-control" required>
-                <br>
+                </div>
+                <div class="mb-3">
                 <label for="keterangan">Keterangan :</label>   
                 <textarea name="keterangan" class="form-control" id="keterangan" rows="2"></textarea>
+                </div>
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-success" name="tambahKategoriCashflow">Tambah</button> 
