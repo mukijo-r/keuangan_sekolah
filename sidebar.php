@@ -80,7 +80,7 @@ include 'sidebar_function.php';
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="group_cashflow.php">Group</a>
                                     <a class="nav-link" href="sub_kategori_cashflow.php">Sub Kategori</a>
-                                    <a class="nav-link" href="guru.php">Transaksi Masuk</a>
+                                    <a class="nav-link" href="transaksi_masuk_cashflow.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
                                 </nav>
                             </div>
