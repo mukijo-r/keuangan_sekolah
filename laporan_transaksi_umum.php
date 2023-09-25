@@ -16,8 +16,8 @@ require 'config.php';
         <style>
             @media print {
                 .mt-4, .breadcrumb-item, .container-fluid, .px-4, .breadcrumb, .mb-4, .active, 
-                .px-1, .row, .row-cols-auto, .input-group, .mb-3, .input-group-prepend, .input-group-text,
-                .custom-select, .btn, .col, .btn-primary, .card, .mb-3, h3, .ol, .layoutSidenav, .layoutSidenav_content,
+                .px-1, .row-cols-auto, .input-group, .mb-3, .input-group-prepend, .input-group-text,
+                .custom-select, .btn, .btn-primary, .card, .mb-3, .h3, .ol, .layoutSidenav, .layoutSidenav_content,
                 .form, .option
                  {
                     display: none;
@@ -27,6 +27,11 @@ require 'config.php';
                 padding: 0 !important;
                 }
             }
+
+            .teks-kecil {
+                font-size: 0.8em;
+            }
+
         </style>
 
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
@@ -38,7 +43,7 @@ require 'config.php';
         <div id="layoutSidenav" class="layoutSidenav">
             <?php include 'sidebar.php'; ?>
             <div id="layoutSidenav_content" class="layoutSidenav_content">
-                <main>
+                <main >
                     <div class="container-fluid px-4">
                         <h3 class="mt-4">Laporan Keuangan Kas Umum</h3>
                         <ol class="breadcrumb mb-4">
@@ -137,170 +142,204 @@ require 'config.php';
                         <h5>Bulan <?= $bulanLalu;?> </h5>
                         <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>  
                     </div><br><br>                    
-                                
-                    <div class="card mb-4">
-                    
-
-
-                        <div class="card-body">
-                            <table id="datatablesSimple1" class="table table-bordered border-dark">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 10%">Tanggal</th>
-                                        <th style="width: 30%">Uraian</th>                                            
-                                        <th style="width: 10%">Debet</th>
-                                        <th style="width: 10%">Kredit</th>
-                                        <th style="width: 10%">Saldo</th>
-                                        <th style="width: 20%">Keterangan</th>
-                                    </tr>
-
-
-
-                                </thead>
-                                <tbody>
-                                    <?php 
-                                    $queryTransaksiUmum = "SELECT
-                                    tmn.id_tmn, 
-                                    tmn.tanggal,
-                                    tmn.id_kategori,
-                                    k.nama_kategori AS kategori,
-                                    tmn.uraian,
-                                    tmn.jumlah AS jumlah_masuk,
-                                    0 AS jumlah_keluar,
-                                    tmn.keterangan
-                                    FROM 
-                                        transaksi_masuk_nonsiswa tmn
-                                    JOIN
-                                        kategori k ON tmn.id_kategori = k.id_kategori
-                                    WHERE 
-                                        tmn.id_tahun_ajar = '$idTahunAjar'
-                                        AND tmn.id_kategori = '$idKategoriLap'
-                                        AND tmn.bulan = '$bulanLalu'
-                                    GROUP BY 
-                                        tmn.uraian
-                                    UNION ALL
-                                    SELECT
-                                        tkn.id_tkn,
-                                        tkn.tanggal,
-                                        tkn.id_kategori,
-                                        k.nama_kategori AS id_kategori,
-                                        tkn.uraian,
-                                        0 AS jumlah_masuk,
-                                        tkn.jumlah AS jumlah_keluar,
-                                        tkn.keterangan
-                                    FROM 
-                                        transaksi_keluar_nonsiswa tkn
-                                    JOIN
-                                        kategori k ON tkn.id_kategori = k.id_kategori
-                                    WHERE 
-                                        tkn.id_tahun_ajar = '$idTahunAjar'
-                                        AND tkn.id_kategori = '$idKategoriLap'
-                                        AND tkn.bulan = '$bulanLalu'
-                                    GROUP BY 
-                                        tkn.uraian
-                                    ORDER BY tanggal ASC";
-
-                                    $dataTransaksiUmum = mysqli_query($conn, $queryTransaksiUmum);
-
-                                    $totalEntries = mysqli_num_rows($dataTransaksiUmum);
-                                    $i = $totalEntries;
-
-                                    $queryDebet = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap'");
-                                    $queryKredit = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap'");
-                                    $queryDebetBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_debet FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu'");
-
-                                    $totalDebet = 0;
-                                    $totalKredit = 0;
-                                    $DebetBulanLalu = 0;
-
-                                    if ($rowDebet = mysqli_fetch_assoc($queryDebet)) {
-                                        $totalDebet = $rowDebet['total_masuk'];
-                                    }
-
-                                    if ($rowKredit = mysqli_fetch_assoc($queryKredit)) {
-                                        $totalKredit = $rowKredit['total_keluar'];
-                                    }
-
-                                    if ($rowDebetBulanLalu = mysqli_fetch_assoc($queryDebetBulanLalu)) {
-                                        $DebetBulanLalu = $rowDebetBulanLalu['total_debet'];
-                                    }
-
-                                    $saldo = $totalDebet - $totalKredit;
-                                    $saldoBulanLalu = $totalDebet - $DebetBulanLalu;
-                                    ?>
-                                    <tr>
-                                        <td style="width: 10%"></td>
-                                        <td style="width: 30%">Saldo bulan lalu</td>
-                                        <td style="width: 10%"><?php echo ($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
-                                        <td style="width: 10%"></td>
-                                        <td style="width: 10%"><?="Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
-                                        <td style="width: 20%"></td>
-                                    </tr>
-                                    <?php
-                                    
-                                    while($data=mysqli_fetch_array($dataTransaksiUmum)){
-                                        $idTransaksiMasukUmum = $data['id_tmn'];
-                                        $tanggal =  $data['tanggal'];
-                                        $tanggalMasuk = date("Y-m-d", strtotime($tanggal));
-                                        $idKategori = $data['id_kategori']; 
-                                        $kategori = $data['kategori'];                                          
-                                        $uraian = $data['uraian'];
-                                        $jumlahMasuk = $data['jumlah_masuk'];
-                                        $jumlahKeluar = $data['jumlah_keluar'];                                        
-                                        $keterangan = $data['keterangan'];                                      
-
-                                        // Menghitung saldo
-                                        $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggal'");
-                                        $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggal'");
-
-                                        $totalMasuk = 0;
-                                        $totalKeluar = 0;
-
-                                        if ($rowMasuk = mysqli_fetch_assoc($queryMasuk)) {
-                                            $totalMasuk = $rowMasuk['total_masuk'];
-                                        }
-
-                                        if ($rowKeluar = mysqli_fetch_assoc($queryKeluar)) {
-                                            $totalKeluar = $rowKeluar['total_keluar'];
-                                        }
-
-                                        $saldo = $totalMasuk - $totalKeluar;
-                                        $saldoBulanLalu = $saldo - $totalKeluar;
-
-                                        ?>
-                                        
+                    <div class="card-body px-3" style="text-align: center;">        
+                        <div class="card mb-4">     
+                            <div class="card-body">
+                                <table id="datatablesSimple1" class="table table-bordered border-dark teks-kecil">
+                                    <thead>
                                         <tr>
-                                            <td style="width: 10%"><?=$tanggalMasuk;?></td>
-                                            <td style="width: 30%"><?=$uraian;?></td>
-                                            <td style="width: 10%"><?php echo ($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.');?></td>
-                                            <td style="width: 10%"><?php echo ($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.');?></td>
+                                            <th style="width: 10%">Tanggal</th>
+                                            <th style="width: 30%">Uraian</th>                                            
+                                            <th style="width: 10%">Debet</th>
+                                            <th style="width: 10%">Kredit</th>
+                                            <th style="width: 10%">Saldo</th>
+                                            <th style="width: 20%">Keterangan</th>
+                                        </tr>
+
+
+
+                                    </thead>
+                                    <tbody>
+                                        <?php 
+                                        $queryTransaksiUmum = "SELECT
+                                        tmn.id_tmn, 
+                                        tmn.tanggal,
+                                        tmn.id_kategori,
+                                        k.nama_kategori AS kategori,
+                                        tmn.uraian,
+                                        tmn.jumlah AS jumlah_masuk,
+                                        0 AS jumlah_keluar,
+                                        tmn.keterangan
+                                        FROM 
+                                            transaksi_masuk_nonsiswa tmn
+                                        JOIN
+                                            kategori k ON tmn.id_kategori = k.id_kategori
+                                        WHERE 
+                                            tmn.id_tahun_ajar = '$idTahunAjar'
+                                            AND tmn.id_kategori = '$idKategoriLap'
+                                            AND tmn.bulan = '$bulanLalu'
+                                        GROUP BY 
+                                            tmn.uraian
+                                        UNION ALL
+                                        SELECT
+                                            tkn.id_tkn,
+                                            tkn.tanggal,
+                                            tkn.id_kategori,
+                                            k.nama_kategori AS id_kategori,
+                                            tkn.uraian,
+                                            0 AS jumlah_masuk,
+                                            tkn.jumlah AS jumlah_keluar,
+                                            tkn.keterangan
+                                        FROM 
+                                            transaksi_keluar_nonsiswa tkn
+                                        JOIN
+                                            kategori k ON tkn.id_kategori = k.id_kategori
+                                        WHERE 
+                                            tkn.id_tahun_ajar = '$idTahunAjar'
+                                            AND tkn.id_kategori = '$idKategoriLap'
+                                            AND tkn.bulan = '$bulanLalu'
+                                        GROUP BY 
+                                            tkn.uraian
+                                        ORDER BY tanggal ASC";
+
+                                        $dataTransaksiUmum = mysqli_query($conn, $queryTransaksiUmum);
+
+                                        $totalEntries = mysqli_num_rows($dataTransaksiUmum);
+                                        $i = $totalEntries;
+
+                                        $queryDebet = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap'");
+                                        $queryKredit = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap'");
+                                        $queryDebetBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_debet FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu'");
+
+                                        $totalDebet = 0;
+                                        $totalKredit = 0;
+                                        $DebetBulanLalu = 0;
+
+                                        if ($rowDebet = mysqli_fetch_assoc($queryDebet)) {
+                                            $totalDebet = $rowDebet['total_masuk'];
+                                        }
+
+                                        if ($rowKredit = mysqli_fetch_assoc($queryKredit)) {
+                                            $totalKredit = $rowKredit['total_keluar'];
+                                        }
+
+                                        if ($rowDebetBulanLalu = mysqli_fetch_assoc($queryDebetBulanLalu)) {
+                                            $DebetBulanLalu = $rowDebetBulanLalu['total_debet'];
+                                        }
+
+                                        $saldo = $totalDebet - $totalKredit;
+                                        $saldoBulanLalu = $totalDebet - $DebetBulanLalu;
+                                        ?>
+                                        <tr>
+                                            <td style="width: 10%"></td>
+                                            <td style="width: 30%">Saldo bulan lalu</td>
+                                            <td style="width: 10%"><?php echo ($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
+                                            <td style="width: 10%"></td>
+                                            <td style="width: 10%"><?="Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
+                                            <td style="width: 20%"></td>
+                                        </tr>
+                                        <?php
+                                        
+                                        while($data=mysqli_fetch_array($dataTransaksiUmum)){
+                                            $idTransaksiMasukUmum = $data['id_tmn'];
+                                            $tanggal =  $data['tanggal'];
+                                            $tanggalMasuk = date("Y-m-d", strtotime($tanggal));
+                                            $idKategori = $data['id_kategori']; 
+                                            $kategori = $data['kategori'];                                          
+                                            $uraian = $data['uraian'];
+                                            $jumlahMasuk = $data['jumlah_masuk'];
+                                            $jumlahKeluar = $data['jumlah_keluar'];                                        
+                                            $keterangan = $data['keterangan'];                                      
+
+                                            // Menghitung saldo
+                                            $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggal'");
+                                            $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggal'");
+
+                                            $totalMasuk = 0;
+                                            $totalKeluar = 0;
+
+                                            if ($rowMasuk = mysqli_fetch_assoc($queryMasuk)) {
+                                                $totalMasuk = $rowMasuk['total_masuk'];
+                                            }
+
+                                            if ($rowKeluar = mysqli_fetch_assoc($queryKeluar)) {
+                                                $totalKeluar = $rowKeluar['total_keluar'];
+                                            }
+
+                                            $saldo = $totalMasuk - $totalKeluar;
+                                            $saldoBulanLalu = $saldo - $totalKeluar;
+
+                                            ?>
+                                            
+                                            <tr>
+                                                <td style="width: 10%"><?=$tanggalMasuk;?></td>
+                                                <td style="width: 30%"><?=$uraian;?></td>
+                                                <td style="width: 10%"><?php echo ($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.');?></td>
+                                                <td style="width: 10%"><?php echo ($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.');?></td>
+                                                <td style="width: 10%"><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
+                                                <td style="width: 20%"><?=$keterangan;?></tds>
+                                            </tr>  
+                                        <?php
+                                        };
+                                        ?>  
+                                    </tbody>
+                                        <tr>
+                                            <td colspan="2" style="text-align: center;">Total</td>
+                                            <td style="width: 10%"><?= "Rp "  . number_format($totalMasuk, 0, ',', '.') ;?></td>
+                                            <td style="width: 10%"><?= "Rp " . number_format($totalKeluar, 0, ',', '.') ;?></td>
                                             <td style="width: 10%"><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
-                                            <td style="width: 20%"><?=$keterangan;?></tds>
-                                        </tr>  
-                                    <?php
-                                    };
-                                    ?>  
-                                </tbody>
-                                    <tr>
-                                        <td colspan="2" style="text-align: center;">Total</td>
-                                        <td style="width: 10%"><?= "Rp "  . number_format($totalMasuk, 0, ',', '.') ;?></td>
-                                        <td style="width: 10%"><?= "Rp " . number_format($totalKeluar, 0, ',', '.') ;?></td>
-                                        <td style="width: 10%"><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
-                                        <td style="width: 20%"></td>
-                                    </tr>
-                            </table>
-                            <table>
-                                <tbody>
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row" style="text-align: center;">
-                            <div class="col">
-                            1 of 2
+                                            <td style="width: 20%"></td>
+                                        </tr>
+                                </table>
+
                             </div>
-                            <div class="col">
-                            2 of 2
+                            <?php 
+                            $queryJabatan = mysqli_query($conn, "SELECT
+                            MAX(CASE WHEN jabatan = 'Kepala Sekolah' THEN nama_lengkap END) AS kepala_sekolah,
+                            MAX(CASE WHEN jabatan = 'Bendahara Sekolah' THEN nama_lengkap END) AS bendahara_sekolah,
+                            MAX(CASE WHEN jabatan = 'Pembuat Laporan' THEN nama_lengkap END) AS pembuat_laporan,
+                            MAX(CASE WHEN jabatan = 'Pemeriksa' THEN nama_lengkap END) AS pemeriksa,
+                            MAX(CASE WHEN jabatan = 'Kepala Sekolah' THEN nip END) AS nip_kepala_sekolah,
+                            MAX(CASE WHEN jabatan = 'Bendahara Sekolah' THEN nip END) AS nip_bendahara_sekolah,
+                            MAX(CASE WHEN jabatan = 'Pembuat Laporan' THEN nip END) AS nip_pembuat_laporan,
+                            MAX(CASE WHEN jabatan = 'Pemeriksa' THEN nip END) AS nip_pemeriksa
+                            FROM guru;");
+
+                            $rowJabatan = mysqli_fetch_assoc($queryJabatan);
+                            $bendahara = $rowJabatan['bendahara_sekolah'];
+                            $pembuatLaporan = $rowJabatan['pembuat_laporan'];
+                            $kepalaSekolah = $rowJabatan['kepala_sekolah'];
+                            $pemeriksa = $rowJabatan['pemeriksa'];
+                            $nipBendahara = $rowJabatan['nip_bendahara_sekolah'];
+                            $nipPembuatLaporan = $rowJabatan['nip_pembuat_laporan'];
+                            $nipKepalaSekolah = $rowJabatan['nip_kepala_sekolah'];
+                            $nipPemeriksa = $rowJabatan['nip_pemeriksa']
+
+                            ?>
+                            <div class="row" style="text-align: center;">
+                                <div class="col">
+                                    <h6>Bendahara Sekolah<h6><br><br><br>
+                                    <p><?=$bendahara;?></p>
+                                    <p>NIP : <?=$nipPembuatLaporan;?></p>
+                                    </div>
+                                    <div class="col">
+                                    <h6>Pembuat Laporan<h6><br><br><br>
+                                    <p><?=$pembuatLaporan;?></p>
+                                    <p>NIP : <?=$nipPembuatLaporan;?></p>
+                                </div>
+                            </div>
+                            
+                            <div class="row" style="text-align: center;">
+                            <div class="col"><br><br>
+                                    <h6>Bendahara Sekolah<h6><br><br><br>
+                                    <p><?=$kepalaSekolah;?></p>
+                                    <p>NIP : <?=$nipKepalaSekolah;?></p>
+                                    </div>
+                                    <div class="col"><br><br>
+                                    <h6>Pembuat Laporan<h6><br><br><br>
+                                    <p><?=$pemeriksa;?></p>
+                                    <p>NIP : <?=$nipPemeriksa;?></p>
+                                </div>
                             </div>
                         </div>
                     </div>                       
