@@ -13,6 +13,18 @@ include 'sidebar_function.php';
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Dashboard - SIM Keuangan</title>
+        <style>
+            @media print {
+                .sb-sidenav, .accordion, .sb-sidenav-dark, .sb-sidenav-menu, .nav, .nav-link, .sb-nav-link-icon, .fas, .fa-tachometer-alt, .sb-sidenav-menu-heading, .nav-link, .collapsed, .sb-nav-link-icon, .sb-sidenav-collapse-arrow, .collapse, .sb-sidenav-menu-nested, .nav, .nav-link, .sb-sidenav-footer, .small, .modal {
+                    display: none !important;
+                }
+                body {
+                margin: 0 !important;
+                padding: 0 !important;
+                }
+            }
+        </style>
+
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -39,7 +51,7 @@ include 'sidebar_function.php';
                                     <a class="nav-link" href="transaksi_keluar_siswa.php">Transaksi Keluar</a>
                                 </nav>
                             </div>
-                            <a class="nav-link col1lapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts1" aria-expanded="false" aria-controls="collapseLayouts1">
+                            <a class="nav-link collapsed" href="transaksi.php" data-bs-toggle="collapse" data-bs-target="#collapseLayouts1" aria-expanded="false" aria-controls="collapseLayouts1">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Tabungan
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -87,22 +99,6 @@ include 'sidebar_function.php';
                                     <a class="nav-link" href="#">Laporan</a>
                                 </nav>
                             </div>
-
-
-
-                            <div class="sb-sidenav-menu-heading">Menu lain</div>
-                            <a class="nav-link" href="#">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                ...
-                            </a>
-                            <a class="nav-link" href="#">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                ...
-                            </a>
-                            <a class="nav-link" href="#">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                ...
-                            </a>
 
                             <div class="sb-sidenav-menu-heading">Data</div>
                             <a class="nav-link" href="guru.php">

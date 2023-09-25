@@ -7,6 +7,22 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Dashboard - SIM Keuangan</title>
+        <style>
+            @media print {
+                .sb-topnav, .navbar, .navbar-expand, .navbar-dark, .bg-dark, .navbar-brand, .ps-3,
+                .btn, .btn-link, .btn-sm, .order-1, .order-lg-0, .me-4, .me-lg-0, .d-none, .d-md-inline-block,
+                .form-inline, .ms-auto, .me-0, .me-md-3, .my-2, .my-md-0, .navbar-nav, .ms-md-0, .me-3,
+                .me-lg-4, .nav-item, .dropdown, .nav-link, .dropdown-toggle, .dropdown-menu, .dropdown-menu-end,
+                .dropdown-item, .dropdown-divider {
+                    display: none !important;
+                }
+                body {
+                margin: 0 !important;
+                padding: 0 !important;
+                }
+            }
+        </style>
+
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -20,8 +36,7 @@
             <!-- Navbar Search-->
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                    
                 </div>
             </form>
             <!-- Navbar-->
