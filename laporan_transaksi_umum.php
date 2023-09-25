@@ -14,21 +14,30 @@ require 'config.php';
         <meta name="author" content="" />
         <title>Halaman Transaksi Umum</title>
         <style>
-            .no-link-style {
-            text-decoration: none; /* Menghapus garis bawah */
-            color: inherit; /* Menggunakan warna teks bawaan dari elemen induk (h4) */
-            cursor: pointer; /* Mengubah ikon kursor menjadi tangan ketika mengarahkan tautan */
+            @media print {
+                .mt-4, .breadcrumb-item, .container-fluid, .px-4, .breadcrumb, .mb-4, .active, 
+                .px-1, .row, .row-cols-auto, .input-group, .mb-3, .input-group-prepend, .input-group-text,
+                .custom-select, .btn, .col, .btn-primary, .card, .mb-3, h3, .ol, .layoutSidenav, .layoutSidenav_content,
+                .form, .option
+                 {
+                    display: none;
+                }
+                body {
+                margin: 0 !important;
+                padding: 0 !important;
+                }
             }
         </style>
+
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
         <?php include 'navbar.php'; ?>
-        <div id="layoutSidenav">
+        <div id="layoutSidenav" class="layoutSidenav">
             <?php include 'sidebar.php'; ?>
-            <div id="layoutSidenav_content">
+            <div id="layoutSidenav_content" class="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
                         <h3 class="mt-4">Laporan Keuangan Kas Umum</h3>
@@ -43,7 +52,7 @@ require 'config.php';
                         </ol>
   
                         <div class="container-fluid px-1">
-                            <form method="post">    
+                            <form method="post" class="form">    
                                 <div class="row row-cols-auto">                                
                                     <div class="col">
                                         <div class="input-group mb-3">
@@ -116,37 +125,37 @@ require 'config.php';
                     if(isset($_POST['btnTampilLapUmum'])){
                         $tahunAjarLap = $_POST['tahunAjar'];
                         $bulanLalu = $_POST['bulan'];
-                        $idKategoriLap = $_POST['kategori'];
-                    } 
+                        $idKategoriLap = $_POST['kategori'];                    } 
 
                     $queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
                     $rowKategori = mysqli_fetch_assoc($queryKategori);
                     $namaKategori = $rowKategori['nama_kategori'];
-
                     ?>    
-                    </div><br>                    
-                                
-                    <div class="card mb-4">
+                    </div><br>
                     <div class="row" style="text-align: center;">
-
-
                         <h5>Laporan Keuangan <?=$namaKategori?> </h5>
                         <h5>Bulan <?= $bulanLalu;?> </h5>
                         <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>  
-                    </div>
+                    </div><br><br>                    
+                                
+                    <div class="card mb-4">
+                    
 
 
                         <div class="card-body">
                             <table id="datatablesSimple1" class="table table-bordered border-dark">
                                 <thead>
                                     <tr>
-                                        <th>Tanggal</th>
-                                        <th>Uraian</th>                                            
-                                        <th>Debet</th>
-                                        <th>Kredit</th>
-                                        <th>Saldo</th>
-                                        <th>Keterangan</th>
+                                        <th style="width: 10%">Tanggal</th>
+                                        <th style="width: 30%">Uraian</th>                                            
+                                        <th style="width: 10%">Debet</th>
+                                        <th style="width: 10%">Kredit</th>
+                                        <th style="width: 10%">Saldo</th>
+                                        <th style="width: 20%">Keterangan</th>
                                     </tr>
+
+
+
                                 </thead>
                                 <tbody>
                                     <?php 
@@ -195,6 +204,39 @@ require 'config.php';
 
                                     $totalEntries = mysqli_num_rows($dataTransaksiUmum);
                                     $i = $totalEntries;
+
+                                    $queryDebet = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap'");
+                                    $queryKredit = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap'");
+                                    $queryDebetBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_debet FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu'");
+
+                                    $totalDebet = 0;
+                                    $totalKredit = 0;
+                                    $DebetBulanLalu = 0;
+
+                                    if ($rowDebet = mysqli_fetch_assoc($queryDebet)) {
+                                        $totalDebet = $rowDebet['total_masuk'];
+                                    }
+
+                                    if ($rowKredit = mysqli_fetch_assoc($queryKredit)) {
+                                        $totalKredit = $rowKredit['total_keluar'];
+                                    }
+
+                                    if ($rowDebetBulanLalu = mysqli_fetch_assoc($queryDebetBulanLalu)) {
+                                        $DebetBulanLalu = $rowDebetBulanLalu['total_debet'];
+                                    }
+
+                                    $saldo = $totalDebet - $totalKredit;
+                                    $saldoBulanLalu = $totalDebet - $DebetBulanLalu;
+                                    ?>
+                                    <tr>
+                                        <td style="width: 10%"></td>
+                                        <td style="width: 30%">Saldo bulan lalu</td>
+                                        <td style="width: 10%"><?php echo ($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
+                                        <td style="width: 10%"></td>
+                                        <td style="width: 10%"><?="Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
+                                        <td style="width: 20%"></td>
+                                    </tr>
+                                    <?php
                                     
                                     while($data=mysqli_fetch_array($dataTransaksiUmum)){
                                         $idTransaksiMasukUmum = $data['id_tmn'];
@@ -223,22 +265,43 @@ require 'config.php';
                                         }
 
                                         $saldo = $totalMasuk - $totalKeluar;
+                                        $saldoBulanLalu = $saldo - $totalKeluar;
 
                                         ?>
+                                        
                                         <tr>
-                                            <td><?=$tanggalMasuk;?></td>
-                                            <td><?=$uraian;?></td>
-                                            <td><?php echo ($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.');?></td>
-                                            <td><?php echo ($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.');?></td>
-                                            <td><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
-                                            <td><?=$keterangan;?></tds>
-                                        </tr>                                        
+                                            <td style="width: 10%"><?=$tanggalMasuk;?></td>
+                                            <td style="width: 30%"><?=$uraian;?></td>
+                                            <td style="width: 10%"><?php echo ($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.');?></td>
+                                            <td style="width: 10%"><?php echo ($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.');?></td>
+                                            <td style="width: 10%"><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
+                                            <td style="width: 20%"><?=$keterangan;?></tds>
+                                        </tr>  
                                     <?php
                                     };
-
-                                    ?>
+                                    ?>  
+                                </tbody>
+                                    <tr>
+                                        <td colspan="2" style="text-align: center;">Total</td>
+                                        <td style="width: 10%"><?= "Rp "  . number_format($totalMasuk, 0, ',', '.') ;?></td>
+                                        <td style="width: 10%"><?= "Rp " . number_format($totalKeluar, 0, ',', '.') ;?></td>
+                                        <td style="width: 10%"><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
+                                        <td style="width: 20%"></td>
+                                    </tr>
+                            </table>
+                            <table>
+                                <tbody>
+                                    
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="row" style="text-align: center;">
+                            <div class="col">
+                            1 of 2
+                            </div>
+                            <div class="col">
+                            2 of 2
+                            </div>
                         </div>
                     </div>                       
                 </main>
