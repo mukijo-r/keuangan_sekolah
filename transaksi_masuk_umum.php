@@ -293,7 +293,7 @@ require 'config.php';
                 <!-- Modal Body -->
                 <form method="post">
                     <div class="modal-body">
-                        <div>
+                        <div class="mb-3">
                             <label for="tanggal">Tanggal :</label>       
                             <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
                         </div> 
