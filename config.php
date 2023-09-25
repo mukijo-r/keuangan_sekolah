@@ -3,7 +3,7 @@
 $tahun_ajar = "2020/2021";
 $tahunAjarLap = $tahun_ajar;
 $idKategoriLap = 2;
-$bulanLalu = strftime('%B', strtotime(date('Y-m', strtotime('-1 month')))); 
+$bulanLalu = strtotime('%B', strtotime(date('Y-m', strtotime('-1 month')))); 
 
 if ($bulanLalu == 'January') {
     $bulanLalu = 'Januari';
