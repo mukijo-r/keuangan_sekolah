@@ -1642,34 +1642,34 @@
         }
     } 
 
-    // Tambah Kategori Cashflow
-    if(isset($_POST['tambahKategoriCashflow'])){
-        $kelompok = $_POST['kelompok'];
-        $kategori = $_POST['kategori'];
+    // Tambah Group Cashflow
+    if(isset($_POST['tambahGroupCashflow'])){
+        $jenis = $_POST['jenis'];
+        $group = $_POST['group'];
         $keterangan = $_POST['keterangan'];
 
         try {
-            $queryInsertKategori = "INSERT INTO `kategori_cashflow`
-            (`grup`, `nama_kategori`, `keterangan`) 
+            $queryInsertGroup = "INSERT INTO `group_cashflow`
+            (`jenis`, `group`, `keterangan`) 
             VALUES 
-            ('$kelompok','$kategori','$keterangan')";
+            ('$jenis','$group','$keterangan')";
                 
-            $insertKategori = mysqli_query($conn, $queryInsertKategori);
+            $insertGroup = mysqli_query($conn, $queryInsertGroup);
 
-            if (!$insertKategori) {
+            if (!$insertGroup) {
                 throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
             }
 
             // Query SELECT untuk memeriksa apakah data sudah masuk ke database
-            $queryCek = "SELECT * FROM kategori_cashflow WHERE nama_kategori='$kategori'";
+            $queryCek = "SELECT * FROM group_cashflow WHERE group='$group'";
             
             $result = mysqli_query($conn, $queryCek);
 
             if ($result && mysqli_num_rows($result) > 0) {
                 // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
-                $_SESSION['flash_message'] = 'Tambah kategori berhasil';
+                $_SESSION['flash_message'] = 'Tambah group berhasil';
                 $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
-                header('location:kategori_cashflow.php');
+                header('location:group_cashflow.php');
                 exit;
             } else {
                 // Data tidak ada dalam database, itu berarti gagal
@@ -1679,47 +1679,47 @@
             // Tangani exception jika terjadi kesalahan
             $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
-            header('location:kategori_cashflow.php');
+            header('location:group_cashflow.php');
             exit;
         }
     }
 
-    // Ubah Kategori Cashflow
-    if(isset($_POST['ubahKategoriCashflow'])){
-        $idKatCashflow = $_POST['idKatCashflow'];
-        $kelompok = $_POST['kelompok'];
-        $kategori = $_POST['kategori'];
+    // Ubah Group Cashflow
+    if(isset($_POST['ubahGroupCashflow'])){
+        $idGroupCashflow = $_POST['idGroupCashflow'];
+        $jenis = $_POST['jenis'];
+        $group = $_POST['group'];
         $keterangan = $_POST['keterangan'];
 
         try {
-            $queryUpdateKategori = "UPDATE `kategori_cashflow` 
+            $queryUpdateGroup = "UPDATE `group_cashflow` 
             SET 
-            `grup`='$kelompok',
-            `nama_kategori`='$kategori',
+            `jenis`='$jenis',
+            `group`='$group',
             `keterangan`='$keterangan' 
             WHERE 
-            `id_kategori_cashflow`='$idKatCashflow'";
+            `id_group_cashflow`='$idGroupCashflow'";
                 
-            $updateKategori = mysqli_query($conn, $queryUpdateKategori);
+            $updateGroup = mysqli_query($conn, $queryUpdateGroup);
 
-            if (!$updateKategori) {
+            if (!$updateGroup) {
                 throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
             }
 
             // Query SELECT untuk memeriksa apakah data sudah masuk ke database
-            $queryCek = "SELECT * FROM `kategori_cashflow` 
+            $queryCek = "SELECT * FROM `group_cashflow` 
             WHERE 
-            `grup`='$kelompok' AND
-            `nama_kategori`='$kategori' AND
+            `jenis`='$jenis' AND
+            `group`='$group' AND
             `keterangan`='$keterangan'";
             
             $result = mysqli_query($conn, $queryCek);
 
             if ($result && mysqli_num_rows($result) > 0) {
                 // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
-                $_SESSION['flash_message'] = 'Update kategori berhasil';
+                $_SESSION['flash_message'] = 'Update group berhasil';
                 $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
-                header('location:kategori_cashflow.php');
+                header('location:group_cashflow.php');
                 exit;
             } else {
                 // Data tidak ada dalam database, itu berarti gagal
@@ -1729,36 +1729,36 @@
             // Tangani exception jika terjadi kesalahan
             $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
-            header('location:kategori_cashflow.php');
+            header('location:group_cashflow.php');
             exit;
         }
     }
 
-    // Hapus Kategori Cashflow
-    if(isset($_POST['hapusKategoriCashflow'])){
-        $idKatCashflow = $_POST['idKatCashflow'];
+    // Hapus Group Cashflow
+    if(isset($_POST['hapusGroupCashflow'])){
+        $idGroupCashflow = $_POST['idGroupCashflow'];
 
         try {
-            $queryDeleteKategori = "DELETE FROM `kategori_cashflow` WHERE `id_kategori_cashflow`='$idKatCashflow'";
+            $queryDeleteGroup = "DELETE FROM `group_cashflow` WHERE `id_group_cashflow`='$idGroupCashflow'";
                 
-            $deleteKategori = mysqli_query($conn, $queryDeleteKategori);
+            $deleteGroup = mysqli_query($conn, $queryDeleteGroup);
 
-            if (!$deleteKategori) {
+            if (!$deleteGroup) {
                 throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
             }
 
             // Query SELECT untuk memeriksa apakah data sudah masuk ke database
-            $queryCek = "SELECT * FROM `kategori_cashflow` 
+            $queryCek = "SELECT * FROM `group_cashflow` 
             WHERE 
-            `id_kategori_cashflow`='$idKatCashflow'";
+            `id_group_cashflow`='$idGroupCashflow'";
             
             $result = mysqli_query($conn, $queryCek);
 
             if ($result && mysqli_num_rows($result) === 0) {
                 // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
-                $_SESSION['flash_message'] = 'Hapus kategori berhasil';
+                $_SESSION['flash_message'] = 'Hapus group berhasil';
                 $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
-                header('location:kategori_cashflow.php');
+                header('location:group_cashflow.php');
                 exit;
             } else {
                 // Data tidak ada dalam database, itu berarti gagal
@@ -1768,7 +1768,7 @@
             // Tangani exception jika terjadi kesalahan
             $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
-            header('location:kategori_cashflow.php');
+            header('location:group_cashflow.php');
             exit;
         }
     }
