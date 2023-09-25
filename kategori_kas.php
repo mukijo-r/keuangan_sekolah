@@ -135,7 +135,7 @@ require 'config.php';
                                                     </select>
                                                 <br>
                                                 <label for="keterangan">Keterangan :</label>   
-                                                <textarea name="keterangan" class="form-control" value="<?=$keterangan;?>" id="keterangan" rows="2"></textarea>
+                                                <textarea name="keterangan" class="form-control" id="keterangan" rows="2"><?=$keterangan;?></textarea>
                                             </div>
                                             <div class="text-center">
                                                 <input type="hidden" name="idk" value="<?=$idKat;?>">
