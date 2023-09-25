@@ -72,7 +72,7 @@ require 'config.php';
                                     while($data=mysqli_fetch_array($dataGroup)){
                                         $idGroupCashflow = $data['id_group_cashflow'];
                                         $jenis = $data['jenis'];
-                                        $groupCashflow = $data['group'];
+                                        $groupCashflow = $data['groop'];
                                         $keterangan = $data['keterangan'];                                    
                                     ?>
                                     <tr>
@@ -221,6 +221,4 @@ require 'config.php';
         </div>
     </div>
     </div>
-
-    
 </html>
