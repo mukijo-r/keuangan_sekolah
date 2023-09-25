@@ -32,6 +32,14 @@ require 'config.php';
                 font-size: 0.8em;
             }
 
+            .row p {
+                margin-bottom: 5px; /* Sesuaikan nilai sesuai kebutuhan */
+            }
+
+            .row h5 {
+                margin-bottom: 5px; /* Sesuaikan nilai sesuai kebutuhan */
+            }
+
         </style>
 
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
@@ -135,15 +143,28 @@ require 'config.php';
                     $queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
                     $rowKategori = mysqli_fetch_assoc($queryKategori);
                     $namaKategori = $rowKategori['nama_kategori'];
-                    ?>    
+                    ?>
+                    
+                    
+
+
                     </div><br>
-                    <div class="row" style="text-align: center;">
-                        <h5>Laporan Keuangan <?=$namaKategori?> </h5>
-                        <h5>Bulan <?= $bulanLalu;?> </h5>
-                        <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>  
-                    </div><br><br>                    
-                    <div class="card-body px-3" style="text-align: center;">        
-                        <div class="card mb-4">     
+
+
+                    <div class="row" style="text-align: center; border:none">
+                        <div class="col-md-3" style="text-align: right; border:none">
+                            <img src="logo.png" width="100px" height="100px">
+                        </div>
+                        <div class="col-md-7">
+                            <h5>Laporan Keuangan <?=$namaKategori?> </h5>
+                            <h5>Bulan <?= $bulanLalu;?> </h5>
+                            <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>
+                        </div>      
+                    </div><br><br>  
+                    
+                    
+                    <div class="card-body px-3">        
+                        <div class="card mb-4">
                             <div class="card-body">
                                 <table id="datatablesSimple1" class="table table-bordered border-dark teks-kecil">
                                     <thead>
@@ -155,9 +176,6 @@ require 'config.php';
                                             <th style="width: 10%">Saldo</th>
                                             <th style="width: 20%">Keterangan</th>
                                         </tr>
-
-
-
                                     </thead>
                                     <tbody>
                                         <?php 
@@ -290,7 +308,7 @@ require 'config.php';
                                             <td style="width: 10%"><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
                                             <td style="width: 20%"></td>
                                         </tr>
-                                </table>
+                                </table><br><br>
 
                             </div>
                             <?php 
@@ -316,7 +334,7 @@ require 'config.php';
                             $nipPemeriksa = $rowJabatan['nip_pemeriksa']
 
                             ?>
-                            <div class="row" style="text-align: center;">
+                            <div class="row" style="text-align: center; teks-kecil">
                                 <div class="col">
                                     <h6>Bendahara Sekolah<h6><br><br><br>
                                     <p><?=$bendahara;?></p>
@@ -329,14 +347,14 @@ require 'config.php';
                                 </div>
                             </div>
                             
-                            <div class="row" style="text-align: center;">
+                            <div class="row" style="text-align: center; teks-kecil">
                             <div class="col"><br><br>
-                                    <h6>Bendahara Sekolah<h6><br><br><br>
+                                    <h6>Kepala Sekolah<h6><br><br><br>
                                     <p><?=$kepalaSekolah;?></p>
                                     <p>NIP : <?=$nipKepalaSekolah;?></p>
                                     </div>
                                     <div class="col"><br><br>
-                                    <h6>Pembuat Laporan<h6><br><br><br>
+                                    <h6>Telah diperiksa<h6><br><br><br>
                                     <p><?=$pemeriksa;?></p>
                                     <p>NIP : <?=$nipPemeriksa;?></p>
                                 </div>
