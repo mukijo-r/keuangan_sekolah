@@ -78,8 +78,8 @@ include 'sidebar_function.php';
                             </a>
                             <div class="collapse" id="collapseLayouts3" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="kategori_cashflow.php">Kategori</a>
-                                    <a class="nav-link" href="guru.php">Sub Kategori</a>
+                                    <a class="nav-link" href="group_cashflow.php">Group</a>
+                                    <a class="nav-link" href="sub_kategori_cashflow.php">Sub Kategori</a>
                                     <a class="nav-link" href="guru.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="guru.php">Transaksi Keluar</a>
                                 </nav>
