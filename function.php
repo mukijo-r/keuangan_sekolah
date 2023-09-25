@@ -1650,7 +1650,7 @@
 
         try {
             $queryInsertGroup = "INSERT INTO `group_cashflow`
-            (`jenis`, `group`, `keterangan`) 
+            (`jenis`, `groop`, `keterangan`) 
             VALUES 
             ('$jenis','$group','$keterangan')";
                 
@@ -1661,7 +1661,7 @@
             }
 
             // Query SELECT untuk memeriksa apakah data sudah masuk ke database
-            $queryCek = "SELECT * FROM group_cashflow WHERE group='$group'";
+            $queryCek = "SELECT * FROM group_cashflow WHERE groop='$group'";
             
             $result = mysqli_query($conn, $queryCek);
 
@@ -1695,7 +1695,7 @@
             $queryUpdateGroup = "UPDATE `group_cashflow` 
             SET 
             `jenis`='$jenis',
-            `group`='$group',
+            `groop`='$group',
             `keterangan`='$keterangan' 
             WHERE 
             `id_group_cashflow`='$idGroupCashflow'";
@@ -1710,7 +1710,7 @@
             $queryCek = "SELECT * FROM `group_cashflow` 
             WHERE 
             `jenis`='$jenis' AND
-            `group`='$group' AND
+            `groop`='$group' AND
             `keterangan`='$keterangan'";
             
             $result = mysqli_query($conn, $queryCek);
@@ -1769,6 +1769,144 @@
             $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
             header('location:group_cashflow.php');
+            exit;
+        }
+    }
+
+    // Tambah Sub Kategori Cashflow
+    if(isset($_POST['tambahSubCashflow'])){
+        $idGroupCashflow = $_POST['group'];
+        $subKategori = $_POST['subKategori'];
+        $keterangan = $_POST['keterangan'];
+
+        try {
+            $queryInsertSubCashflow = "INSERT INTO 
+            `sub_kategori_cashflow`
+            (`id_group_cashflow`, `nama_sub_kategori`,`keterangan`) 
+            VALUES 
+            ('$idGroupCashflow','$subKategori','$keterangan');";
+                
+            $insertSubCashflow = mysqli_query($conn, $queryInsertSubCashflow);
+
+            if (!$insertSubCashflow) {
+                throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM `sub_kategori_cashflow` WHERE `nama_sub_kategori`='$subKategori'";
+            
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Tambah sub kategori cash flow berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:sub_kategori_cashflow.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data tidak ditemukan setelah ditambahkan");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryCek . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:sub_kategori_cashflow.php');
+            exit;
+        }
+    }
+
+    // Ubah Sub Kategori Cashflow
+    if(isset($_POST['ubahSubCashflow'])){
+        $idSubCashflow = $_POST['idSubSubCashflow'];
+        $idGroupCashflow = $_POST['group'];
+        $subKategori = $_POST['subKategori'];
+        $keterangan = $_POST['keterangan'];
+
+        try {
+            $queryUpdateSubCashflow = "UPDATE 
+            `sub_kategori_cashflow` 
+            SET 
+            `id_group_cashflow`='$idGroupCashflow',
+            `nama_sub_kategori`='$subKategori',
+            `keterangan`='$keterangan' 
+            WHERE
+            `id_subkategori_cashflow`= '$idSubCashflow'
+            ";
+                
+            $updateSubCashflow = mysqli_query($conn, $queryUpdateSubCashflow);
+
+            if (!$updateSubCashflow) {
+                throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM `sub_kategori_cashflow` 
+            WHERE
+            `id_subkategori_cashflow`= '$idSubCashflow' AND
+            `id_group_cashflow`='$idGroupCashflow' AND
+            `nama_sub_kategori`='$subKategori' AND
+            `keterangan`='$keterangan'";
+
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) === 1) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Update sub kategori cash flow berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:sub_kategori_cashflow.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data tidak berubah setelah diupdate");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:sub_kategori_cashflow.php');
+            exit;
+        }
+    }
+
+    // Hapus Sub Kategori Cashflow
+    if(isset($_POST['hapusSubCashflow'])){
+        $idSubCashflow = $_POST['idSubSubCashflow'];
+
+        try {
+            $queryDeleteSubCashflow = "DELETE FROM `sub_kategori_cashflow` 
+            WHERE 
+            `id_subkategori_cashflow`='$idSubCashflow';
+            ";
+                
+            $deleteSubCashflow = mysqli_query($conn, $queryDeleteSubCashflow);
+
+            if (!$deleteSubCashflow) {
+                throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM `sub_kategori_cashflow` 
+            WHERE
+            `id_subkategori_cashflow`= '$idSubCashflow';";
+
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) === 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Hapus sub kategori cash flow berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:sub_kategori_cashflow.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data masih ada setelah dihapus");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:sub_kategori_cashflow.php');
             exit;
         }
     }
