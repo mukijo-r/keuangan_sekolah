@@ -65,6 +65,7 @@ require 'config.php';
                                             <th>Periode</th>
                                             <th>Uraian</th>                                            
                                             <th>Jumlah</th>
+                                            <th>Saldo</th>
                                             <th>Pencatat</th>
                                             <th>Keterangan</th>
                                             <th colspan='2'>Aksi</th>
@@ -106,13 +107,22 @@ require 'config.php';
                                         $guru = $data['nama_guru'];
                                         $keterangan = $data['keterangan'];                                      
 
-                                        // Ambil nominal penetapan
-                                        // $queryPenetapan = mysqli_query($conn, "SELECT nominal FROM penetapan WHERE id_siswa = '$idSiswa' AND id_sub_kategori = '$idSubKategori'");
-                                        // $rowPenetapan = mysqli_fetch_assoc($queryPenetapan);
-                                        // $penetapan = $rowPenetapan['nominal'];
+                                        // Menghitung saldo
+                                        $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_siswa WHERE id_sub_kategori = '$idSubKategori' AND tanggal <= '$tanggal'");
+                                        $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_siswa WHERE id_sub_kategori = '$idSubKategori' AND tanggal <= '$tanggal'");
 
-                                        // // Hitung tunggakan
-                                        // $tunggakan = $penetapan - $nominal;
+                                        $totalMasuk = 0;
+                                        $totalKeluar = 0;
+
+                                        if ($rowMasuk = mysqli_fetch_assoc($queryMasuk)) {
+                                            $totalMasuk = $rowMasuk['total_masuk'];
+                                        }
+
+                                        if ($rowKeluar = mysqli_fetch_assoc($queryKeluar)) {
+                                            $totalKeluar = $rowKeluar['total_keluar'];
+                                        }
+
+                                        $saldo = $totalMasuk - $totalKeluar;
 
                                         ?>
                                         <tr>
@@ -124,6 +134,7 @@ require 'config.php';
                                             <td><?=$bulan;?></td>
                                             <td><?=$uraian;?></td>
                                             <td><?="Rp " . number_format($jumlah, 0, ',', '.');?></td>
+                                            <td><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
                                             <td><?=$guru;?></td>
                                             <td><?=$keterangan;?></td>
                                             <td>
