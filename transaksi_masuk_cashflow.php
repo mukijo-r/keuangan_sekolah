@@ -25,7 +25,7 @@ require 'config.php';
                     <div class="container-fluid px-4">
                         <h2 class="mt-4">Pemasukan Cash Flow</h2>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Transaksi Umum / Transaksi Masuk</li>                            
+                            <li class="breadcrumb-item active">Cash Flow / Transaksi Masuk</li>                            
                         </ol>                        
                         <br>
                         <div class="container-fluid px-4">
@@ -99,7 +99,7 @@ require 'config.php';
                                         $idGroup = $data['id_group'];                                                                 
                                         $group = $data['groop'];
                                         $idSubCashflow = $data['id_subkategori_cashflow'];
-                                        $subCashflow = $data['subkategori_cashflow'];
+                                        $subCashflow = $data['sub_kategori'];
                                         $bulan = $data['bulan'];                                        
                                         $jumlah = $data['jumlah'];
                                         $idGuru = $data['id_guru'];
@@ -108,7 +108,7 @@ require 'config.php';
 
                                         // Menghitung saldo
                                         $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE  tanggal <= '$tanggal'");
-                                        $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE AND tanggal <= '$tanggal'");
+                                        $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggal'");
 
                                         $totalMasuk = 0;
                                         $totalKeluar = 0;
@@ -137,38 +137,45 @@ require 'config.php';
                                             <td><?=$keterangan;?></td>
                                             <td>
                                                 <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditCashflowMasuk<?=$idCashflowMasuk;?>">Edit</button>        
-                                                <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusCashflowMasuk<?=$idCashflowMasukm;?>">Hapus</button> 
+                                                <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusCashflowMasuk<?=$idCashflowMasuk;?>">Hapus</button> 
                                             </td>
                                         </tr>
 
                                         <!-- Modal Edit Transaksi Masuk Cashflow -->
-                                        <div class="modal fade" id="modalEditTransCashflow<?=$idTransaksiMasukCashflow;?>">
+                                        <div class="modal fade" id="modalEditCashflowMasuk<?=$idCashflowMasuk;?>">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <!-- Modal Header -->
                                                     <div class="modal-header">
-                                                        <h4 class="modal-title">Edit Transaksi Masuk </h4>
+                                                        <h4 class="modal-title">Ubah Transaksi Masuk </h4>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <!-- Modal Body -->
                                                     <form method="post">
                                                         <div class="modal-body">
-                                                            <div>
-                                                                <label for="tanggal">Tanggal :</label>       
-                                                                <input type="date" name="tanggal" value="<?=$tanggal?>" class="form-control">
-                                                            </div> 
                                                             <div class="mb-3">
-                                                                <label for="kategori">Kategori Kas :</label>
-                                                                <select class="form-select" name="kategori" id="kategori" aria-label="subKategori">
-                                                                    <option value="<?=$idKategori;?>"><?=$kategori;?></option>
-                                                                    <?php
-                                                                    // Ambil data kelas dari tabel kelas
-                                                                    $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum'");
-                                                                    while ($kategori = mysqli_fetch_assoc($queryKategori)) {
-                                                                        echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
-                                                                    }
-                                                                    ?>
-                                                                </select>
+                                                                <label for="tanggal">Tanggal :</label>       
+                                                                <input type="date" name="tanggal" value="<?=$tanggal;?>" class="form-control">
+                                                            </div> 
+                                                            <div class="mb-3"> 
+                                                                    <label for="groop">Group :</label>
+                                                                    <select class="form-select" name="groop" id="groop" aria-label="Group">
+                                                                        <option value="<?=$idGroup;?>"><?=$group;?></option>
+                                                                        <?php
+                                                                        // Ambil data kelas dari tabel kelas
+                                                                        $queryGroop = mysqli_query($conn, "SELECT `id_group_cashflow`, `groop` FROM `group_cashflow` WHERE jenis='Pendapatan'");
+                                                                        while ($groopData = mysqli_fetch_assoc($queryGroop)) {
+                                                                            echo '<option value="' . $groopData['id_group_cashflow'] . '">' . $groopData['groop'] . '</option>';
+                                                                        }
+                                                                        ?>
+                                                                    </select>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                    <label for="groop">Sub Kategori  :</label>
+                                                                    <select class="form-select" name="subKategori" id="subKategori" aria-label="Group">
+                                                                        <option value="<?=$idSubCashflow;?>"><?=$subCashflow;?></option>
+                                                                        <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript --> 
+                                                                    </select>
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="bulan">Periode/Bulan :</label><br>
@@ -189,10 +196,6 @@ require 'config.php';
                                                                     </select>
                                                             </div>              
                                                             <div class="mb-3">
-                                                                <label for="uraian">Uraian :</label>                        
-                                                                <input type="text" name="uraian" id="uraian" value="<?=$uraian;?>" class="form-control">
-                                                            </div>
-                                                            <div class="mb-3">
                                                                 <label for="jumlah">Jumlah Pemasukan :</label>                        
                                                                 <input type="number" name="jumlah" id="jumlah" value="<?=$jumlah;?>" class="form-control">
                                                             </div>
@@ -211,22 +214,22 @@ require 'config.php';
                                                             </div>
                                                             <div class="mb-3">
                                                             <label for="keterangan">Keterangan :</label>   
-                                                                <textarea name="keterangan" class="form-control" id="keterangan" value="<?=$keterangan;?>" rows="2"></textarea>
+                                                                <textarea name="keterangan" class="form-control" id="keterangan" rows="2"><?=$keterangan;?></textarea>
                                                             </div>
                                                         </div>
                                                         <!-- Modal Footer -->
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                            <input type="hidden" name="idTmn" value="<?=$idTransaksiMasukUmum;?>">
-                                                            <button type="submit" class="btn btn-primary" name="editTransMasukUmum">Simpan</button>
+                                                            <input type="hidden" name="idTmc" value="<?=$idCashflowMasuk;?>">
+                                                            <button type="submit" class="btn btn-primary" name="ubahTransMasukCashflow">Simpan</button>
                                                         </div>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- Modal Hapus Transaksi Masuk Siswa-->
-                                        <div class="modal fade" id="modalHapusTransCashflow<?=$idTransaksiMasukCashflow;?>">
+                                        <!-- Modal Hapus Transaksi Masuk Cashflow-->
+                                        <div class="modal fade" id="modalHapusCashflowMasuk<?=$idCashflowMasuk;?>">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
 
@@ -240,11 +243,11 @@ require 'config.php';
                                                 
                                                 <form method="post">
                                                 <div class="modal-body" style="text-align: center;">
-                                                    <h5>Anda yakin ingin menghapus data pemasukan : <br> "<u> <?=$uraian;?> </u> " <br>dengan nominal <br> Rp. <b><?=$jumlah;?>?</h5>
+                                                    <h5>Anda yakin ingin menghapus data pemasukan : <br> "<u> <?=$subCashflow;?> </u> " <br>dengan nominal <br> <b><?="Rp " . number_format($jumlah, 0, ',', '.');?>?</h5>
                                                     
                                                 </div>
                                                 <div class="text-center">
-                                                    <input type="hidden" name="idTmn" value="<?=$idTransaksiMasukCashflow;?>">
+                                                    <input type="hidden" name="idTmc" value="<?=$idCashflowMasuk;?>">
                                                     <button type="submit" class="btn btn-danger" name="hapusTransaksiMasukCashflow">Hapus</button> 
                                                 </div>
                                                 <br> 
@@ -303,16 +306,23 @@ require 'config.php';
                             <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
                         </div> 
                         <div class="mb-3">
-                                <label for="kategori">Kategori Kas :</label>
-                                <select class="form-select" name="kategori" id="kategori" aria-label="subKategori">
-                                    <option selected disabled>Pilih Kategori Kas</option>
+                                <label for="groop">Group :</label>
+                                <select class="form-select" name="groop" id="groop" aria-label="Group">
+                                    <option selected disabled>Pilih Group</option>
                                     <?php
                                     // Ambil data kelas dari tabel kelas
-                                    $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum'");
-                                    while ($kategori = mysqli_fetch_assoc($queryKategori)) {
-                                        echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
+                                    $queryGroop = mysqli_query($conn, "SELECT `id_group_cashflow`, `groop` FROM `group_cashflow` WHERE jenis='Pendapatan'");
+                                    while ($groopData = mysqli_fetch_assoc($queryGroop)) {
+                                        echo '<option value="' . $groopData['id_group_cashflow'] . '">' . $groopData['groop'] . '</option>';
                                     }
                                     ?>
+                                </select>
+                        </div>
+                        <div class="mb-3">
+                                <label for="groop">Sub Kategori  :</label>
+                                <select class="form-select" name="subKategori" id="subKategori" aria-label="Group">
+                                    <option selected disabled>Pilih Sub Kategori</option>
+                                    <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript --> 
                                 </select>
                         </div>
                         <div class="mb-3">
@@ -333,10 +343,6 @@ require 'config.php';
                                 <option value="Desember">Desember</option>
                                 </select>
                         </div>              
-                        <div class="mb-3">
-                            <label for="uraian">Uraian :</label>                        
-                            <input type="text" name="uraian" id="uraian" class="form-control">
-                        </div>
                         <div class="mb-3">
                             <label for="jumlah">Jumlah Pemasukan :</label>                        
                             <input type="number" name="jumlah" id="jumlah" class="form-control">
@@ -368,5 +374,39 @@ require 'config.php';
             </div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Temukan elemen "groop" dan "subKategori" pada Tambah Transaksi Cashflow
+        var groopDropdown = document.getElementById('groop');
+        var subKategoriDropdown = document.getElementById('subKategori');
+
+        
+        // Tambahkan event listener ketika nilai "groop" berubah pada Tambah Transaksi Cashflow
+        groopDropdown.addEventListener('change', function() {
+            var selectedGroop = groopDropdown.value;            
+
+            // Gunakan AJAX untuk mengambil data subKategori berdasarkan groop
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'get_sub_kategori_by_group.php?groop=' + selectedGroop, true);
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Parse data JSON yang diterima
+                    var dataSubKategori = JSON.parse(xhr.responseText);                    
+
+                    // Bersihkan dropdown "subKategori" dan tambahkan opsi-opsi baru
+                    subKategoriDropdown.innerHTML = '<option selected disabled>Pilih Sub Kategori</option>';
+                    dataSubKategori.forEach(function(subKategori) {
+                        subKategoriDropdown.innerHTML += '<option value="' + subKategori.id_subkategori_cashflow + '">' + subKategori.nama_sub_kategori + '</option>';
+                        
+                    });                
+                                      
+                }
+            };
+            xhr.send();
+        });
+    });
+</script>
     
 </html>
