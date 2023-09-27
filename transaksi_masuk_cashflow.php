@@ -64,7 +64,7 @@ require 'config.php';
                                             <th>Sub Kategori</th>
                                             <th>Bulan</th>
                                             <th>Jumlah</th>
-                                            <th>Saldo</th>
+                                            <th>Saldo Cash Flow</th>
                                             <th>Pencatat</th>
                                             <th>Keterangan</th>
                                             <th colspan='2'>Aksi</th>
@@ -78,7 +78,7 @@ require 'config.php';
                                     g.nama_lengkap AS nama_guru,
                                     skc.id_group_cashflow AS id_group,
                                     skc.nama_sub_kategori AS sub_kategori,
-                                    gc.jenis AS groop,
+                                    gc.groop AS groop,
                                     gc.jenis AS jenis
                                     FROM transaksi_masuk_cashflow tmc
                                     LEFT JOIN tahun_ajar ta ON tmc.id_tahun_ajar = ta.id_tahun_ajar
@@ -94,7 +94,7 @@ require 'config.php';
                                     while($data=mysqli_fetch_array($dataCashflowMasuk)){
                                         $idCashflowMasuk = $data['id_tmc'];                                         
                                         $tanggal =  $data['tanggal'];
-                                        $tanggalMasuk = date("Y-m-d", strtotime($tanggal));                                         
+                                        $tanggalMasuk = date("d-m-Y", strtotime($tanggal));                                         
                                         $tahunAjar = $data['tahun_ajar'];
                                         $idGroup = $data['id_group'];                                                                 
                                         $group = $data['groop'];
@@ -159,7 +159,7 @@ require 'config.php';
                                                             </div> 
                                                             <div class="mb-3"> 
                                                                     <label for="groop">Group :</label>
-                                                                    <select class="form-select" name="groop" id="groop" aria-label="Group">
+                                                                    <select class="form-select" name="groopMasuk" id="groopMasuk" aria-label="Group">
                                                                         <option value="<?=$idGroup;?>"><?=$group;?></option>
                                                                         <?php
                                                                         // Ambil data kelas dari tabel kelas
@@ -172,7 +172,7 @@ require 'config.php';
                                                             </div>
                                                             <div class="mb-3">
                                                                     <label for="groop">Sub Kategori  :</label>
-                                                                    <select class="form-select" name="subKategori" id="subKategori" aria-label="Group">
+                                                                    <select class="form-select" name="subKategoriMasuk" id="subKategoriMasuk" aria-label="Group">
                                                                         <option value="<?=$idSubCashflow;?>"><?=$subCashflow;?></option>
                                                                         <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript --> 
                                                                     </select>
@@ -381,7 +381,6 @@ require 'config.php';
         var groopDropdown = document.getElementById('groop');
         var subKategoriDropdown = document.getElementById('subKategori');
 
-        
         // Tambahkan event listener ketika nilai "groop" berubah pada Tambah Transaksi Cashflow
         groopDropdown.addEventListener('change', function() {
             var selectedGroop = groopDropdown.value;            
