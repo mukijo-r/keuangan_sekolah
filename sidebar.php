@@ -81,7 +81,8 @@ include 'sidebar_function.php';
                                     <a class="nav-link" href="group_cashflow.php">Group</a>
                                     <a class="nav-link" href="sub_kategori_cashflow.php">Sub Kategori</a>
                                     <a class="nav-link" href="transaksi_masuk_cashflow.php">Transaksi Masuk</a>
-                                    <a class="nav-link" href="guru.php">Transaksi Keluar</a>
+                                    <a class="nav-link" href="transaksi_keluar_cashflow.php">Transaksi Keluar</a>
+                                    <a class="nav-link" href="laporan_transaksi_cashflow.php">Laporan</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts4" aria-expanded="false" aria-controls="collapseLayouts4">
