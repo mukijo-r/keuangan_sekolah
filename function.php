@@ -2046,7 +2046,7 @@
         }
     }
 
-    // Ubah Transaksi Masuk Cashflow
+    // Hapus Transaksi Masuk Cashflow
     if(isset($_POST['hapusTransaksiMasukCashflow'])){
         $idCashflowMasuk = $_POST['idTmc'];
 
@@ -2079,6 +2079,178 @@
             $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
             header('location:transaksi_masuk_cashflow.php');
+            exit;
+        }
+    }
+
+    // Tambah Transaksi Keluar Cashflow
+    if(isset($_POST['tambahTransKeluarCashflow'])){
+        $tanggal = $_POST['tanggal'];
+        $idGroupCashflow = $_POST['groop'];
+        $subKategori = $_POST['subKategori'];
+        $bulan = $_POST['bulan'];
+        $jumlah = $_POST['jumlah'];
+        $idGuru = $_POST['guru'];
+        $keterangan = $_POST['keterangan'];
+
+        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+        if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+            $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+            $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+        }
+
+        try {
+            $queryInsertKeluarCashflow = "INSERT INTO 
+            `transaksi_keluar_cashflow`(`tanggal`, `id_tahun_ajar`, `id_group_cashflow`, `id_subkategori_cashflow`, `bulan`, `jumlah`, `id_guru`, `keterangan`) 
+            VALUES ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$subKategori','$bulan','$jumlah','$idGuru','$keterangan')";
+            
+            $insertKeluarCashflow = mysqli_query($conn, $queryInsertKeluarCashflow);
+
+            if (!$insertKeluarCashflow) {
+                throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM `transaksi_keluar_cashflow` 
+            WHERE
+            `tanggal`='$tanggal' AND
+            `id_tahun_ajar`='$idTahunAjar' AND
+            `id_group_cashflow`='$idGroupCashflow' AND
+            `id_subkategori_cashflow`='$subKategori' AND
+            `bulan`='$bulan' AND
+            `jumlah`='$jumlah' AND
+            `id_guru`='$idGuru' AND
+            `keterangan`='$keterangan'
+                ";
+            
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) === 1) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Tambah transaksi keluar Cash Flow berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:transaksi_keluar_cashflow.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data tidak ditemukan setelah ditambahkan");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryCek . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:transaksi_keluar_cashflow.php');
+            exit;
+        }
+    }
+
+    // Ubah Transaksi Keluar Cashflow
+    if(isset($_POST['ubahTransKeluarCashflow'])){
+        $idCashflowKeluar = $_POST['idTkc'];
+        $tanggal = $_POST['tanggal'];
+        $idGroupCashflow = $_POST['groop'];
+        $idSubKategori = $_POST['subKategori'];
+        $bulan = $_POST['bulan'];
+        $jumlah = $_POST['jumlah'];
+        $idGuru = $_POST['guru'];
+        $keterangan = $_POST['keterangan'];
+
+        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+        if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+            $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+            $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+        }
+
+        try {
+            $queryUpdateKeluarCashflow = "UPDATE `transaksi_keluar_cashflow` 
+            SET 
+            `tanggal`='$tanggal',
+            `id_tahun_ajar`='$idTahunAjar',
+            `id_group_cashflow`='$idGroupCashflow',
+            `id_subkategori_cashflow`='$idSubKategori',
+            `bulan`='$bulan',
+            `jumlah`='$jumlah',
+            `id_guru`='$idGuru',
+            `keterangan`='$keterangan' 
+            WHERE
+            id_tkc='$idCashflowKeluar'
+            ";
+            
+            $updateKeluarCashflow = mysqli_query($conn, $queryUpdateKeluarCashflow);
+
+            if (!$updateKeluarCashflow) {
+                throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah keluar ke database
+            $queryCek = "SELECT * FROM `transaksi_keluar_cashflow` 
+            WHERE
+            `tanggal`='$tanggal' AND
+            `id_tahun_ajar`='$idTahunAjar' AND
+            `id_group_cashflow`='$idGroupCashflow' AND
+            `id_subkategori_cashflow`='$idSubKategori' AND
+            `bulan`='$bulan' AND
+            `jumlah`='$jumlah' AND
+            `id_guru`='$idGuru' AND
+            `keterangan`='$keterangan'
+                ";
+            
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Ubah transaksi keluar Cash Flow berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:transaksi_keluar_cashflow.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data tidak berubah");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:transaksi_keluar_cashflow.php');
+            exit;
+        }
+    }
+
+    // Hapus Transaksi Keluar Cashflow
+    if(isset($_POST['hapusTransaksiKeluarCashflow'])){
+        $idCashflowKeluar = $_POST['idTkc'];
+
+        try {
+            $queryDeleteKeluarCashflow = "DELETE FROM `transaksi_keluar_cashflow` WHERE id_tkc='$idCashflowKeluar'";
+            
+            $deleteKeluarCashflow = mysqli_query($conn, $queryDeleteKeluarCashflow);
+
+            if (!$deleteKeluarCashflow) {
+                throw new Exception("Query delete gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM `transaksi_keluar_cashflow` WHERE id_tkc='$idCashflowKeluar'";
+            
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) === 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Hapus transaksi keluar Cash Flow berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:transaksi_keluar_cashflow.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data masih ada");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:transaksi_keluar_cashflow.php');
             exit;
         }
     }
