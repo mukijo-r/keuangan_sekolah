@@ -250,7 +250,8 @@ require 'config.php';
                                                             <h6>Ambil tabungan <?=$namaSiswa;?>?<h6>
                                                             <br>
                                                             <label for="tanggal">Tanggal Pengambilan :</label>       
-                                                            <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                                                            <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                                                            <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
                                                             <br>
                                                             <label for="jumlahTab">Jumlah Tabungan :</label>       
                                                             <input type="text" name="jumlahTab" value="<?=$saldoTabunganSiswa;?>" class="form-control" readonly>

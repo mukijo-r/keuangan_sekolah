@@ -105,6 +105,8 @@ require 'config.php';
                                     while($data=mysqli_fetch_array($dataTabungan)){
                                         $idTbAmbil = $data['id_tb_ambil'];
                                         $tanggal = $data['tanggal'];
+                                        $tanggalTampil = date("d-m-Y", strtotime($tanggal));
+                                        $tanggalAmbil = date("Y-m-d H:i", strtotime($tanggal));
                                         $idSiswa = $data['id_siswa'];
                                         $namaSiswa = $data['nama_siswa'];
                                         $jumlah = $data['jumlah'];
@@ -130,7 +132,7 @@ require 'config.php';
                                         ?>
                                         <tr>
                                             <td><?=$i--;?></td>
-                                            <td><?=$tanggal;?></td>
+                                            <td><?=$tanggalTampil;?></td>
                                             <td><?=$namaSiswa;?></td>
                                             <td><?="Rp " . number_format($jumlah, 0, ',', '.');?></td>
                                             <td><?=$namaGuru;?></td>
@@ -192,7 +194,8 @@ require 'config.php';
                 <h6>Ambil tabungan<h6>
                 <br>
                 <label for="tanggal">Tanggal Pengambilan :</label>       
-                <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
                 <br>
                 <label for="nama">Nama :</label>       
                 <input type="text" name="nama" class="form-control">

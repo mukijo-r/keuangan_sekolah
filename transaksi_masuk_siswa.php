@@ -2,6 +2,7 @@
 require 'function.php';
 require 'cek.php';
 require 'config.php';
+date_default_timezone_set('Asia/Jakarta');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -97,8 +98,9 @@ require 'config.php';
                                     
                                     while($data=mysqli_fetch_array($dataTransaksiSiswa)){
                                         $idTransaksiMasukSiswa = $data['id_tms'];                                         
-                                        $tanggal =  $data['tanggal'];
-                                        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+                                        $tanggal = $data['tanggal'];
+                                        $tanggalTampil = date("d-m-Y", strtotime($tanggal));
+                                        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
                                         $tahunAjar = $data['tahun_ajar'];                                        
                                         $kelas = $data['id_kelas'];
                                         $idSiswa = $data['id_siswa'];
@@ -145,7 +147,7 @@ require 'config.php';
                                         ?>
                                         <tr>
                                             <td><?=$i--;?></td>
-                                            <td><?=$tanggalBayar;?></td>
+                                            <td><?=$tanggalTampil;?></td>
                                             <td><?=$tahunAjar;?></td>
                                             <td><?=$kelas;?></td>
                                             <td><?=$namaSiswa;?></td>                                            
@@ -179,7 +181,7 @@ require 'config.php';
                                                         <div class="modal-body">
                                                             <div>
                                                                 <label for="tanggal">Tanggal Bayar :</label>       
-                                                                <input type="date" name="tanggal" value="<?=$tanggalBayar; ?>" class="form-control">
+                                                                <input type="datetime-local" name="tanggal" value="<?=$tanggalBayar; ?>" class="form-control">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="kelasEdit">Kelas :</label>
@@ -342,10 +344,11 @@ require 'config.php';
             <!-- Modal Body -->
             <form method="post">
                 <div class="modal-body">
-                    <div>
-                        <label for="tanggal">Tanggal Bayar :</label>       
-                        <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
-                    </div> 
+                    <div class="mb-3">
+                        <label for="tanggal">Tanggal Bayar :</label>
+                        <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                        <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
+                    </div>
                     <div class="mb-3">
                             <label for="kelas">Kelas :</label>
                             <select class="form-select" name="kelas" id="kelas" aria-label="Kelas">

@@ -133,7 +133,8 @@ require 'config.php';
                                     
                                     while($data=mysqli_fetch_array($dataTabungan)){
                                         $tanggal =  $data['tanggal'];
-                                        $tanggalTabung = date("Y-m-d", strtotime($tanggal));
+                                        $tanggalTampil = date("Y-m-d", strtotime($tanggal));
+                                        $tanggalTabung = date("Y-m-d H:i", strtotime($tanggal));
                                         $idTbMasuk = $data['id_tb_masuk'];
                                         $bulan = $data['bulan'];
                                         $namaSiswa = $data['nama_siswa'];
@@ -162,7 +163,7 @@ require 'config.php';
                                         ?>
                                         <tr>
                                             <td><?=$i--;?></td>
-                                            <td><?=$tanggal;?></td>
+                                            <td><?=$tanggalTampil;?></td>
                                             <td><?=$bulan;?></td>
                                             <td><?=$namaSiswa;?></td>
                                             <td><?=$kelas;?></td>
@@ -331,7 +332,8 @@ require 'config.php';
                 <div class="modal-body">
                 <div>
                     <label for="tanggal">Tanggal Input :</label>       
-                    <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                    <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                    <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
                 </div>
                 <div class="mb-3">
                     <label for="bulan">Bulan :</label><br>

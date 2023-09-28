@@ -94,7 +94,8 @@ require 'config.php';
                                     while($data=mysqli_fetch_array($dataCashflowKeluar)){
                                         $idCashflowKeluar = $data['id_tkc'];                                         
                                         $tanggal =  $data['tanggal'];
-                                        $tanggalKeluar = date("d-m-Y", strtotime($tanggal));                                         
+                                        $tanggalTampil = date("d-m-Y", strtotime($tanggal));
+                                        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));                                         
                                         $tahunAjar = $data['tahun_ajar'];
                                         $idGroup = $data['id_group'];                                                                 
                                         $group = $data['groop'];
@@ -126,7 +127,7 @@ require 'config.php';
                                         ?>
                                         <tr>
                                             <td><?=$i--;?></td>
-                                            <td><?=$tanggalKeluar;?></td>
+                                            <td><?=$tanggalTampil;?></td>
                                             <td><?=$tahunAjar;?></td>                                          
                                             <td><?=$group;?></td>
                                             <td><?=$subCashflow;?></td>
@@ -155,7 +156,7 @@ require 'config.php';
                                                         <div class="modal-body">
                                                             <div class="mb-3">
                                                                 <label for="tanggal">Tanggal :</label>       
-                                                                <input type="date" name="tanggal" value="<?=$tanggal;?>" class="form-control">
+                                                                <input type="date" name="tanggal" value="<?=$tanggalBayar;?>" class="form-control">
                                                             </div> 
                                                             <div class="mb-3"> 
                                                                     <label for="groop">Group :</label>
@@ -303,7 +304,8 @@ require 'config.php';
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="tanggal">Tanggal :</label>       
-                            <input type="date" name="tanggal" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                            <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                        <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
                         </div> 
                         <div class="mb-3">
                                 <label for="groop">Group :</label>
