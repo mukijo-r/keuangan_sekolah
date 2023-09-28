@@ -1,7 +1,19 @@
 <?php
+$conn = mysqli_connect("localhost:3306","root","","sdk");
 
-$tahun_ajar = "2020/2021";
+// Mengambil nilai tahun ajar dari database
+$queryTahunAjarDefault = "SELECT
+tad.*,
+ta.tahun_ajar AS tahun_ajar
+FROM tahun_ajar_default tad
+LEFT JOIN tahun_ajar ta ON tad.id_tahun_ajar = ta.id_tahun_ajar;";
+
+$result = mysqli_query($conn, $queryTahunAjarDefault);
+$dataTahunAjar = mysqli_fetch_assoc($result);
+$tahun_ajar = $dataTahunAjar['tahun_ajar'];
+//$idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
 $tahunAjarLap = $tahun_ajar;
+
 $idKategoriLap = 2;
 $bulanLalu = date('F', strtotime('last month'));
  
@@ -33,6 +45,6 @@ if ($bulanLalu == 'January') {
 } else {
     $bulanLalu = 'Bulan Tidak valid';
 }
-echo $bulanLalu;
+
 
 ?>
