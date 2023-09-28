@@ -1,6 +1,6 @@
 <?php
 include 'config.php';
-include 'sidebar_function.php';
+require 'sidebar_function.php';
 
 ?>
 
@@ -105,6 +105,10 @@ include 'sidebar_function.php';
                             <a class="nav-link" href="siswa.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Siswa
+                            </a>
+                            <a class="nav-link" href="alumni.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Alumni
                             </a>
                         </div>
                     </div>
