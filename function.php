@@ -1977,8 +1977,8 @@
     if(isset($_POST['ubahTransMasukCashflow'])){
         $idCashflowMasuk = $_POST['idTmc'];
         $tanggal = $_POST['tanggal'];
-        $idGroupCashflow = $_POST['groop'];
-        $idSubKategori = $_POST['subKategori'];
+        $idGroupCashflow = $_POST['groopMasuk'];
+        $idSubKategori = $_POST['subKategoriMasuk'];
         $bulan = $_POST['bulan'];
         $jumlah = $_POST['jumlah'];
         $idGuru = $_POST['guru'];
