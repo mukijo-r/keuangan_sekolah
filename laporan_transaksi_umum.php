@@ -17,11 +17,12 @@ require 'config.php';
             @media print {
                 .mt-4, .breadcrumb-item, .container-fluid, .px-4, .breadcrumb, .mb-4, .active, 
                 .px-1, .row-cols-auto, .input-group, .mb-3, .input-group-prepend, .input-group-text,
-                .custom-select, .btn, .btn-primary, .card, .mb-3, .h3, .ol, .layoutSidenav, .layoutSidenav_content,
-                .form, .option
+                .custom-select, .btn, .btn-primary, .card, .mb-3, .h3, .ol, .li, .layoutSidenav, .layoutSidenav_content,
+                .form, .option,
                  {
                     display: none;
                 }
+                
                 body {
                 margin: 0 !important;
                 padding: 0 !important;
@@ -65,8 +66,8 @@ require 'config.php';
                         </ol>
   
                         <div class="container-fluid px-1">
-                            <form method="post" class="form">    
-                                <div class="row row-cols-auto">                                
+                            <form method="post" class="form">  
+                                <div class="row row-cols-auto">                             
                                     <div class="col">
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -131,7 +132,7 @@ require 'config.php';
                                 </div>
                             </form> 
                         </div>
-                    </div><br><br>  
+                    </div> 
                     <div class="container-fluid px-4">
                     <?php
                     // Tampilkan Laporan Umum
@@ -148,14 +149,11 @@ require 'config.php';
                     
 
 
-                    </div><br>
-
-
+                    </div>
                     <div class="row" style="text-align: center; border:none">
                         <div class="col-md-3" style="text-align: right; border:none">
-                            <img src="logo.png" width="100px" height="100px">
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-6">
                             <h5>Laporan Keuangan <?=$namaKategori?> </h5>
                             <h5>Bulan <?= $bulanLalu;?> </h5>
                             <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>
@@ -262,6 +260,8 @@ require 'config.php';
                                             $idTransaksiMasukUmum = $data['id_tmn'];
                                             $tanggal =  $data['tanggal'];
                                             $tanggalMasuk = date("Y-m-d", strtotime($tanggal));
+                                            $tanggalTampil = date("d-m-Y", strtotime($tanggal));
+                                            $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
                                             $idKategori = $data['id_kategori']; 
                                             $kategori = $data['kategori'];                                          
                                             $uraian = $data['uraian'];
@@ -270,8 +270,8 @@ require 'config.php';
                                             $keterangan = $data['keterangan'];                                      
 
                                             // Menghitung saldo
-                                            $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggal'");
-                                            $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggal'");
+                                            $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggalBayar'");
+                                            $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggalBayar'");
 
                                             $totalMasuk = 0;
                                             $totalKeluar = 0;
@@ -290,7 +290,7 @@ require 'config.php';
                                             ?>
                                             
                                             <tr>
-                                                <td style="width: 10%"><?=$tanggalMasuk;?></td>
+                                                <td style="width: 10%"><?=$tanggalTampil;?></td>
                                                 <td style="width: 30%"><?=$uraian;?></td>
                                                 <td style="width: 10%"><?php echo ($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.');?></td>
                                                 <td style="width: 10%"><?php echo ($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.');?></td>
