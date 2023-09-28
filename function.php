@@ -25,7 +25,7 @@
 
         try {
             // Coba jalankan query insert
-            $addSiswa = mysqli_query($conn, "INSERT INTO siswa (nisn, nama, id_kelas, jk, tempat_lahir, tanggal_lahir, agama, alamat) VALUES ('$nisn', '$namaSiswa', $kelas, '$jk', '$kotaLahir', '$tanggalLahir', '$agama', '$alamat')");
+            $addSiswa = mysqli_query($conn, "INSERT INTO siswa (nisn, nama, id_kelas, jk, tempat_lahir, tanggal_lahir, agama, alamat, `status`) VALUES ('$nisn', '$namaSiswa', $kelas, '$jk', '$kotaLahir', '$tanggalLahir', '$agama', '$alamat', 'aktif')");
 
             if (!$addSiswa) {
                 throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
@@ -303,7 +303,7 @@
     // Tabungan Masuk
     if(isset($_POST['tambahTransTabung'])){
         $tanggal = $_POST['tanggal'];
-        $tanggalTabung = date("Y-m-d", strtotime($tanggal));
+        $tanggalTabung = date("Y-m-d H:i", strtotime($tanggal));
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -424,6 +424,7 @@
 
         $keterangan = $_POST['keterangan'];
         $tanggal = date("Y-m-d", strtotime($tanggal));
+        $tanggalTabung = date("Y-m-d H:i", strtotime($tanggal));
         $idTbMasuk = $_POST['id_tb_masuk'];
 
         try {
@@ -494,7 +495,8 @@
     // Ambil Tabungan
     if(isset($_POST['ambilTab'])){
         $tanggal = $_POST['tanggal'];
-        $tanggalAmbil = date("Y-m-d", strtotime($tanggal));
+        $bulan = $_POST['bulan'];
+        $tanggalAmbil = date("Y-m-d H:i", strtotime($tanggal));
         $idSiswa = $_POST['ids'];
         $ambilTab = $_POST['jumlahAmbil'];
         $idGuru = $_POST['guru'];
@@ -517,8 +519,8 @@
         try {
             // Coba jalankan query
             $queryambilTabungan = "INSERT INTO tabung_ambil
-            (`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_siswa`, `jumlah`, `id_guru`, `keterangan`) 
-            VALUES ('$tanggalAmbil','$idTahunAjar','8','$idSiswa','$ambilTab','$idGuru','$keterangan')";
+            (`tanggal`, `id_tahun_ajar`, `bulan', `id_kategori`, `id_siswa`, `jumlah`, `id_guru`, `keterangan`) 
+            VALUES ('$tanggalAmbil','$idTahunAjar', '$bulan', '8','$idSiswa','$ambilTab','$idGuru','$keterangan')";
             
             $ambilTabungan = mysqli_query($conn, $queryambilTabungan);
 
@@ -811,7 +813,7 @@
     // Tambah Transaksi Masuk Siswa
     if(isset($_POST['tambahTransMasukSiswa'])){
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -892,7 +894,8 @@
     if(isset($_POST['editTransSiswa'])){
         $idTransaksiMasukSiswa = $_POST['id_tms_masuk'];
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
+        
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1062,7 +1065,7 @@
     // Tambah Transaksi Keluar Siswa
     if(isset($_POST['tambahTransKeluarSiswa'])){
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1137,7 +1140,7 @@
     if(isset($_POST['editTransKeluarSiswa'])){
         $idTransaksiKeluarSiswa = $_POST['idTks'];
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1265,7 +1268,7 @@
     // Tambah Transaksi Masuk Umum
     if(isset($_POST['tambahTransMasukUmum'])){
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1336,7 +1339,7 @@
     if(isset($_POST['editTransMasukUmum'])){
         $idTransaksiMasukUmum = $_POST['idTmn'];
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1455,7 +1458,7 @@
     // Tambah Transaksi Keluar Umum
     if(isset($_POST['tambahTransKeluarUmum'])){
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1526,7 +1529,7 @@
     if(isset($_POST['editTransKeluarUmum'])){
         $idTransaksiKeluarUmum = $_POST['idTkn'];
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
