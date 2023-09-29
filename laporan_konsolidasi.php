@@ -153,20 +153,55 @@ require 'config.php';
                                     </thead>
                                     <tbody>
                                     <?php 
+                                    
+                                    $queryDebetCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS debet FROM transaksi_masuk_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
+                                    $queryKreditCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS kredit FROM transaksi_keluar_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
+                                    $queryMasukCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow");
+                                    $queryKeluarCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow");
+
+                                    $debetCashflow = 0;
+                                    $kreditCashflow = 0;
+                                    $totalMasukCashflow = 0;
+                                    $totalKeluarCashflow = 0;
+
+                                    if ($rowDebetCashflow = mysqli_fetch_assoc($queryDebetCashflow)) {
+                                        $debetCashflow = $rowDebetCashflow['debet'];
+                                    }
+
+                                    if ($rowKreditCashflow = mysqli_fetch_assoc($queryKreditCashflow)) {
+                                        $kreditCashflow = $rowKreditCashflow['kredit'];
+                                    }
+
+                                    if ($rowMasukCashflow = mysqli_fetch_assoc($queryMasukCashflow)) {
+                                        $totalMasukCashflow = $rowMasukCashflow['total_masuk'];
+                                    }
+
+                                    if ($rowKeluarCashflow = mysqli_fetch_assoc($queryKeluarCashflow)) {
+                                        $totalKeluarCashflow = $rowKeluarCashflow['total_keluar'];
+                                    }
+
+                                    $saldoCashflow = $totalMasukCashflow - $totalKeluarCashflow;
+                                    $saldoBulanLalu = $saldoCashflow - $totalKeluarCashflow;
+                                    ?>
+                                    <tr>
+                                        <td style="width: 10%"></td>
+                                        <td style="width: 30%">Cash Flow</td>
+                                        <td style="width: 10%"><?php echo ($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
+                                        <td style="width: 10%"><?php echo ($totalDebet == 0) ? '' : "Rp " . number_format($totalDebet, 0, ',', '.');?></td>
+                                        <td style="width: 10%"><?php echo ($totalKredit == 0) ? '' : "Rp " . number_format($totalKredit, 0, ',', '.');?></td>
+                                        <td style="width: 10%"><?php echo ($saldoCashflow == 0) ? '' : "Rp " . number_format($saldoCashflow, 0, ',', '.');?></td>
+                                        <td style="width: 20%"></td>
+                                    </tr>
+                                    
+                                    
+                                    ?>
 
     
                 
 
-
-            
+                                    <tbody>
+                </main>
+            </div>
         </div>
-
-                
-
-
-  
-
-
-        </main>
     </body>
 </html>

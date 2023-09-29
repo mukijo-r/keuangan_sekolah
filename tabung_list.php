@@ -253,6 +253,21 @@ require 'config.php';
                                                             <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
                                                             <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
                                                             <br>
+                                                            <select class="form-select" name="bulan" aria-label="Bulan">
+                                                                <option selected>Pilih bulan</option>
+                                                                <option value="Januari">Januari</option>
+                                                                <option value="Februari">Februari</option>
+                                                                <option value="Maret">Maret</option>
+                                                                <option value="April">April</option>
+                                                                <option value="Mei">Mei</option>
+                                                                <option value="Juni">Juni</option>
+                                                                <option value="Juli">Juli</option>
+                                                                <option value="Agustus">Agustus</option>
+                                                                <option value="September">September</option>
+                                                                <option value="Oktober">Oktober</option>
+                                                                <option value="November">November</option>
+                                                                <option value="Desember">Desember</option>
+                                                            </select>
                                                             <label for="jumlahTab">Jumlah Tabungan :</label>       
                                                             <input type="text" name="jumlahTab" value="<?=$saldoTabunganSiswa;?>" class="form-control" readonly>
                                                             <br>

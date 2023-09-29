@@ -127,7 +127,7 @@ require 'config.php';
                         </div>
                         <div class="col-md-6">
                             <h5>Laporan Keuangan Cash Flow </h5>
-                            <h5>Bulan <?= $bulanLalu;?> </h5>
+                            <h5>Bulan <?= $bulanLalu . ' ' . date("Y");?> </h5>
                             <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>
                             <?php
                             $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahunAjarLap'");

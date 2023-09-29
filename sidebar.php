@@ -93,7 +93,7 @@ require 'sidebar_function.php';
                             <div class="collapse" id="collapseLayouts4" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="kategori_kas.php">Kategori Kas</a>
-                                    <a class="nav-link" href="#">Laporan</a>
+                                    <a class="nav-link" href="laporan_konsolidasi.php">Laporan</a>
                                 </nav>
                             </div>
 

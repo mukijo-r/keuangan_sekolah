@@ -350,7 +350,7 @@ date_default_timezone_set('Asia/Jakarta');
                         <div class="mb-3">   
                             <label for="guru">Pencatat :</label>                     
                             <select name="guru" class="form-select" id="guru" aria-label="Guru">>
-                            <option selected disabled>Guru Penerima</option>
+                            <option selected disabled>Guru Pencatat</option>
                                 <?php
                                 // Ambil data guru dari tabel guru
                                 $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
