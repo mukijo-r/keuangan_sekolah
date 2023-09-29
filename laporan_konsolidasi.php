@@ -127,8 +127,8 @@ require 'config.php';
                         </div>
                         <div class="col-md-6">
                             <h5>Laporan Keuangan Konsolidasi</h5>
-                            <h5>Bulan <?= $bulanLalu . ' ' . date("Y");?> </h5>
-                            <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>
+                            <h5>Bulan <?= $bulanLalu ;?></h5>
+                            <h5>Tahun Ajar <?=$tahunAjarLap; ?></h5>
                             <?php
                             $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahunAjarLap'");
                             $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
@@ -224,18 +224,18 @@ require 'config.php';
                                     $totalKeluarCashflow = $rowKeluarCashflow['total_keluar'];
                                 }
 
-                                $saldoCashflow = $totalMasukCashflow - $totalKeluarCashflow;
-                                $selisihDebetKredit = $debetCashflow - $kreditCashflow;
-                                $saldoBulanLalu = $saldoCashflow - $selisihDebetKredit;
+                                $saldoAkhirCashflow = $totalMasukCashflow - $totalKeluarCashflow;
+                                $selisihDebetKreditCashflow = $debetCashflow - $kreditCashflow;
+                                $saldoAwalCashflow = $saldoAkhirCashflow - $selisihDebetKreditCashflow;
                                 
                                 ?>
                                 <tr>
                                     <td style="width: 10%">1</td>
                                     <td style="width: 30%">Cash Flow</td>
-                                    <td style="width: 10%"><?php echo ($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
+                                    <td style="width: 10%"><?php echo ($saldoAwalCashflow == 0) ? '' : "Rp " . number_format($saldoAwalCashflow, 0, ',', '.');?></td>
                                     <td style="width: 10%"><?php echo ($debetCashflow == 0) ? '' : "Rp " . number_format($debetCashflow, 0, ',', '.');?></td>
                                     <td style="width: 10%"><?php echo ($kreditCashflow == 0) ? '' : "Rp " . number_format($kreditCashflow, 0, ',', '.');?></td>
-                                    <td style="width: 10%"><?php echo ($saldoCashflow == 0) ? '' : "Rp " . number_format($saldoCashflow, 0, ',', '.');?></td>
+                                    <td style="width: 10%"><?php echo ($saldoAkhirCashflow == 0) ? '' : "Rp " . number_format($saldoAkhirCashflow, 0, ',', '.');?></td>
                                     <td style="width: 20%"></td>
                                 </tr>
 
@@ -327,6 +327,9 @@ require 'config.php';
 
                                 $dataKasYs = mysqli_query($conn, $queryKasYs);
                                 $i = 2;
+                                $totalDebetYs = 0;
+                                $totalKreditYs = 0;
+                                $totalSaldoAkhirYs = 0;
                                 while($data=mysqli_fetch_array($dataKasYs)){
                                     $idKategori = $data['id_kategori'];
 
@@ -335,11 +338,11 @@ require 'config.php';
                                     }
 
                                     $kategori = $data['nama_kategori'];
-                                    $debet = $data['total_masuk'];
-                                    $kredit = $data['total_keluar'];
+                                    $debetYs = $data['total_masuk'];
+                                    $kreditYs = $data['total_keluar'];
                                     
                                     // Menghitung saldo
-                                    $querySaldo = mysqli_query($conn, "SELECT
+                                    $querySaldoYs = mysqli_query($conn, "SELECT
                                     k.id_kategori,
                                     k.nama_kategori,
                                     (SUM(COALESCE(masuk.total_masuk, 0)) - SUM(COALESCE(keluar.total_keluar, 0))) AS saldo
@@ -402,26 +405,240 @@ require 'config.php';
                                     k.kode = 'ys'
                                 ");
 
-                                if ($rowSaldo = mysqli_fetch_assoc($querySaldo)) {
-                                    $saldoAkhir = $rowSaldo['saldo'];
+                                if ($rowSaldoYs = mysqli_fetch_assoc($querySaldoYs)) {
+                                    $saldoAkhirYs = $rowSaldoYs['saldo'];
                                 }
 
-                                $selisihDebetKredit = $debet - $kredit;
-                                $saldoAwal = $saldoAkhir - $selisihDebetKredit;
+                                $selisihDebetKreditYs = $debetYs - $kreditYs;
+                                $saldoAwalYs = $saldoAkhirYs - $selisihDebetKreditYs;
 
                                     ?>
                                     <tr>
                                         <td><?=$i++;?></td>                                        
                                         <td><?=$kategori;?></td>
-                                        <td><?php echo ($saldoAwal == 0) ? '' : "Rp " . number_format($saldoAwal, 0, ',', '.');?></td>
-                                        <td><?php echo ($debet == 0) ? '' : "Rp " . number_format($debet, 0, ',', '.');?></td>
-                                        <td><?php echo ($kredit == 0) ? '' : "Rp " . number_format($kredit, 0, ',', '.');?></td>
-                                        <td><?php echo ($saldoAkhir == 0) ? '' : "Rp " . number_format($saldoAkhir, 0, ',', '.');?></td>
+                                        <td><?php echo ($saldoAwalYs == 0) ? '' : "Rp " . number_format($saldoAwalYs, 0, ',', '.');?></td>
+                                        <td><?php echo ($debetYs == 0) ? '' : "Rp " . number_format($debetYs, 0, ',', '.');?></td>
+                                        <td><?php echo ($kreditYs == 0) ? '' : "Rp " . number_format($kreditYs, 0, ',', '.');?></td>
+                                        <td><?php echo ($saldoAkhirYs == 0) ? '' : "Rp " . number_format($saldoAkhirYs, 0, ',', '.');?></td>
                                         <td></td>
                                     </tr>
-                                    <?php 
-                                    }
+                                    <?php
+                                    $totalDebetYs += $debetYs;
+                                    $totalKreditYs += $kreditYs;
+                                    $totalSaldoAkhirYs += $saldoAkhirYs;                                    
+                                    }                                    
+
+                                    $ysDebet = $debetCashflow + $totalDebetYs;
+                                    $ysKredit = $kreditCashflow + $totalKreditYs;
+                                    $ysSaldo = $saldoAkhirCashflow + $totalSaldoAkhirYs;
                                     ?>
+                                    <tr>
+                                        <td></td>                                        
+                                        <td></td>
+                                        <td></td>
+                                        <td><strong><?php echo ($ysDebet == 0) ? '' : "Rp " . number_format($ysDebet, 0, ',', '.');?></strong></td>
+                                        <td><strong><?php echo ($ysKredit == 0) ? '' : "Rp " . number_format($ysKredit, 0, ',', '.');?></strong></td>
+                                        <td><strong><?php echo ($ysSaldo == 0) ? '' : "Rp " . number_format($ysSaldo, 0, ',', '.');?></strong></td>
+                                        <td></td>
+                                    </tr>
+
+                                <?php
+                                $queryKasS = "SELECT
+                                k.id_kategori,
+                                k.nama_kategori,
+                                SUM(COALESCE(masuk.total_masuk, 0)) AS total_masuk,
+                                SUM(COALESCE(keluar.total_keluar, 0)) AS total_keluar
+                                FROM kategori k
+                                LEFT JOIN
+                                    (
+                                        SELECT
+                                            tm.id_kategori,
+                                            SUM(tm.jumlah) AS total_masuk
+                                        FROM transaksi_masuk_siswa tm
+                                        JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            ta.id_tahun_ajar = $idTahunAjar
+                                            AND tm.bulan = '$bulanLalu'
+                                        GROUP BY tm.id_kategori
+                                        UNION ALL
+                                        SELECT
+                                            tn.id_kategori,
+                                            SUM(tn.jumlah) AS total_masuk
+                                        FROM transaksi_masuk_nonsiswa tn
+                                        JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            ta.id_tahun_ajar = $idTahunAjar
+                                            AND tn.bulan = '$bulanLalu'
+                                        GROUP BY tn.id_kategori
+                                        UNION ALL
+                                        SELECT
+                                            tbm.id_kategori,
+                                            SUM(tbm.jumlah) AS total_masuk
+                                        FROM tabung_masuk tbm
+                                        JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            ta.id_tahun_ajar = $idTahunAjar
+                                            AND tbm.bulan = '$bulanLalu'
+                                        GROUP BY tbm.id_kategori
+                                    ) AS masuk
+                                ON k.id_kategori = masuk.id_kategori
+                                LEFT JOIN
+                                    (
+                                        SELECT
+                                            tks.id_kategori,
+                                            SUM(tks.jumlah) AS total_keluar
+                                        FROM transaksi_keluar_siswa tks
+                                        JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            ta.id_tahun_ajar = $idTahunAjar
+                                            AND tks.bulan = '$bulanLalu'
+                                        GROUP BY tks.id_kategori
+                                        UNION ALL
+                                        SELECT
+                                            tkn.id_kategori,
+                                            SUM(tkn.jumlah) AS total_keluar
+                                        FROM transaksi_keluar_nonsiswa tkn
+                                        JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            ta.id_tahun_ajar = $idTahunAjar
+                                            AND tkn.bulan = '$bulanLalu'
+                                        GROUP BY tkn.id_kategori
+                                        UNION ALL
+                                        SELECT
+                                            tba.id_kategori,
+                                            SUM(tba.jumlah) AS total_keluar
+                                        FROM tabung_ambil tba
+                                        JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            ta.id_tahun_ajar = $idTahunAjar
+                                            AND tba.bulan = '$bulanLalu'
+                                        GROUP BY tba.id_kategori
+                                    ) AS keluar
+                                ON k.id_kategori = keluar.id_kategori
+                                WHERE
+                                    k.kode = 's'
+                                GROUP BY
+                                    k.id_kategori, k.nama_kategori;
+                                ";
+
+                                $dataKasS = mysqli_query($conn, $queryKasS);
+                                $i = 5;
+                                $totalDebetS = 0;
+                                $totalKreditS = 0;
+                                $totalSaldoAkhirS = 0;
+                                while($data=mysqli_fetch_array($dataKasS)){
+                                    $idKategori = $data['id_kategori'];
+
+                                    if ($idKategori == 1) {
+                                        continue;
+                                    }
+
+                                    $kategori = $data['nama_kategori'];
+                                    $debetS = $data['total_masuk'];
+                                    $kreditS = $data['total_keluar'];
+                                    
+                                    // Menghitung saldo
+                                    $querySaldoS = mysqli_query($conn, "SELECT
+                                    k.id_kategori,
+                                    k.nama_kategori,
+                                    (SUM(COALESCE(masuk.total_masuk, 0)) - SUM(COALESCE(keluar.total_keluar, 0))) AS saldo
+                                FROM kategori k
+                                LEFT JOIN
+                                    (
+                                        SELECT
+                                            tm.id_kategori,
+                                            SUM(tm.jumlah) AS total_masuk
+                                        FROM transaksi_masuk_siswa tm
+                                        JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tm.id_kategori = $idKategori
+                                        UNION ALL
+                                        SELECT
+                                            tn.id_kategori,
+                                            SUM(tn.jumlah) AS total_masuk
+                                        FROM transaksi_masuk_nonsiswa tn
+                                        JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tn.id_kategori = $idKategori
+                                        UNION ALL
+                                        SELECT
+                                            tbm.id_kategori,
+                                            SUM(tbm.jumlah) AS total_masuk
+                                        FROM tabung_masuk tbm
+                                        JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tbm.id_kategori = $idKategori
+                                    ) AS masuk
+                                ON k.id_kategori = masuk.id_kategori
+                                LEFT JOIN
+                                    (
+                                        SELECT
+                                            tks.id_kategori,
+                                            SUM(tks.jumlah) AS total_keluar
+                                        FROM transaksi_keluar_siswa tks
+                                        JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tks.id_kategori = $idKategori
+                                        UNION ALL
+                                        SELECT
+                                            tkn.id_kategori,
+                                            SUM(tkn.jumlah) AS total_keluar
+                                        FROM transaksi_keluar_nonsiswa tkn
+                                        JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tkn.id_kategori = $idKategori
+                                        UNION ALL
+                                        SELECT
+                                            tba.id_kategori,
+                                            SUM(tba.jumlah) AS total_keluar
+                                        FROM tabung_ambil tba
+                                        JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tba.id_kategori = $idKategori
+                                    ) AS keluar
+                                ON k.id_kategori = keluar.id_kategori
+                                WHERE
+                                    k.kode = 's'
+                                ");
+
+                                if ($rowSaldoS = mysqli_fetch_assoc($querySaldoS)) {
+                                    $saldoAkhirS = $rowSaldoS['saldo'];
+                                }
+
+                                $selisihDebetKreditS = $debetS - $kreditS;
+                                $saldoAwalS = $saldoAkhirS - $selisihDebetKreditS;
+
+                                    ?>
+                                    <tr>
+                                        <td><?=$i++;?></td>                                        
+                                        <td><?=$kategori;?></td>
+                                        <td><?php echo ($saldoAwalS == 0) ? '' : "Rp " . number_format($saldoAwalS, 0, ',', '.');?></td>
+                                        <td><?php echo ($debetS == 0) ? '' : "Rp " . number_format($debetS, 0, ',', '.');?></td>
+                                        <td><?php echo ($kreditS == 0) ? '' : "Rp " . number_format($kreditS, 0, ',', '.');?></td>
+                                        <td><?php echo ($saldoAkhirS == 0) ? '' : "Rp " . number_format($saldoAkhirS, 0, ',', '.');?></td>
+                                        <td></td>
+                                    </tr>
+                                    <?php
+                                    $totalDebetS += $debetS;
+                                    $totalKreditS += $kreditS;
+                                    $totalSaldoAkhirS += $saldoAkhirS;                                    
+                                    }                                    
+
+                                    $konsolidasiDebet = $ysDebet + $totalDebetS;
+                                    $konsolidasiKredit = $ysKredit + $totalKreditS;
+                                    $konsolidasiSaldo = $ysSaldo + $totalSaldoAkhirS;
+                                    ?>
+                                    <tr>
+                                        <td></td>                                        
+                                        <td></td>
+                                        <td></td>
+                                        <td><strong><?php echo ($konsolidasiDebet == 0) ? '' : "Rp " . number_format($konsolidasiDebet, 0, ',', '.');?></strong></td>
+                                        <td><strong><?php echo ($konsolidasiKredit == 0) ? '' : "Rp " . number_format($konsolidasiKredit, 0, ',', '.');?></strong></td>
+                                        <td><strong><?php echo ($konsolidasiSaldo == 0) ? '' : "Rp " . number_format($konsolidasiSaldo, 0, ',', '.');?></strong></td>
+                                        <td></td>
+                                    </tr>
+
+
 
                                 
                             
