@@ -359,7 +359,7 @@ require 'config.php';
                             <option selected disabled>Pilih Kelas</option>
                             <?php
                             // Ambil data kelas dari tabel kelas
-                            $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
+                            $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas WHERE id_kelas <> '404'");
                             while ($kelas = mysqli_fetch_assoc($queryKelas)) {
                                 echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
                             }
