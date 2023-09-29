@@ -2,6 +2,7 @@
 require 'function.php';
 require 'cek.php';
 require 'config.php';
+date_default_timezone_set('Asia/Jakarta');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,7 +96,7 @@ require 'config.php';
                                         $idCashflowKeluar = $data['id_tkc'];                                         
                                         $tanggal =  $data['tanggal'];
                                         $tanggalTampil = date("d-m-Y", strtotime($tanggal));
-                                        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));                                         
+                                        $tanggalBayar = date("Y-m-d\TH:i:s", strtotime($tanggal));                                        
                                         $tahunAjar = $data['tahun_ajar'];
                                         $idGroup = $data['id_group'];                                                                 
                                         $group = $data['groop'];
@@ -156,11 +157,11 @@ require 'config.php';
                                                         <div class="modal-body">
                                                             <div class="mb-3">
                                                                 <label for="tanggal">Tanggal :</label>       
-                                                                <input type="date" name="tanggal" value="<?=$tanggalBayar;?>" class="form-control">
+                                                                <input type="datetime-local" name="tanggal" value="<?=$tanggalBayar;?>" class="form-control">
                                                             </div> 
                                                             <div class="mb-3"> 
                                                                     <label for="groop">Group :</label>
-                                                                    <select class="form-select" name="groop" id="groop" aria-label="Group">
+                                                                    <select class="form-select" name="groopEdit" id="groopEdit" aria-label="Group">
                                                                         <option value="<?=$idGroup;?>"><?=$group;?></option>
                                                                         <?php
                                                                         // Ambil data kelas dari tabel kelas
@@ -173,7 +174,7 @@ require 'config.php';
                                                             </div>
                                                             <div class="mb-3">
                                                                     <label for="groop">Sub Kategori  :</label>
-                                                                    <select class="form-select" name="subKategori" id="subKategori" aria-label="Group">
+                                                                    <select class="form-select" name="subKategoriEdit" id="subKategoriEdit" aria-label="Group">
                                                                         <option value="<?=$idSubCashflow;?>"><?=$subCashflow;?></option>
                                                                         <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript --> 
                                                                     </select>
@@ -379,36 +380,61 @@ require 'config.php';
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Temukan elemen "groop" dan "subKategori" pada Tambah Transaksi Cashflow
-        var groopDropdown = document.getElementById('groop');
-        var subKategoriDropdown = document.getElementById('subKategori');
+    // Temukan elemen "groop" dan "subKategori" pada Tambah Transaksi Cashflow
+    var groopDropdown = document.getElementById('groop');
+    var subKategoriDropdown = document.getElementById('subKategori');
 
-        
-        // Tambahkan event listener ketika nilai "groop" berubah pada Tambah Transaksi Cashflow
-        groopDropdown.addEventListener('change', function() {
-            var selectedGroop = groopDropdown.value;            
+    // Temukan elemen "groopEdit" dan "subKategoriEdit" pada form Edit
+    var groopDropdownEdit = document.getElementById('groopEdit');
+    var subKategoriDropdownEdit = document.getElementById('subKategoriEdit');
 
-            // Gunakan AJAX untuk mengambil data subKategori berdasarkan groop
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'get_sub_kategori_by_group.php?groop=' + selectedGroop, true);
+    // Tambahkan event listener ketika nilai "groop" berubah pada Tambah Transaksi Cashflow
+    groopDropdown.addEventListener('change', function() {
+        var selectedGroop = groopDropdown.value;
 
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Parse data JSON yang diterima
-                    var dataSubKategori = JSON.parse(xhr.responseText);                    
+        // Gunakan AJAX untuk mengambil data subKategori berdasarkan groop
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'get_sub_kategori_by_group.php?groop=' + selectedGroop, true);
 
-                    // Bersihkan dropdown "subKategori" dan tambahkan opsi-opsi baru
-                    subKategoriDropdown.innerHTML = '<option selected disabled>Pilih Sub Kategori</option>';
-                    dataSubKategori.forEach(function(subKategori) {
-                        subKategoriDropdown.innerHTML += '<option value="' + subKategori.id_subkategori_cashflow + '">' + subKategori.nama_sub_kategori + '</option>';
-                        
-                    });                
-                                      
-                }
-            };
-            xhr.send();
-        });
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Parse data JSON yang diterima
+                var dataSubKategori = JSON.parse(xhr.responseText);
+
+                // Bersihkan dropdown "subKategori" dan tambahkan opsi-opsi baru
+                subKategoriDropdown.innerHTML = '<option selected disabled>Pilih Sub Kategori</option>';
+                dataSubKategori.forEach(function(subKategori) {
+                    subKategoriDropdown.innerHTML += '<option value="' + subKategori.id_subkategori_cashflow + '">' + subKategori.nama_sub_kategori + '</option>';
+                });
+            }
+        };
+        xhr.send();
     });
+
+    // Tambahkan event listener ketika nilai "groopEdit" berubah pada form Edit
+    groopDropdownEdit.addEventListener('change', function() {
+        var selectedGroopEdit = groopDropdownEdit.value;
+
+        // Gunakan AJAX untuk mengambil data subKategori berdasarkan groop pada form Edit
+        var xhrEdit = new XMLHttpRequest();
+        xhrEdit.open('GET', 'get_sub_kategori_by_group.php?groop=' + selectedGroopEdit, true);
+
+        xhrEdit.onreadystatechange = function() {
+            if (xhrEdit.readyState === 4 && xhrEdit.status === 200) {
+                // Parse data JSON yang diterima pada form Edit
+                var dataSubKategoriEdit = JSON.parse(xhrEdit.responseText);
+
+                // Bersihkan dropdown "subKategoriEdit" dan tambahkan opsi-opsi baru pada form Edit
+                subKategoriDropdownEdit.innerHTML = '<option selected disabled>Pilih Sub Kategori</option>';
+                dataSubKategoriEdit.forEach(function(subKategoriEdit) {
+                    subKategoriDropdownEdit.innerHTML += '<option value="' + subKategoriEdit.id_subkategori_cashflow + '">' + subKategoriEdit.nama_sub_kategori + '</option>';
+                });
+            }
+        };
+        xhrEdit.send();
+    });
+});
+
 </script>
     
 </html>
