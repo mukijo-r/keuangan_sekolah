@@ -183,114 +183,258 @@ require 'config.php';
                         </div>      
                     </div><br><br>                    
                     <div class="card-body">
-                                <table id="datatablesSimple" class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>    
-                                            <th>Macam Keuangan</th>
-                                            <th>Saldo Awal</th>
-                                            <th>Masuk</th>
-                                            <th>Keluar</th>
-                                            <th>Saldo Akhir</th>
-                                            <th>Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php 
-                                        
-                                        $queryDebetCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS debet FROM transaksi_masuk_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
-                                        $queryKreditCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS kredit FROM transaksi_keluar_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
-                                        $queryMasukCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir'");
-                                        $queryKeluarCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir'");
+                        <table id="datatablesSimple" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>    
+                                    <th>Macam Keuangan</th>
+                                    <th>Saldo Awal</th>
+                                    <th>Masuk</th>
+                                    <th>Keluar</th>
+                                    <th>Saldo Akhir</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                
+                                $queryDebetCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS debet FROM transaksi_masuk_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
+                                $queryKreditCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS kredit FROM transaksi_keluar_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
+                                $queryMasukCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir'");
+                                $queryKeluarCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir'");
 
-                                        $debetCashflow = 0;
-                                        $kreditCashflow = 0;
-                                        $totalMasukCashflow = 0;
-                                        $totalKeluarCashflow = 0;
+                                $debetCashflow = 0;
+                                $kreditCashflow = 0;
+                                $totalMasukCashflow = 0;
+                                $totalKeluarCashflow = 0;
 
-                                        if ($rowDebetCashflow = mysqli_fetch_assoc($queryDebetCashflow)) {
-                                            $debetCashflow = $rowDebetCashflow['debet'];
-                                        }
+                                if ($rowDebetCashflow = mysqli_fetch_assoc($queryDebetCashflow)) {
+                                    $debetCashflow = $rowDebetCashflow['debet'];
+                                }
 
-                                        if ($rowKreditCashflow = mysqli_fetch_assoc($queryKreditCashflow)) {
-                                            $kreditCashflow = $rowKreditCashflow['kredit'];
-                                        }
+                                if ($rowKreditCashflow = mysqli_fetch_assoc($queryKreditCashflow)) {
+                                    $kreditCashflow = $rowKreditCashflow['kredit'];
+                                }
 
-                                        if ($rowMasukCashflow = mysqli_fetch_assoc($queryMasukCashflow)) {
-                                            $totalMasukCashflow = $rowMasukCashflow['total_masuk'];
-                                        }
+                                if ($rowMasukCashflow = mysqli_fetch_assoc($queryMasukCashflow)) {
+                                    $totalMasukCashflow = $rowMasukCashflow['total_masuk'];
+                                }
 
-                                        if ($rowKeluarCashflow = mysqli_fetch_assoc($queryKeluarCashflow)) {
-                                            $totalKeluarCashflow = $rowKeluarCashflow['total_keluar'];
-                                        }
+                                if ($rowKeluarCashflow = mysqli_fetch_assoc($queryKeluarCashflow)) {
+                                    $totalKeluarCashflow = $rowKeluarCashflow['total_keluar'];
+                                }
 
-                                        $saldoCashflow = $totalMasukCashflow - $totalKeluarCashflow;
-                                        $selisihDebetKredit = $debetCashflow - $kreditCashflow;
-                                        $saldoBulanLalu = $saldoCashflow - $selisihDebetKredit;
-                                        
-                                        ?>
-                                        <tr>
-                                            <td style="width: 10%"></td>
-                                            <td style="width: 30%">Cash Flow</td>
-                                            <td style="width: 10%"><?php echo ($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
-                                            <td style="width: 10%"><?php echo ($debetCashflow == 0) ? '' : "Rp " . number_format($debetCashflow, 0, ',', '.');?></td>
-                                            <td style="width: 10%"><?php echo ($kreditCashflow == 0) ? '' : "Rp " . number_format($kreditCashflow, 0, ',', '.');?></td>
-                                            <td style="width: 10%"><?php echo ($saldoCashflow == 0) ? '' : "Rp " . number_format($saldoCashflow, 0, ',', '.');?></td>
-                                            <td style="width: 20%"></td>
-                                        </tr>
-
-                                        
-                                    
-                                    
-                                    
-
-    
-                
-
-                                    <tbody>
-                                </table>
+                                $saldoCashflow = $totalMasukCashflow - $totalKeluarCashflow;
+                                $selisihDebetKredit = $debetCashflow - $kreditCashflow;
+                                $saldoBulanLalu = $saldoCashflow - $selisihDebetKredit;
+                                
+                                ?>
+                                <tr>
+                                    <td style="width: 10%">1</td>
+                                    <td style="width: 30%">Cash Flow</td>
+                                    <td style="width: 10%"><?php echo ($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
+                                    <td style="width: 10%"><?php echo ($debetCashflow == 0) ? '' : "Rp " . number_format($debetCashflow, 0, ',', '.');?></td>
+                                    <td style="width: 10%"><?php echo ($kreditCashflow == 0) ? '' : "Rp " . number_format($kreditCashflow, 0, ',', '.');?></td>
+                                    <td style="width: 10%"><?php echo ($saldoCashflow == 0) ? '' : "Rp " . number_format($saldoCashflow, 0, ',', '.');?></td>
+                                    <td style="width: 20%"></td>
+                                </tr>
 
                                 <?php 
-                                        
-                                        $queryDebetCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS debet FROM transaksi_masuk_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
-                                        $queryKreditCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS kredit FROM transaksi_keluar_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
-                                        $queryMasukCashflow = "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir'";
-                                        $masukCashflow = mysqli_query($conn, $queryMasukCashflow );
-                                        $queryKeluarCashflow = "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir'";
-                                        $keluarCashflow = mysqli_query($conn, $queryKeluarCashflow );
-                                        $debetCashflow = 0;
-                                        $kreditCashflow = 0;
-                                        $totalMasukCashflow = 0;
-                                        $totalKeluarCashflow = 0;
 
-                                        if ($rowDebetCashflow = mysqli_fetch_assoc($queryDebetCashflow)) {
-                                            $debetCashflow = $rowDebetCashflow['debet'];
-                                        }
+                                $queryKasYs = "SELECT
+                                k.id_kategori,
+                                k.nama_kategori,
+                                SUM(COALESCE(masuk.total_masuk, 0)) AS total_masuk,
+                                SUM(COALESCE(keluar.total_keluar, 0)) AS total_keluar
+                                FROM kategori k
+                                LEFT JOIN
+                                    (
+                                        SELECT
+                                            tm.id_kategori,
+                                            SUM(tm.jumlah) AS total_masuk
+                                        FROM transaksi_masuk_siswa tm
+                                        JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tm.id_kategori <> 1
+                                            AND ta.id_tahun_ajar = $idTahunAjar
+                                            AND tm.bulan = '$bulanLalu'
+                                        GROUP BY tm.id_kategori
+                                        UNION ALL
+                                        SELECT
+                                            tn.id_kategori,
+                                            SUM(tn.jumlah) AS total_masuk
+                                        FROM transaksi_masuk_nonsiswa tn
+                                        JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tn.id_kategori <> 1
+                                            AND ta.id_tahun_ajar = $idTahunAjar
+                                            AND tn.bulan = '$bulanLalu'
+                                        GROUP BY tn.id_kategori
+                                        UNION ALL
+                                        SELECT
+                                            tbm.id_kategori,
+                                            SUM(tbm.jumlah) AS total_masuk
+                                        FROM tabung_masuk tbm
+                                        JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tbm.id_kategori <> 1
+                                            AND ta.id_tahun_ajar = $idTahunAjar
+                                            AND tbm.bulan = '$bulanLalu'
+                                        GROUP BY tbm.id_kategori
+                                    ) AS masuk
+                                ON k.id_kategori = masuk.id_kategori
+                                LEFT JOIN
+                                    (
+                                        SELECT
+                                            tks.id_kategori,
+                                            SUM(tks.jumlah) AS total_keluar
+                                        FROM transaksi_keluar_siswa tks
+                                        JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tks.id_kategori <> 1
+                                            AND ta.id_tahun_ajar = $idTahunAjar
+                                            AND tks.bulan = '$bulanLalu'
+                                        GROUP BY tks.id_kategori
+                                        UNION ALL
+                                        SELECT
+                                            tkn.id_kategori,
+                                            SUM(tkn.jumlah) AS total_keluar
+                                        FROM transaksi_keluar_nonsiswa tkn
+                                        JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tkn.id_kategori <> 1
+                                            AND ta.id_tahun_ajar = $idTahunAjar
+                                            AND tkn.bulan = '$bulanLalu'
+                                        GROUP BY tkn.id_kategori
+                                        UNION ALL
+                                        SELECT
+                                            tba.id_kategori,
+                                            SUM(tba.jumlah) AS total_keluar
+                                        FROM tabung_ambil tba
+                                        JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tba.id_kategori <> 1
+                                            AND ta.id_tahun_ajar = $idTahunAjar
+                                            AND tba.bulan = '$bulanLalu'
+                                        GROUP BY tba.id_kategori
+                                    ) AS keluar
+                                ON k.id_kategori = keluar.id_kategori
+                                WHERE
+                                    k.kode = 'ys'
+                                GROUP BY
+                                    k.id_kategori, k.nama_kategori;
+                                ";
 
-                                        if ($rowKreditCashflow = mysqli_fetch_assoc($queryKreditCashflow)) {
-                                            $kreditCashflow = $rowKreditCashflow['kredit'];
-                                        }
+                                $dataKasYs = mysqli_query($conn, $queryKasYs);
+                                $i = 2;
+                                while($data=mysqli_fetch_array($dataKasYs)){
+                                    $idKategori = $data['id_kategori'];
 
-                                        if ($rowMasukCashflow = mysqli_fetch_assoc($masukCashflow)) {
-                                            $totalMasukCashflow = $rowMasukCashflow['total_masuk'];
-                                        }
+                                    if ($idKategori == 1) {
+                                        continue;
+                                    }
 
-                                        if ($rowKeluarCashflow = mysqli_fetch_assoc($keluarCashflow)) {
-                                            $totalKeluarCashflow = $rowKeluarCashflow['total_keluar'];
-                                        }
+                                    $kategori = $data['nama_kategori'];
+                                    $debet = $data['total_masuk'];
+                                    $kredit = $data['total_keluar'];
+                                    
+                                    // Menghitung saldo
+                                    $querySaldo = mysqli_query($conn, "SELECT
+                                    k.id_kategori,
+                                    k.nama_kategori,
+                                    (SUM(COALESCE(masuk.total_masuk, 0)) - SUM(COALESCE(keluar.total_keluar, 0))) AS saldo
+                                FROM kategori k
+                                LEFT JOIN
+                                    (
+                                        SELECT
+                                            tm.id_kategori,
+                                            SUM(tm.jumlah) AS total_masuk
+                                        FROM transaksi_masuk_siswa tm
+                                        JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tm.id_kategori = $idKategori
+                                        UNION ALL
+                                        SELECT
+                                            tn.id_kategori,
+                                            SUM(tn.jumlah) AS total_masuk
+                                        FROM transaksi_masuk_nonsiswa tn
+                                        JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tn.id_kategori = $idKategori
+                                        UNION ALL
+                                        SELECT
+                                            tbm.id_kategori,
+                                            SUM(tbm.jumlah) AS total_masuk
+                                        FROM tabung_masuk tbm
+                                        JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tbm.id_kategori = $idKategori
+                                    ) AS masuk
+                                ON k.id_kategori = masuk.id_kategori
+                                LEFT JOIN
+                                    (
+                                        SELECT
+                                            tks.id_kategori,
+                                            SUM(tks.jumlah) AS total_keluar
+                                        FROM transaksi_keluar_siswa tks
+                                        JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tks.id_kategori = $idKategori
+                                        UNION ALL
+                                        SELECT
+                                            tkn.id_kategori,
+                                            SUM(tkn.jumlah) AS total_keluar
+                                        FROM transaksi_keluar_nonsiswa tkn
+                                        JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tkn.id_kategori = $idKategori
+                                        UNION ALL
+                                        SELECT
+                                            tba.id_kategori,
+                                            SUM(tba.jumlah) AS total_keluar
+                                        FROM tabung_ambil tba
+                                        JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
+                                        WHERE
+                                            tba.id_kategori = $idKategori
+                                    ) AS keluar
+                                ON k.id_kategori = keluar.id_kategori
+                                WHERE
+                                    k.kode = 'ys'
+                                ");
 
-                                        $saldoCashflow = $totalMasukCashflow - $totalKeluarCashflow;
-                                        $saldoBulanLalu = $saldoCashflow - $totalKeluarCashflow;
+                                if ($rowSaldo = mysqli_fetch_assoc($querySaldo)) {
+                                    $saldoAkhir = $rowSaldo['saldo'];
+                                }
 
-                                        echo "debet" . $debetCashflow;
-                                        echo "kredit" . $kreditCashflow;
-                                        echo "masuk" . $totalMasukCashflow;
-                                        echo "keluar" . $totalKeluarCashflow;
-                                        echo "tanggal" . $tanggalAkhir;
-                                        echo $queryMasukCashflow;
-                                        echo $queryKeluarCashflow;
-                                        
-                                        ?>
+                                $selisihDebetKredit = $debet - $kredit;
+                                $saldoAwal = $saldoAkhir - $selisihDebetKredit;
+
+                                    ?>
+                                    <tr>
+                                        <td><?=$i++;?></td>                                        
+                                        <td><?=$kategori;?></td>
+                                        <td><?php echo ($saldoAwal == 0) ? '' : "Rp " . number_format($saldoAwal, 0, ',', '.');?></td>
+                                        <td><?php echo ($debet == 0) ? '' : "Rp " . number_format($debet, 0, ',', '.');?></td>
+                                        <td><?php echo ($kredit == 0) ? '' : "Rp " . number_format($kredit, 0, ',', '.');?></td>
+                                        <td><?php echo ($saldoAkhir == 0) ? '' : "Rp " . number_format($saldoAkhir, 0, ',', '.');?></td>
+                                        <td></td>
+                                    </tr>
+                                    <?php 
+                                    }
+                                    ?>
+
+                                
+                            
+                            
+                            
+
+
+        
+
+                            <tbody>
+                        </table>
+
+                                
                 </main>
             </div>
         </div>
