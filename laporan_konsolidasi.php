@@ -293,7 +293,7 @@ require 'config.php';
                                         WHERE
                                             tks.id_kategori <> 1
                                             AND ta.id_tahun_ajar = $idTahunAjar
-                                            AND tks.bulan = '$bulanLalu'
+                                            AND tks.bulan = '$bulanLalu'                                            
                                         GROUP BY tks.id_kategori
                                         UNION ALL
                                         SELECT
@@ -324,7 +324,7 @@ require 'config.php';
                                 GROUP BY
                                     k.id_kategori, k.nama_kategori;
                                 ";
-
+                                // Perhitungan saldo
                                 $dataKasYs = mysqli_query($conn, $queryKasYs);
                                 $i = 2;
                                 $totalDebetYs = 0;
@@ -356,6 +356,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tm.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                         UNION ALL
                                         SELECT
                                             tn.id_kategori,
@@ -364,6 +365,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tn.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                         UNION ALL
                                         SELECT
                                             tbm.id_kategori,
@@ -372,6 +374,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tbm.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                     ) AS masuk
                                 ON k.id_kategori = masuk.id_kategori
                                 LEFT JOIN
@@ -383,6 +386,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tks.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                         UNION ALL
                                         SELECT
                                             tkn.id_kategori,
@@ -391,6 +395,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tkn.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                         UNION ALL
                                         SELECT
                                             tba.id_kategori,
@@ -399,6 +404,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tba.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                     ) AS keluar
                                 ON k.id_kategori = keluar.id_kategori
                                 WHERE
@@ -520,7 +526,7 @@ require 'config.php';
                                 GROUP BY
                                     k.id_kategori, k.nama_kategori;
                                 ";
-
+                                
                                 $dataKasS = mysqli_query($conn, $queryKasS);
                                 $i = 5;
                                 $totalDebetS = 0;
@@ -552,6 +558,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tm.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                         UNION ALL
                                         SELECT
                                             tn.id_kategori,
@@ -560,6 +567,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tn.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                         UNION ALL
                                         SELECT
                                             tbm.id_kategori,
@@ -568,6 +576,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tbm.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                     ) AS masuk
                                 ON k.id_kategori = masuk.id_kategori
                                 LEFT JOIN
@@ -579,6 +588,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tks.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                         UNION ALL
                                         SELECT
                                             tkn.id_kategori,
@@ -587,6 +597,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tkn.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                         UNION ALL
                                         SELECT
                                             tba.id_kategori,
@@ -595,6 +606,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tba.id_kategori = $idKategori
+                                            AND tanggal <= '$tanggalAkhir'
                                     ) AS keluar
                                 ON k.id_kategori = keluar.id_kategori
                                 WHERE
