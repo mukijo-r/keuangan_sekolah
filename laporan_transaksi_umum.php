@@ -157,7 +157,58 @@ require 'config.php';
                             <h5>Laporan Keuangan <?=$namaKategori?> </h5>
                             <h5>Bulan <?= $bulanLalu;?> </h5>
                             <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>
-                        </div>      
+                        </div>
+                        <?php
+                            $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahunAjarLap'");
+                            $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar']; 
+
+                            // Mendapatkan tahun bulan tanggal dari tahun ajar dan bulan
+                            list($tahunAwal, $tahunAkhir) = explode('/', $tahunAjarLap);
+
+                            // Konversi nama bulan ke angka
+                            if ($bulanLalu == 'Januari') {
+                                $bulanNum = 1;
+                            } elseif ($bulanLalu == 'Februari') {
+                                $bulanNum = 2;
+                            } elseif ($bulanLalu == 'Maret') {
+                                $bulanNum = 3;
+                            } elseif ($bulanLalu == 'April') {
+                                $bulanNum = 4;
+                            } elseif ($bulanLalu == 'Mei') {
+                                $bulanNum = 5;
+                            } elseif ($bulanLalu == 'Juni') {
+                                $bulanNum = 6;
+                            } elseif ($bulanLalu == 'Juli') {
+                                $bulanNum = 7;
+                            } elseif ($bulanLalu == 'Agustus') {
+                                $bulanNum = 8;
+                            } elseif ($bulanLalu == 'September') {
+                                $bulanNum = 9;
+                            } elseif ($bulanLalu == 'Oktober') {
+                                $bulanNum = 10;
+                            } elseif ($bulanLalu == 'November') {
+                                $bulanNum = 11;
+                            } elseif ($bulanLalu == 'Desember') {
+                                $bulanNum = 12;
+                            } else {
+                                $bulanNum = 'Bulan Tidak valid';
+                            }
+
+                            // Daftar bulan-bulan yang menggunakan tahun awal
+                            $bulanTahunAwal = range(7, 12); 
+
+                            if (in_array($bulanNum, $bulanTahunAwal)) {
+                                $tahunYangDigunakan = $tahunAwal;
+                            } else {
+                                $tahunYangDigunakan = $tahunAkhir;
+                            }
+
+                            // Mencari tanggal akhir dalam bulan sesuai tahun yang ditentukan
+                            $tanggalAkhir = date('Y-m-t', strtotime("$tahunYangDigunakan-$bulanNum-01"));
+
+
+                            ?>       
                     </div><br><br>  
                     
                     
@@ -251,7 +302,7 @@ require 'config.php';
                                             <td style="width: 30%">Saldo bulan lalu</td>
                                             <td style="width: 10%"><?php echo ($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
                                             <td style="width: 10%"></td>
-                                            <td style="width: 10%"><?="Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
+                                            <td style="width: 10%"><?php echo ($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.');?></td>
                                             <td style="width: 20%"></td>
                                         </tr>
                                         <?php
@@ -261,7 +312,7 @@ require 'config.php';
                                             $tanggal =  $data['tanggal'];
                                             $tanggalMasuk = date("Y-m-d", strtotime($tanggal));
                                             $tanggalTampil = date("d-m-Y", strtotime($tanggal));
-                                            $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
+                                            $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));
                                             $idKategori = $data['id_kategori']; 
                                             $kategori = $data['kategori'];                                          
                                             $uraian = $data['uraian'];
@@ -270,23 +321,25 @@ require 'config.php';
                                             $keterangan = $data['keterangan'];                                      
 
                                             // Menghitung saldo
-                                            $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggalBayar'");
-                                            $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategori' AND tanggal <= '$tanggalBayar'");
+                                            $queryMasuk = "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalBayar'";
+                                            $queryKeluar = "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalBayar'";
+
+                                            $masuk = mysqli_query($conn, $queryMasuk);
+                                            $keluar = mysqli_query($conn, $queryKeluar);
 
                                             $totalMasuk = 0;
                                             $totalKeluar = 0;
 
-                                            if ($rowMasuk = mysqli_fetch_assoc($queryMasuk)) {
+                                            if ($rowMasuk = mysqli_fetch_assoc($masuk)) {
                                                 $totalMasuk = $rowMasuk['total_masuk'];
                                             }
 
-                                            if ($rowKeluar = mysqli_fetch_assoc($queryKeluar)) {
+                                            if ($rowKeluar = mysqli_fetch_assoc($keluar)) {
                                                 $totalKeluar = $rowKeluar['total_keluar'];
                                             }
 
-                                            $saldo = $totalMasuk - $totalKeluar;
-                                            $saldoBulanLalu = $saldo - $totalKeluar;
-
+                                            $saldo = $totalMasuk - $totalKeluar;                                           
+                                            
                                             ?>
                                             
                                             <tr>
@@ -294,11 +347,11 @@ require 'config.php';
                                                 <td style="width: 30%"><?=$uraian;?></td>
                                                 <td style="width: 10%"><?php echo ($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.');?></td>
                                                 <td style="width: 10%"><?php echo ($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.');?></td>
-                                                <td style="width: 10%"><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
+                                                <td style="width: 10%"><?php echo ($saldo == 0) ? '' : "Rp " . number_format($saldo, 0, ',', '.');?></td>
                                                 <td style="width: 20%"><?=$keterangan;?></tds>
                                             </tr>  
-                                        <?php
-                                        };
+                                        <?php                                        
+                                        };                                        
                                         ?>  
                                     </tbody>
                                         <tr>
@@ -309,7 +362,7 @@ require 'config.php';
                                             <td style="width: 20%"></td>
                                         </tr>
                                 </table><br><br>
-
+                                
                             </div>
                             <?php 
                             $queryJabatan = mysqli_query($conn, "SELECT
