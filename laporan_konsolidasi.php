@@ -688,7 +688,7 @@ require 'config.php';
 
                                 $tunaiKasCf = $saldoAkhirCashflow - $jumlahPinjamCf;
 
-                                echo $queryPinjamCf;
+                                //echo $queryPinjamCf;
 
                                 ?>                                
                                     <tr>
