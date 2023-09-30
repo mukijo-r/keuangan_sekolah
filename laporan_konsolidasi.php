@@ -680,12 +680,15 @@ require 'config.php';
                                 $rowGuru = mysqli_fetch_assoc($queryGuru);
                                 $namaGuru =  $rowGuru['nama_guru'];
 
-                                $queryPinjamCf = mysqli_query($conn, "SELECT `jumlah`, `keterangan` FROM `pinjam` WHERE `id_kategori` = 1");
-                                $rowPinjamCf = mysqli_fetch_assoc($queryPinjamCf);
-                                $jumlahPinjamCf = $rowPinjamCf['jumlah'];
-                                $keteranganCf = $rowPinjamCf['keterangan'];                              
+                                $queryPinjamCf = "SELECT SUM(`jumlah`) AS total_jumlah, MAX(`keterangan`) AS keterangan_terakhir FROM `pinjam` WHERE `tanggal` <= '$tanggalAkhir' AND `id_kategori` = 1";
+                                $pinjamCf = mysqli_query($conn, $queryPinjamCf);
+                                $rowPinjamCf = mysqli_fetch_assoc($pinjamCf);
+                                $jumlahPinjamCf = $rowPinjamCf['total_jumlah'];
+                                $keteranganCf = $rowPinjamCf['keterangan_terakhir'];                                
 
                                 $tunaiKasCf = $saldoAkhirCashflow - $jumlahPinjamCf;
+
+                                echo $queryPinjamCf;
 
                                 ?>                                
                                     <tr>
@@ -705,10 +708,7 @@ require 'config.php';
                                     k.nama_kategori,
                                     g.nama_lengkap,
                                     SUM(COALESCE(masuk.total_masuk, 0)) AS total_masuk,
-                                    SUM(COALESCE(keluar.total_keluar, 0)) AS total_keluar,
-                                    SUM(COALESCE(pjm.jumlah, 0)) AS total_pinjam, -- Tambahkan kolom 'total_pinjam'
-                                    pjm.keterangan AS keterangan_pinjam,
-                                    pjm.id_pinjam AS id_pinjam 
+                                    SUM(COALESCE(keluar.total_keluar, 0)) AS total_keluar
                                     FROM kategori k
                                     LEFT JOIN
                                         (
@@ -718,7 +718,7 @@ require 'config.php';
                                             FROM transaksi_masuk_siswa tm
                                             JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '2023-09-29'
+                                                tanggal <= '$tanggalAkhir'
                                             GROUP BY tm.id_kategori
                                             UNION ALL
                                             SELECT
@@ -727,7 +727,7 @@ require 'config.php';
                                             FROM transaksi_masuk_nonsiswa tn
                                             JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '2023-09-29'
+                                                tanggal <= '$tanggalAkhir'
                                             GROUP BY tn.id_kategori
                                             UNION ALL
                                             SELECT
@@ -736,7 +736,7 @@ require 'config.php';
                                             FROM tabung_masuk tbm
                                             JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '2023-09-29'
+                                                tanggal <= '$tanggalAkhir'
                                             GROUP BY tbm.id_kategori
                                         ) AS masuk
                                     ON k.id_kategori = masuk.id_kategori
@@ -748,7 +748,7 @@ require 'config.php';
                                             FROM transaksi_keluar_siswa tks
                                             JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '2023-09-29'
+                                                tanggal <= '$tanggalAkhir'
                                             GROUP BY tks.id_kategori
                                             UNION ALL
                                             SELECT
@@ -757,7 +757,7 @@ require 'config.php';
                                             FROM transaksi_keluar_nonsiswa tkn
                                             JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '2023-09-29'
+                                                tanggal <= '$tanggalAkhir'
                                             GROUP BY tkn.id_kategori
                                             UNION ALL
                                             SELECT
@@ -766,16 +766,14 @@ require 'config.php';
                                             FROM tabung_ambil tba
                                             JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '2023-09-29'
+                                                tanggal <= '$tanggalAkhir'
                                             GROUP BY tba.id_kategori
                                         ) AS keluar
                                     ON k.id_kategori = keluar.id_kategori
                                     -- Tambahkan JOIN dengan tabel 'guru'
                                     LEFT JOIN guru g ON k.id_guru = g.id_guru
-                                    -- Tambahkan LEFT JOIN dengan tabel 'pinjam'
-                                    LEFT JOIN pinjam pjm ON k.id_kategori = pjm.id_kategori
                                     GROUP BY
-                                        k.id_kategori, k.nama_kategori, g.nama_lengkap, pjm.jumlah, pjm.keterangan
+                                        k.id_kategori, k.nama_kategori, g.nama_lengkap
                                     ;";
 
                                 $pemegangKas = mysqli_query($conn, $queryPemegang);
@@ -793,12 +791,15 @@ require 'config.php';
                                     $nama = $data['nama_lengkap'];
                                     $kasMasuk = $data['total_masuk'];
                                     $kasKeluar = $data['total_keluar'];
-                                    $idPinjam = $data['id_pinjam'];
-                                    $dipinjam = $data['total_pinjam'];
-                                    $keterangan = $data['keterangan_pinjam'];
 
+                                    
+                                    $queryPinjamKas = mysqli_query($conn, "SELECT SUM(`jumlah`) AS total_jumlah, MAX(`keterangan`) AS keterangan_terakhir FROM `pinjam` WHERE `tanggal` <= '$tanggalAkhir' AND `id_kategori` = '$idKategori'");
+                                    $rowPinjamKas = mysqli_fetch_assoc($queryPinjamKas);
+                                    $jumlahPinjamKas = $rowPinjamKas['total_jumlah'];
+                                    $keteranganKas = $rowPinjamKas['keterangan_terakhir'];                                  
+ 
                                     $jumlahKas = $kasMasuk - $kasKeluar;
-                                    $tunaiKas = $jumlahKas - $dipinjam;
+                                    $tunaiKas = $jumlahKas - $jumlahPinjamKas;
 
                                     ?>
                                     <tr>
@@ -807,55 +808,15 @@ require 'config.php';
                                         <td><?=$kategori;?></td>
                                         <td><?php echo ($jumlahKas == 0) ? '' : "Rp " . number_format($jumlahKas, 0, ',', '.');?></td>
                                         <td><?php echo ($tunaiKas == 0) ? '' : "Rp " . number_format($tunaiKas, 0, ',', '.');?></td>
-                                        <td><?php echo ($dipinjam == 0) ? '' : "Rp " . number_format($dipinjam, 0, ',', '.');?></td>
-                                        <td><?=$keterangan;?></td>
-                                    </tr>
-
-                                    <!-- Modal Edit Pinjam Kas-->
-                                    <div class="modal fade" id="modalEditPinjam<?=$idPinjam;?>">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Edit Keterangan Kas</h4>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <!-- Modal body -->
-                                            
-                                            <form method="post">
-                                            <div class="modal-body">
-                                                <h5> Edit keterangan kas "<?=$kategori;?>" <h5>
-                                                <br>
-                                                <div class="mb-3">
-                                                    <label for="uraian">Dipinjam :</label>                        
-                                                    <input type="number" name="jumlah" id="jumlah" value="<?=$dipinjam;?>" class="form-control">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="uraian">Keterangan :</label>                        
-                                                    <input type="text" name="keterangan" id="keterangan" value="<?=$keterangan;?>" class="form-control">
-                                                </div>
-                                            <div class="text-center">
-                                                <button type="submit" class="btn btn-warning" name="editPinjam">Edit</button> 
-                                            </div>
-                                            <br> 
-                                            </form>        
-                                            </div>
-                                        </div>
-                                    </div>
+                                        <td><?php echo ($jumlahPinjamKas == 0) ? '' : "Rp " . number_format($jumlahPinjamKas, 0, ',', '.');?></td>
+                                        <td><?=$keteranganKas;?></td>
+                                    </tr>                                   
 
                                     <?php 
                                 }
                                 ?>
                                 <tbody>
                         </table>
-
-
-
-
-
-
                                 
                 </main>
             </div>
