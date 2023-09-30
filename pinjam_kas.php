@@ -143,7 +143,7 @@ require 'config.php';
 
         <!-- Modal Header -->
         <div class="modal-header">
-            <h4 class="modal-title">Tambah Kategori Kas</h4>
+            <h4 class="modal-title">Pinjam Kas</h4>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <!-- Modal body -->      
@@ -180,5 +180,48 @@ require 'config.php';
     </div>
     </div>
 
+    <!-- Modal Kembalikan Kas-->
+    <div class="modal fade" id="modalKembalikanKas">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Kembalikan Pinjaman Kas</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <!-- Modal body -->      
+            <form method="post">
+            <div class="modal-body">
+                <label for="tanggal">Tanggal :</label>
+                <?php $tanggalSaatIni = date('Y-m-d', time());?> 
+                <input type="date" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control" required>
+                <br>
+                <label for="kategori">Kategori Kas :</label>
+                    <select class="form-select" name="kategori" id="kategori" aria-label="subKategori">
+                        <option selected disabled>Pilih Kategori Kas</option>
+                        <?php
+                        // Ambil data kelas dari tabel kelas
+                        $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori");
+                        while ($kategori = mysqli_fetch_assoc($queryKategori)) {
+                            echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
+                        }
+                        ?>
+                    </select>
+                <br>
+                <label for="jumlah">Jumlah :</label>                        
+                <input type="number" name="jumlah" id="jumlah" class="form-control"> 
+                <br>               
+                <label for="keterangan">Keterangan :</label>   
+                <input type="text" name="keterangan" placeholder="Keterangan" class="form-control">
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success" name="kembalikanKas">Tambah</button> 
+            </div>
+            <br> 
+        </form>   
+        </div>
+    </div>
+    </div>
     
 </html>

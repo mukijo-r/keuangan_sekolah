@@ -2292,7 +2292,7 @@
         }
     }
 
-        //Meluluskan siswa
+    //Meluluskan siswa
     if (isset($_POST['luluskanSiswa'])) {
         try {
             // Jalankan query select
@@ -2302,7 +2302,7 @@
                 $idSiswa = $row['id_siswa'];
                 $nama = $row['nama'];
                 $idKelas = $row['id_kelas'];
-                $idKelasBaru = '404';
+                $idKelasBaru = 404;
                 
                 // Eksekusi query update di sini
                 $luluskanSiswa = mysqli_query($conn, "UPDATE siswa SET `id_kelas`= $idKelasBaru, `status` = 'lulus' WHERE id_siswa='$idSiswa'");
@@ -2322,6 +2322,106 @@
             $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger';
             header('location:siswa.php');
+            exit;
+        }
+    }
+
+    // Tambah Pinjaman
+    if(isset($_POST['pinjamKas'])){
+        $tanggal = $_POST['tanggal'];
+        $idKategori = $_POST['kategori'];
+        $jumlah = $_POST['jumlah'];
+        $keterangan = $_POST['keterangan'];
+
+        try {
+            $queryInsertPinjam = "INSERT INTO `pinjam`
+            (`tanggal`, `id_kategori`, `jumlah`, `keterangan`) 
+            VALUES 
+            ('$tanggal','$idKategori','$jumlah','$keterangan')
+            ";
+            
+            $insertPinjam = mysqli_query($conn, $queryInsertPinjam);
+
+            if (!$insertPinjam) {
+                throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM `pinjam` 
+            WHERE
+            `tanggal`='$tanggal' AND
+            `id_kategori`='$idKategori' AND
+            `jumlah`='$jumlah' AND
+            `keterangan`='$keterangan'
+                ";
+            
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Tambah pinjaman berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:pinjam_kas.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Tambah pinjaman gagal");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:pinjam_kas.php');
+            exit;
+        }
+    }
+
+    // Kembalikan Pinjaman
+    if(isset($_POST['kembalikanKas'])){
+        $tanggal = $_POST['tanggal'];
+        $idKategori = $_POST['kategori'];
+        $jumlah = $_POST['jumlah'];
+        $keterangan = $_POST['keterangan'];
+
+        try {
+            $queryInsertKembali = "INSERT INTO `pinjam`
+            (`tanggal`, `id_kategori`, `jumlah`, `keterangan`) 
+            VALUES 
+            ('$tanggal','$idKategori','-$jumlah','$keterangan')
+            ";
+            
+            $insertKembali = mysqli_query($conn, $queryInsertKembali);
+
+            if (!$insertKembali) {
+                throw new Exception("Query gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCek = "SELECT * FROM `pinjam` 
+            WHERE
+            `tanggal`='$tanggal' AND
+            `id_kategori`='$idKategori' AND
+            `jumlah`='$jumlah' AND
+            `keterangan`='$keterangan'
+                ";
+            
+            $result = mysqli_query($conn, $queryCek);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Pengembalian pinjaman berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:pinjam_kas.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Pengembalian pinjaman gagal, periksa data");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryInsertKembali . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:pinjam_kas.php');
             exit;
         }
     }
