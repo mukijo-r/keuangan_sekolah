@@ -15,6 +15,7 @@ require 'config.php';
         <title>Halaman Siswa</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-fNPd/1L37kqYjQbdzC2J9PTzivtbDpVf05/5CAZP9ZR5QLr18P+RvBDZ57bKvzsmwxOLY/6i7jzWBn5CBb4er4dg==" crossorigin="anonymous" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -27,88 +28,152 @@ require 'config.php';
                         <h2 class="mt-4">Daftar Siswa</h2>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item active">DATA/Siswa</li>
-                        </ol>                       
-                        
-                        <div class="container-fluid px-4">
+                        </ol>
+                        <?php 
+                        $queryJumlahSiswa = mysqli_query($conn, "SELECT
+                        (SELECT COUNT(*) FROM siswa WHERE `status` = 'aktif') AS jumlah_total,
+                        (SELECT COUNT(*) FROM siswa WHERE jk = 'L' AND `status` = 'aktif') AS jumlah_laki_laki,
+                        (SELECT COUNT(*) FROM siswa WHERE jk = 'P' AND `status` = 'aktif') AS jumlah_perempuan;");
+
+                        $dataJumlah = mysqli_fetch_assoc($queryJumlahSiswa);
+                        $jumlahLaki = $dataJumlah['jumlah_laki_laki'];
+                        $jumlahPerempuan = $dataJumlah['jumlah_perempuan']; 
+                        $totalSiswa = $dataJumlah['jumlah_total'];  
+
+                        ?>
+
+                        <!-- Card -->
+                        <div class="container-fluid px-2">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <img src="assets/img/group2.png" width="50px">
+                                    <h6>Total</h6>
+                                    <h3><?=$totalSiswa;?></h3>
+                                </div>
+                                <div class="col-md-1">
+                                    <img src="assets/img/male.png" width="50px">
+                                    <h6>Laki-laki</h6>
+                                    <h3><?=$jumlahLaki;?></h3>
+                                </div>
+                                <div class="col-md-1">
+                                    <img src="assets/img/female.png" width="50px">
+                                    <h6>Perempuan</h6>
+                                    <h3><?=$jumlahPerempuan;?></h3>
+                                </div>
+                                <div class="col-md-9">
+                                <?php
+                                    if (isset($_SESSION['flash_message'])) {
+                                        $message_class = isset($_SESSION['flash_message_class']) ? $_SESSION['flash_message_class'] : 'alert-success';
+                                        echo '<div class="alert ' . $message_class . ' text-center">' . $_SESSION['flash_message'] . '</div>';
+                                        unset($_SESSION['flash_message']); // Hapus pesan flash setelah ditampilkan
+                                    }                                    
+                                    ?>
+                                </div>
+                            </div>
+                            
+                        </div><br>
+                       
+                        <div class="container-fluid px-2">
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahSiswa">
                                         Tambah Siswa
                                     </button>
                                 </div>
-                                <div class="col-md-8">
-                                    <?php
-                                    if (isset($_SESSION['flash_message'])) {
-                                        $message_class = isset($_SESSION['flash_message_class']) ? $_SESSION['flash_message_class'] : 'alert-success';
-                                        echo '<div class="alert ' . $message_class . ' text-center">' . $_SESSION['flash_message'] . '</div>';
-                                        unset($_SESSION['flash_message']); // Hapus pesan flash setelah ditampilkan
-                                    }
-                                    
-                                    ?>
-                                </div>
-                            </div>
-                            <br>
-                            <div>
+                                <div class="col-md-2">
                                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
                                     Import Excel
                                 </button>
+                                </div>
+                                <div class="col-md-2">
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalNaikKelas">
+                                    Naikkan Siswa
+                                </button>
+                                </div>
+                                <div class="col-md-2">
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLulus">
+                                    Luluskan Siswa
+                                </button>
+                                </div>
                             </div>
-                        </div> 
+                        </div>
                         <br>
 
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                Daftar Siswa
-                            </div>
-                            <div class="card-body">
-                                <table id="datatablesSimple">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>    
-                                            <th>Nama</th>
-                                            <th>NISN</th>
-                                            <th>Kelas</th>
-                                            <th>Jenis Kelamin</th>
-                                            <th>Tampat Lahir</th>
-                                            <th>Tanggal Lahir</th>
-                                            <th>Agama</th>
-                                            <th>Alamat</th>
-                                            <th colspan='2'>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php 
-                                    $datasiswa = mysqli_query($conn, "select * from siswa ORDER BY id_kelas ASC");
-                                    $i = 1;
-                                    while($data=mysqli_fetch_array($datasiswa)){
-                                        $namaSiswa = $data['nama'];
-                                        $nisn = $data['nisn'];
-                                        $kelas = $data['id_kelas'];
-                                        $jk = $data['jk'];
-                                        $tempatLahir = $data['tempat_lahir'];
-                                        $tanggalLahir = $data['tanggal_lahir'];
-                                        $agama = $data['agama'];
-                                        $alamat = $data['alamat']; 
-                                        $ids = $data['id_siswa'];                                       
-                                    ?>
-                                    <tr>
-                                        <td><?=$i++;?></td>
-                                        <td><?=$namaSiswa;?></td>
-                                        <td><?=$nisn;?></td>
-                                        <td><?=$kelas;?></td>
-                                        <td><?=$jk;?></td>
-                                        <td><?=$tempatLahir;?></td>
-                                        <td><?=$tanggalLahir;?></td>
-                                        <td><?=$agama;?></td>
-                                        <td><?=$alamat;?></td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditSiswa<?=$ids;?>">Edit</button>
-                                            <input type="hidden" name="idsis" value="<?=$ids;?>">
-                                            <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusSiswa<?=$ids;?>">Hapus</button> 
-                                        </td>
-                                    </tr>
-                                    <!-- Modal Edit Siswa-->
+                        <?php
+                        // Loop untuk membuat tabel untuk setiap kelas
+                        for ($kelas = 1; $kelas <= 6; $kelas++) {
+                            // Query untuk mengambil data siswa berdasarkan kelas
+                            $query = "SELECT * FROM siswa WHERE id_kelas = $kelas ORDER BY id_kelas ASC";
+                            $result = mysqli_query($conn, $query);
+                            
+                            // Mulai tabel baru untuk setiap kelas
+                            echo '<div class="card mb-4">';
+                            echo '<div class="card-header">';
+                            echo '<i class="fas fa-table me-1"></i>';
+                            echo 'Daftar Siswa Kelas ' . $kelas;
+                            echo '</div>';
+                            echo '<div class="card-body">';
+                            echo '<table id="datatablesSimple1" class="table table-bordered">';
+                            echo '<thead>';
+                            echo '<tr>';
+                            echo '<th>No.</th>';
+                            echo '<th>Nama</th>';
+                            echo '<th>NISN</th>';
+                            echo '<th>Kelas</th>';
+                            echo '<th>Jenis Kelamin</th>';
+                            echo '<th>Tempat Lahir</th>';
+                            echo '<th>Tanggal Lahir</th>';
+                            echo '<th>Agama</th>';
+                            echo '<th>Alamat</th>';
+                            echo '<th colspan="2">Aksi</th>';
+                            echo '</tr>';
+                            echo '</thead>';
+                            echo '<tbody>';
+
+                            $i = 1;
+                            $jumlahLakiLaki = 0;
+                            $jumlahPerempuan = 0;
+
+                            while ($data = mysqli_fetch_array($result)) {
+                                // Ambil data siswa untuk setiap kelas
+                                $namaSiswa = $data['nama'];
+                                $nisn = $data['nisn'];
+                                $kelas = $data['id_kelas'];
+                                $jk = $data['jk'];
+                                $tempatLahir = $data['tempat_lahir'];
+                                $tanggalLahir = $data['tanggal_lahir'];
+                                $agama = $data['agama'];
+                                $alamat = $data['alamat'];
+                                $ids = $data['id_siswa'];
+
+                                // Menghitung jumlah jenis kelamin
+                                if ($jk == 'L') {
+                                    $jk = 'Laki-Laki';
+                                    $jumlahLakiLaki++;
+                                } elseif ($jk == 'P') {
+                                    $jk = 'Perempuan';
+                                    $jumlahPerempuan++;
+                                }
+
+                                // Tampilkan data siswa dalam tabel
+                                echo '<tr>';
+                                echo '<td>' . $i++ . '</td>';
+                                echo '<td>' . $namaSiswa . '</td>';
+                                echo '<td>' . $nisn . '</td>';
+                                echo '<td>' . $kelas . '</td>';
+                                echo '<td>' . $jk . '</td>';
+                                echo '<td>' . $tempatLahir . '</td>';
+                                echo '<td>' . $tanggalLahir . '</td>';
+                                echo '<td>' . $agama . '</td>';
+                                echo '<td>' . $alamat . '</td>';
+                                echo '<td>';
+                                echo '<button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditSiswa' . $ids . '">Edit</button>';
+                                echo '<input type="hidden" name="idsis" value="' . $ids . '">';
+                                echo '<button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusSiswa' . $ids . '">Hapus</button>';
+                                echo '</td>';
+                                echo '</tr>';
+                                ?>
+                                <!-- Modal Edit Siswa-->
                                     <div class="modal fade" id="modalEditSiswa<?=$ids;?>">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -123,10 +188,13 @@ require 'config.php';
                                             
                                             <form method="post">
                                             <div class="modal-body">
+                                                <label for="nisn">NISN :</label>  
                                                 <input type="text" name="nisn" value="<?=$nisn;?>" class="form-control">
                                                 <br>
+                                                <label for="namaSiswa">Nama siswa :</label> 
                                                 <input type="text" name="namaSiswa" value="<?=$namaSiswa;?>" class="form-control">
                                                 <br>
+                                                <label for="kelas">Kelas :</label> 
                                                 <select class="form-select" name="kelas" aria-label="Pilih Kelas">
                                                     <option selected><?=$kelas;?></option>
                                                     <option value="1">1</option>
@@ -137,16 +205,20 @@ require 'config.php';
                                                     <option value="6">6</option>
                                                 </select>
                                                 <br>
+                                                <label for="jk">Jenis kelamin :</label> 
                                                 <select class="form-select" name="jk" aria-label="Jenis Kelamin">
                                                     <option selected><?=$jk;?></option>
-                                                    <option value="L">L</option>
-                                                    <option value="P">P</option>
+                                                    <option value="L">Laki-laki</option>
+                                                    <option value="P">Perempuan</option>
                                                 </select>
                                                 <br>
+                                                <label for="tempatLahir">Tempat lahir :</label> 
                                                 <input type="text" name="tempatLahir" value="<?=$tempatLahir;?>" class="form-control">
                                                 <br>
+                                                <label for="tanggalLahir">Tanggal lahir :</label> 
                                                 <input type="date" name="tanggalLahir" value="<?=$tanggalLahir;?>" class="form-control">
                                                 <br>
+                                                <label for="agama">Agama :</label> 
                                                 <select class="form-select" name="agama" aria-label="Agama">
                                                     <option selected><?=$agama;?></option>
                                                     <option value="Katolik">Katolik</option>
@@ -157,7 +229,8 @@ require 'config.php';
                                                     <option value="Khonghucu">Khonghucu</option>
                                                 </select>
                                                 <br>
-                                                <textarea name="alamat" rows="5" cols="45"><?=$alamat;?></textarea>
+                                                <label for="alamat">Alamat :</label><br> 
+                                                <textarea name="alamat" rows="3" cols="55"><?=$alamat;?></textarea>
                                                 <input type="hidden" name="ids" value="<?=$ids;?>">
                                             </div>
                                             <div class="text-center">
@@ -196,14 +269,22 @@ require 'config.php';
                                             </div>
                                         </div>
                                     </div>
-                                    <?php
-                                    };
+                            <?php
+                            }
 
-                                    ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                            // Tampilkan jumlah siswa dan jenis kelamin di bawah tabel
+                            echo '</tbody>';
+                            echo '</table>';
+                            echo '</div>';
+                            echo '<div class="card-footer">';
+                            echo 'Jumlah Siswa: ' . ($i - 1) . '<br>';
+                            echo 'Jumlah Laki-Laki: ' . $jumlahLakiLaki . '<br>';
+                            echo 'Jumlah Perempuan: ' . $jumlahPerempuan . '<br>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
+                        ?>
+
 
                     </div>
                 </main>
@@ -331,6 +412,58 @@ require 'config.php';
                             </tr>
                         </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Menaikkan Siswa-->
+    <div class="modal fade" id="modalNaikKelas">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Naikkan Siswa</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->      
+                <form method="post">
+                <div class="modal-body">
+                    <h6>Semua siswa kelas 1 - 5 akan naik satu tingkat sekaligus.</h6>
+                    <h6>Apabila terdapat siswa yang tidak naik kelas, ubah kelas secara individu melalui menu edit.</h6>
+                    <h6>Sebelum menjalankan proses ini, pastikan siswa kelas 6 sudah diluluskan.</h6>  
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-warning" name="naikkanSiswa">Naikkan</button> 
+                </div>
+                <br> 
+            </form>   
+            </div>
+        </div>
+    </div>
+
+     <!-- Modal Meluluskan Siswa-->
+     <div class="modal fade" id="modalLulus">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Luluskan Siswa</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->      
+                <form method="post">
+                <div class="modal-body">
+                    <h6>Meluluskan semua siswa kelas 6 sekaligus.</h6>
+                    <h6>Siswa yang sudah diluluskan tidak dapat dikembalikan. 
+                        Apabila terdapat siswa yang tidak lulus, ubah kelas secara individu melalui menu edit sebelum menjalankan proses ini.</h6>  
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-danger" name="luluskanSiswa">Luluskan</button> 
+                </div>
+                <br> 
+            </form>   
             </div>
         </div>
     </div>

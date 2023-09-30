@@ -2258,4 +2258,74 @@
         }
     }
 
+    //Menaikkan siswa
+    if (isset($_POST['naikkanSiswa'])) {
+        try {
+            // Jalankan query update
+            $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama, id_kelas FROM siswa WHERE id_kelas IN (1, 2, 3, 4, 5)");
+    
+            while ($row = mysqli_fetch_assoc($querySiswa)) {
+                $idSiswa = $row['id_siswa'];
+                $nama = $row['nama'];
+                $idKelas = $row['id_kelas'];
+                $idKelasBaru = $idKelas + 1;
+                
+                // Eksekusi query update di sini
+                $naikkanSiswa = mysqli_query($conn, "UPDATE siswa SET id_kelas='$idKelasBaru' WHERE id_siswa='$idSiswa'");
+                
+                if (!$naikkanSiswa) {
+                    throw new Exception("Naikkan siswa gagal");
+                }
+            }
+    
+            // Tambahkan kode Anda untuk memeriksa apakah data sudah diperbarui dengan benar
+    
+            $_SESSION['flash_message'] = 'Naikkan siswa berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success';
+            header('location:siswa.php');
+            exit;
+        } catch (Exception $e) {
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger';
+            header('location:siswa.php');
+            exit;
+        }
+    }
+
+        //Meluluskan siswa
+    if (isset($_POST['luluskanSiswa'])) {
+        try {
+            // Jalankan query select
+            $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama, id_kelas FROM siswa WHERE id_kelas = 6");
+    
+            while ($row = mysqli_fetch_assoc($querySiswa)) {
+                $idSiswa = $row['id_siswa'];
+                $nama = $row['nama'];
+                $idKelas = $row['id_kelas'];
+                $idKelasBaru = '404';
+                
+                // Eksekusi query update di sini
+                $luluskanSiswa = mysqli_query($conn, "UPDATE siswa SET `id_kelas`= $idKelasBaru, `status` = 'lulus' WHERE id_siswa='$idSiswa'");
+                
+                if (!$luluskanSiswa) {
+                    throw new Exception("Luluskan siswa gagal");
+                }
+            }
+    
+            // Tambahkan kode Anda untuk memeriksa apakah data sudah diperbarui dengan benar
+    
+            $_SESSION['flash_message'] = 'Luluskan siswa berhasil, siswa masuk ke data alumni';
+            $_SESSION['flash_message_class'] = 'alert-success';
+            header('location:siswa.php');
+            exit;
+        } catch (Exception $e) {
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger';
+            header('location:siswa.php');
+            exit;
+        }
+    }
+    
+
+
 ?>
