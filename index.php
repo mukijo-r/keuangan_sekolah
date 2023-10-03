@@ -1,6 +1,7 @@
 <?php
 require 'function.php';
 require 'cek.php';
+require 'config.php';
 
 
 ?>
@@ -12,7 +13,24 @@ require 'cek.php';
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Dashboard - SB Admin</title>
+        <title>Dashboard - Manajemen Keuangan</title>
+        <style>
+            .with-background {
+                background-image: url('assets/img/welcome2.jpg'); /* Ganti 'url-gambar-anda.jpg' dengan URL gambar yang ingin Anda gunakan */
+                background-size: cover; /* Untuk mengatur gambar agar menutupi seluruh div */
+                background-repeat: no-repeat; /* Agar gambar tidak diulang */
+                background-position: center center; /* Agar gambar terpusat dalam div */
+                /* opacity: 0.6; */
+            }
+
+            #clock {
+            font-size: 8vmin; /* Ukuran font dalam 20% dari lebar atau tinggi viewport (tergantung yang lebih kecil) */
+            text-align: right;
+            margin-top: 25%; /* Untuk menggeser elemen ke tengah halaman (opsional) */
+        }
+
+
+        </style>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -21,115 +39,23 @@ require 'cek.php';
         <?php include 'navbar.php'; ?>;
         <div id="layoutSidenav">
             <?php include 'sidebar.php'; ?>;
-            <div id="layoutSidenav_content">
+            <div id="layoutSidenav_content" class="with-background">
                 <main>
-                    <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Dashboard <?=$tahun_ajar?></li>
-                        </ol>
-                        <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Primary Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Warning Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">Success Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Danger Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-area me-1"></i>
-                                        Area Chart Example
-                                    </div>
-                                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-1"></i>
-                                        Bar Chart Example
-                                    </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                DataTable Example
-                            </div>
-                            <div class="card-body">
-                                <table id="datatablesSimple">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Position</th>
-                                            <th>Office</th>
-                                            <th>Age</th>
-                                            <th>Start date</th>
-                                            <th>Salary</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Tiger Nixon</td>
-                                            <td>System Architect</td>
-                                            <td>Edinburgh</td>
-                                            <td>61</td>
-                                            <td>2011/04/25</td>
-                                            <td>$320,800</td>
-                                        </tr> 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <div class="container-fluid px-4" >
+                    <br>
+                    <figure class="bg-light p-4"
+                            style="border-left: .35rem solid #fcdb5e; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; opacity: 0.85;">
+                        <i class="fas fa-quote-left fa-2x mb-4" style="color: #fcdb5e;"></i>
+                        <blockquote class="blockquote pb-2">
+                            <i><h1>
+                                Selamat datang, Anda berada di tahun ajaran <u><?=$tahun_ajar;?></u>
+                            </h1></i>
+                        </blockquote>
+                    </figure>
+
                     </div>
+                    <div id="clock"></div>
                 </main>
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -139,15 +65,24 @@ require 'cek.php';
         <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script>
+        <script async defer src="https://dailyverses.net/get/verse.js?language=niv"></script>
         <script>
-        // Menggunakan JavaScript untuk mengatur collapse menu
-        const siswaLink = document.querySelector(".nav-link[href='siswa.php']");
-        const transaksiCollapse = document.querySelector("#collapseLayouts");
+        function updateClock() {
+            var now = new Date();
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            var formattedDate = now.toLocaleDateString(undefined, options);
+            var time = now.toLocaleTimeString();
 
-        siswaLink.addEventListener("click", function(event) {
-            //event.preventDefault(); // Mencegah navigasi ke "siswa.php"
-            transaksiCollapse.classList.add("show"); // Menampilkan collapse menu "Transaksi"
-        });
-    </script>
+            var clockElement = document.getElementById('clock');
+            clockElement.innerHTML = formattedDate + '<br>' + time;
+            }
+
+            // Memanggil fungsi updateClock setiap detik
+            setInterval(updateClock, 1000);
+
+            // Memanggil updateClock pada saat halaman pertama kali dimuat
+            updateClock();
+        </script>
     </body>
 </html>
+

@@ -19,6 +19,22 @@ require 'sidebar_function.php';
                     display: none !important;
                 }
             }
+
+            /* Style untuk kontainer gambar dengan border melingkar */
+            .logo {
+                border-radius: 90%; /* Membuat border melingkar dengan radius 50% dari lebar atau tinggi kontainer */
+                overflow: hidden; /* Menghilangkan bagian gambar yang mungkin melampaui border */
+
+ /* Mengatur konten vertikal ke tengah */
+            }
+
+            /* Style untuk gambar di dalam kontainer */
+            .logo img {
+                width: 40%;
+                height: 40%;
+                object-fit: cover; /* Mengatur bagaimana gambar mengisi kontainer */
+            }
+
         </style>
 
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
@@ -30,13 +46,19 @@ require 'sidebar_function.php';
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <a class="nav-link" href="index.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Dashboard
-                            </a>
+                            <div class="logo" style="text-align: center; margin-right: 10px;">
+                                <img src="assets/img/logo.png" width="50px" height="50px">
+                                <br><br>
+                                <div style="text-align: center;">
+                                    <h6>Tahun Ajar</h6>
+                                    <a href=# data-bs-toggle="modal" data-bs-target="#modalTahunAjar">
+                                    <h5><?=$tahun_ajar;?><h5>
+                                    </a>
+                                </div>
+                            </div>
                             <div class="sb-sidenav-menu-heading">Transaksi</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-graduation-cap"></i></div>
                                 Transaksi Siswa
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
@@ -45,10 +67,11 @@ require 'sidebar_function.php';
                                     <a class="nav-link" href="penetapan.php">Penetapan</a>
                                     <a class="nav-link" href="transaksi_masuk_siswa.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="transaksi_keluar_siswa.php">Transaksi Keluar</a>
+                                    <a class="nav-link" href="laporan_transaksi_siswa.php">Laporan</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts1" aria-expanded="false" aria-controls="collapseLayouts1">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-piggy-bank"></i></div>
                                 Tabungan
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
@@ -60,7 +83,7 @@ require 'sidebar_function.php';
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts2" aria-expanded="false" aria-controls="collapseLayouts2">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-money-check-dollar"></i></div>
                                 Transaksi Umum
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
@@ -72,7 +95,7 @@ require 'sidebar_function.php';
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts3" aria-expanded="false" aria-controls="collapseLayouts3">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-money-bill-transfer"></i></i></div>
                                 Cashflow
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
@@ -86,37 +109,36 @@ require 'sidebar_function.php';
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts4" aria-expanded="false" aria-controls="collapseLayouts4">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-layer-group"></i></div>
                                 Konsolidasi
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapseLayouts4" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="kategori_kas.php">Kategori Kas</a>
+                                    <a class="nav-link" href="pinjam_kas.php">Kas Dipinjam</a>
                                     <a class="nav-link" href="laporan_konsolidasi.php">Laporan</a>
                                 </nav>
                             </div>
 
-                            <div class="sb-sidenav-menu-heading">Data</div>
+                            <div class="sb-sidenav-menu-heading">Master</div>
                             <a class="nav-link" href="guru.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></i></div>
                                 Guru
                             </a>
                             <a class="nav-link" href="siswa.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-people-group"></i></div>
                                 Siswa
                             </a>
                             <a class="nav-link" href="alumni.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-user-graduate"></i></div>
                                 Alumni
                             </a>
                         </div>
                     </div>
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Tahun ajar:</div>
-                        <a href=# data-bs-toggle="modal" data-bs-target="#modalTahunAjar">
-                        <?=$tahun_ajar;?>
-                        </a>
+                    <div style="text-align: center;" class="sb-sidenav-footer">
+                        <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalTahunAjar">Ganti Tahun Ajar</button>
+                        
                     </div>
                 </nav>
             </div>
