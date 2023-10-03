@@ -103,7 +103,7 @@ require 'config.php';
                         // Loop untuk membuat tabel untuk setiap kelas
                         for ($kelas = 1; $kelas <= 6; $kelas++) {
                             // Query untuk mengambil data siswa berdasarkan kelas
-                            $query = "SELECT * FROM siswa WHERE id_kelas = $kelas ORDER BY id_kelas ASC";
+                            $query = "SELECT * FROM siswa WHERE id_kelas = $kelas AND `status`='aktif' ORDER BY id_kelas ASC";
                             $result = mysqli_query($conn, $query);
                             
                             // Mulai tabel baru untuk setiap kelas
@@ -131,6 +131,7 @@ require 'config.php';
                             echo '<tbody>';
 
                             $i = 1;
+                            $jkTampil = '';
                             $jumlahLakiLaki = 0;
                             $jumlahPerempuan = 0;
 
@@ -145,13 +146,11 @@ require 'config.php';
                                 $agama = $data['agama'];
                                 $alamat = $data['alamat'];
                                 $ids = $data['id_siswa'];
-
-                                // Menghitung jumlah jenis kelamin
+                                $status = $data['status'];
+                    
                                 if ($jk == 'L') {
-                                    $jk = 'Laki-Laki';
                                     $jumlahLakiLaki++;
                                 } elseif ($jk == 'P') {
-                                    $jk = 'Perempuan';
                                     $jumlahPerempuan++;
                                 }
 
@@ -161,7 +160,13 @@ require 'config.php';
                                 echo '<td>' . $namaSiswa . '</td>';
                                 echo '<td>' . $nisn . '</td>';
                                 echo '<td>' . $kelas . '</td>';
-                                echo '<td>' . $jk . '</td>';
+                                echo '<td>'; 
+                                if ($jk == 'L'){
+                                    echo "Laki-laki";
+                                } elseif ($jk == 'P') {
+                                    echo "Perempuan";
+                                }                                
+                                echo '</td>';
                                 echo '<td>' . $tempatLahir . '</td>';
                                 echo '<td>' . $tanggalLahir . '</td>';
                                 echo '<td>' . $agama . '</td>';
@@ -207,7 +212,7 @@ require 'config.php';
                                                 <br>
                                                 <label for="jk">Jenis kelamin :</label> 
                                                 <select class="form-select" name="jk" aria-label="Jenis Kelamin">
-                                                    <option selected><?=$jk;?></option>
+                                                    <option value="<?=$jk;?>"><?php if ($jk == 'L'){ echo "Laki-laki"; } elseif ($jk == 'P') { echo "Perempuan"; } ?></option>
                                                     <option value="L">Laki-laki</option>
                                                     <option value="P">Perempuan</option>
                                                 </select>
@@ -231,7 +236,14 @@ require 'config.php';
                                                 <br>
                                                 <label for="alamat">Alamat :</label><br> 
                                                 <textarea name="alamat" rows="3" cols="55"><?=$alamat;?></textarea>
-                                                <input type="hidden" name="ids" value="<?=$ids;?>">
+                                                <br><br>
+                                                <label for="status">Status :</label> 
+                                                <select class="form-select" name="status" aria-label="Agama">
+                                                    <option value="<?=$status;?>"><?=$status;?></option>
+                                                    <option value="aktif">Aktif</option>
+                                                    <option value="drop out">Drop out</option>
+                                                </select>
+                                                <input type="hidden" name="ids" value="<?=$ids;?>">                                                
                                             </div>
                                             <div class="text-center">
                                                 <button type="submit" class="btn btn-warning" name="editSiswa">Edit</button> 
@@ -360,7 +372,8 @@ require 'config.php';
                         <option value="Khonghucu">Khonghucu</option>
                     </select>
                     <br>
-                    <textarea name="alamat" rows="5" cols="45">Alamat</textarea>
+                    <textarea name="alamat" rows="5" cols="45">Alamat</textarea>                    
+                    <br>
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-success" name="tambahSiswa">Tambah</button> 

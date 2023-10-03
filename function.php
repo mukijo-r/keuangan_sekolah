@@ -21,6 +21,7 @@
         $agama = $_POST['agama'];
         $alamat = $_POST['alamat'];
 
+
         $tanggalLahir = date("Y-m-d", strtotime($tglLahir));
 
         try {
@@ -65,19 +66,48 @@
         $agama = $_POST['agama'];
         $alamat = $_POST['alamat'];
         $ids = $_POST['ids'];
+        $status = $_POST['status'];
+        if ($status == 'drop out') {
+            $kelas = 404;
+        }
 
         $tanggalLahir = date("Y-m-d", strtotime($tglLahir));
 
         try {
             // Coba jalankan query update
-            $editSiswa = mysqli_query($conn, "UPDATE siswa SET nisn='$nisn', nama='$namaSiswa', id_kelas='$kelas', jk='$jk', tempat_lahir='$kotaLahir', tanggal_lahir='$tanggalLahir', agama='$agama', alamat='$alamat' WHERE id_siswa='$ids'");
+            $editSiswa = mysqli_query($conn, "UPDATE siswa 
+            SET 
+            nisn='$nisn', 
+            nama='$namaSiswa', 
+            id_kelas='$kelas', 
+            jk='$jk', 
+            tempat_lahir='$kotaLahir', 
+            tanggal_lahir='$tanggalLahir', 
+            agama='$agama', 
+            alamat='$alamat', 
+            `status`='$status' 
+            WHERE 
+            id_siswa='$ids'");
 
             if (!$editSiswa) {
                 throw new Exception("Query update gagal"); // Lempar exception jika query gagal
             }
 
             // Query SELECT untuk memeriksa apakah data sudah benar-benar diperbarui dalam database
-            $result = mysqli_query($conn, "SELECT * FROM siswa WHERE id_siswa = '$ids'");
+            $queryUpdate = "SELECT * FROM siswa 
+            WHERE 
+            id_siswa = '$ids' AND
+            nisn='$nisn' AND
+            nama='$namaSiswa' AND 
+            id_kelas='$kelas' AND
+            jk='$jk' AND 
+            tempat_lahir='$kotaLahir' AND 
+            tanggal_lahir='$tanggalLahir' AND
+            agama='$agama' AND 
+            alamat='$alamat' AND
+            `status`='$status'
+            ";
+            $result = mysqli_query($conn, $queryUpdate);
 
             if ($result && mysqli_num_rows($result) > 0) {
                 // Data sudah benar-benar diperbarui dalam database, Anda dapat mengatur pesan flash message berhasil
@@ -91,7 +121,7 @@
             }
         } catch (Exception $e) {
             // Tangani exception jika terjadi kesalahan
-            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryUpdate . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
             header('location:siswa.php');
             exit;
@@ -273,9 +303,10 @@
                 $tanggalLahir = $data[5];
                 $agama = $data[6];
                 $alamat = $data[7];
+                $status = $data[8];
 
                 // Lakukan operasi INSERT ke tabel "siswa" dalam database
-                $sql = "INSERT INTO siswa (nama, id_kelas, jk, nisn, tempat_lahir, tanggal_lahir, agama, alamat) VALUES ('$namaSiswa', '$idKelas', '$jk', '$nisn', '$tempatLahir', '$tanggalLahir', '$agama', '$alamat')";
+                $sql = "INSERT INTO siswa (nama, id_kelas, jk, nisn, tempat_lahir, tanggal_lahir, agama, alamat, `status`) VALUES ('$namaSiswa', '$idKelas', '$jk', '$nisn', '$tempatLahir', '$tanggalLahir', '$agama', '$alamat', '$status')";
                 
                 // // Eksekusi query INSERT
                 if (!mysqli_query($conn, $sql)) {
@@ -298,7 +329,8 @@
         $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
         header('location:siswa.php');
         exit;
-    }}
+        }
+    }
 
     // Tabungan Masuk
     if(isset($_POST['tambahTransTabung'])){
