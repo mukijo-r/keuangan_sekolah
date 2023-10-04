@@ -63,31 +63,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                             $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
                             $idTahunAjar = $rowTahunAjar['id_tahun_ajar']; 
 
-                            if ($bulanLalu == 'Januari') {
-                                $bulanNum = 1;
-                            } elseif ($bulanLalu == 'Februari') {
-                                $bulanNum = 2;
-                            } elseif ($bulanLalu == 'Maret') {
-                                $bulanNum = 3;
-                            } elseif ($bulanLalu == 'April') {
-                                $bulanNum = 4;
-                            } elseif ($bulanLalu == 'Mei') {
-                                $bulanNum = 5;
-                            } elseif ($bulanLalu == 'Juni') {
-                                $bulanNum = 6;
-                            } elseif ($bulanLalu == 'Juli') {
-                                $bulanNum = 7;
-                            } elseif ($bulanLalu == 'Agustus') {
-                                $bulanNum = 8;
-                            } elseif ($bulanLalu == 'September') {
-                                $bulanNum = 9;
-                            } elseif ($bulanLalu == 'Oktober') {
-                                $bulanNum = 10;
-                            } elseif ($bulanLalu == 'November') {
-                                $bulanNum = 11;
-                            } elseif ($bulanLalu == 'Desember') {
-                                $bulanNum = 12;
-                            }
+                            
                             ?>           
                             
                         </ol>
@@ -107,9 +83,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                                                 while ($rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar)) {
                                                     $selected = ($rowTahunAjar['tahun_ajar'] == $tahunAjarLap) ? 'selected' : '';
                                                     echo '<option value="' . $rowTahunAjar['tahun_ajar'] . '" ' . $selected . '>' . $rowTahunAjar['tahun_ajar'] . '</option>';
-                                                }
-
-                                                
+                                                }                                               
                                                 
                                                 ?>
                                             </select>
@@ -176,6 +150,33 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         $queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
                         $rowKategori = mysqli_fetch_assoc($queryKategori);
                         $namaKategori = $rowKategori['nama_kategori'];
+
+                        if ($bulanLalu == 'Januari') {
+                            $bulanNum = 1;
+                        } elseif ($bulanLalu == 'Februari') {
+                            $bulanNum = 2;
+                        } elseif ($bulanLalu == 'Maret') {
+                            $bulanNum = 3;
+                        } elseif ($bulanLalu == 'April') {
+                            $bulanNum = 4;
+                        } elseif ($bulanLalu == 'Mei') {
+                            $bulanNum = 5;
+                        } elseif ($bulanLalu == 'Juni') {
+                            $bulanNum = 6;
+                        } elseif ($bulanLalu == 'Juli') {
+                            $bulanNum = 7;
+                        } elseif ($bulanLalu == 'Agustus') {
+                            $bulanNum = 8;
+                        } elseif ($bulanLalu == 'September') {
+                            $bulanNum = 9;
+                        } elseif ($bulanLalu == 'Oktober') {
+                            $bulanNum = 10;
+                        } elseif ($bulanLalu == 'November') {
+                            $bulanNum = 11;
+                        } elseif ($bulanLalu == 'Desember') {
+                            $bulanNum = 12;
+                        }
+
                 
                         ?>
                         <div class="row" style="text-align: center; border: none">
@@ -284,17 +285,17 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                             echo '<td>' . $i++ . '</td>';
                             echo '<td>' . $namaSiswa . '</td>';
                             echo '<td>Rp. ' . number_format($penetapanKegiatan, 0, ',', '.') . '</td>';
+                            echo '<td></td>';
+                            echo '<td></td>';
                             echo '<td>Rp. ' . number_format($jumlahKegiatan, 0, ',', '.') . '</td>';
-                            echo '<td></td>';
-                            echo '<td></td>';
                             echo '<td>Rp. ' . number_format($penetapanPramuka, 0, ',', '.') . '</td>';
+                            echo '<td></td>';
+                            echo '<td></td>';
                             echo '<td>Rp. ' . number_format($jumlahPramuka, 0, ',', '.') . '</td>';
-                            echo '<td></td>';
-                            echo '<td></td>';
                             echo '<td>Rp. ' . number_format($penetapanKomputer, 0, ',', '.') . '</td>';
+                            echo '<td></td>';
+                            echo '<td></td>';
                             echo '<td>Rp. ' . number_format($jumlahKomputer, 0, ',', '.') . '</td>';
-                            echo '<td></td>';
-                            echo '<td></td>';
                             echo '</tr>';
 
                             // Tambahkan nilai ke total
@@ -309,17 +310,17 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                             echo '<tr>';
                             echo '<td colspan="2">Total</td>';
                             echo '<td><strong>Rp. ' . number_format($totalPenetapanKegiatan, 0, ',', '.') . '</strong></td>';
+                            echo '<td><strong></strong></td>';
+                            echo '<td><strong></td>';
                             echo '<td><strong>Rp. ' . number_format($totalJumlahKegiatan, 0, ',', '.') . '</strong></td>';
-                            echo '<td><strong></td>';
-                            echo '<td><strong></td>';
                             echo '<td><strong>Rp. ' . number_format($totalPenetapanPramuka, 0, ',', '.') . '</strong></td>';
+                            echo '<td><strong></strong></td>';
+                            echo '<td><strong></td>';
                             echo '<td><strong>Rp. ' . number_format($totalJumlahPramuka, 0, ',', '.') . '</strong></td>';
-                            echo '<td><strong></td>';
-                            echo '<td><strong></td>';
                             echo '<td><strong>Rp. ' . number_format($totalPenetapanKomputer, 0, ',', '.') . '</strong></td>';
+                            echo '<td></td>';
+                            echo '<td></td>';
                             echo '<td><strong>Rp. ' . number_format($totalJumlahKomputer, 0, ',', '.') . '</strong></td>';
-                            echo '<td></td>';
-                            echo '<td></td>';
                             echo '</tr>';                            
                             echo '</tbody>';
                             echo '</table>'; 
@@ -411,17 +412,17 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         echo '<tr>';
                         echo '<td>Kelas ' . $kelas . '</td>';
                         echo '<td>Rp. ' . number_format($penetapanKegiatanKelas, 0, ',', '.') . '</td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($totalKegiatanKelas, 0, ',', '.') . '</td>';
-                        echo '<td></td>';
-                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($penetapanPramukaKelas, 0, ',', '.') . '</td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($totalPramukaKelas, 0, ',', '.') . '</td>';
-                        echo '<td></td>';
-                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($penetapanKomputerKelas, 0, ',', '.') . '</td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($totalKomputerKelas, 0, ',', '.') . '</td>';
-                        echo '<td></td>';
-                        echo '<td></td>';
                         echo '</tr>';
                         
                         // Tambahkan nilai ke total
@@ -437,17 +438,17 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         echo '<tr>';
                         echo '<td><strong>Total</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalPenetapanKegiatan, 0, ',', '.') . '</strong></td>';
+                        echo '<td><strong></strong></td>';
+                        echo '<td><strong></strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalJumlahKegiatan, 0, ',', '.') . '</strong></td>';
-                        echo '<td><strong></strong></td>';
-                        echo '<td><strong></strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalPenetapanPramuka, 0, ',', '.') . '</strong></td>';
+                        echo '<td><strong></strong></td>';
+                        echo '<td><strong></strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalJumlahPramuka, 0, ',', '.') . '</strong></td>';
-                        echo '<td><strong></strong></td>';
-                        echo '<td><strong></strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalPenetapanKomputer, 0, ',', '.') . '</strong></td>';
+                        echo '<td><strong></strong></td>';
+                        echo '<td></strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalJumlahKomputer, 0, ',', '.') . '</strong></td>';
-                        echo '<td></strong></td>';
-                        echo '<td></strong></td>';
                         echo '</tr>';
 
                         echo '</tbody>';
@@ -536,17 +537,17 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         echo '<td>' . $i++ . '</td>';
                         echo '<td>' . $namaSiswa . '</td>';
                         echo '<td>Rp. ' . number_format($penetapanPts, 0, ',', '.') . '</td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($jumlahPts, 0, ',', '.') . '</td>';
-                        echo '<td></td>';
-                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($penetapanPas, 0, ',', '.') . '</td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($jumlahPas, 0, ',', '.') . '</td>';
-                        echo '<td></td>';
-                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($penetapanUs, 0, ',', '.') . '</td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
                         echo '<td>Rp. ' . number_format($jumlahUs, 0, ',', '.') . '</td>';
-                        echo '<td></td>';
-                        echo '<td></td>';
                         echo '</tr>';
 
                         // Tambahkan nilai ke total
@@ -561,17 +562,17 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         echo '<tr>';
                         echo '<td colspan="2">Total</td>';
                         echo '<td><strong>Rp. ' . number_format($totalPenetapanPts, 0, ',', '.') . '</strong></td>';
+                        echo '<td></td>';
+                        echo '<td><strong></td>';
                         echo '<td><strong>Rp. ' . number_format($totalJumlahPts, 0, ',', '.') . '</strong></td>';
-                        echo '<td><strong></td>';
-                        echo '<td><strong></td>';
                         echo '<td><strong>Rp. ' . number_format($totalPenetapanPas, 0, ',', '.') . '</strong></td>';
+                        echo '<td></td>';
+                        echo '<td><strong></td>';
                         echo '<td><strong>Rp. ' . number_format($totalJumlahPas, 0, ',', '.') . '</strong></td>';
-                        echo '<td><strong></td>';
-                        echo '<td><strong></td>';
                         echo '<td><strong>Rp. ' . number_format($totalPenetapanUs, 0, ',', '.') . '</strong></td>';
+                        echo '<td></td>';
+                        echo '<td></td>';
                         echo '<td><strong>Rp. ' . number_format($totalJumlahUs, 0, ',', '.') . '</strong></td>';
-                        echo '<td></td>';
-                        echo '<td></td>';
                         echo '</tr>';                            
                         echo '</tbody>';
                         echo '</table>'; 
@@ -663,17 +664,17 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     echo '<tr>';
                     echo '<td>Kelas ' . $kelas . '</td>';
                     echo '<td>Rp. ' . number_format($penetapanPtsKelas, 0, ',', '.') . '</td>';
+                    echo '<td></td>';
+                    echo '<td></td>';
                     echo '<td>Rp. ' . number_format($totalPtsKelas, 0, ',', '.') . '</td>';
-                    echo '<td></td>';
-                    echo '<td></td>';
                     echo '<td>Rp. ' . number_format($penetapanPasKelas, 0, ',', '.') . '</td>';
+                    echo '<td></td>';
+                    echo '<td></td>';
                     echo '<td>Rp. ' . number_format($totalPasKelas, 0, ',', '.') . '</td>';
-                    echo '<td></td>';
-                    echo '<td></td>';
                     echo '<td>Rp. ' . number_format($penetapanUsKelas, 0, ',', '.') . '</td>';
+                    echo '<td></td>';
+                    echo '<td></td>';
                     echo '<td>Rp. ' . number_format($totalUsKelas, 0, ',', '.') . '</td>';
-                    echo '<td></td>';
-                    echo '<td></td>';
                     echo '</tr>';
                     
                     // Tambahkan nilai ke total
@@ -689,17 +690,17 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     echo '<tr>';
                     echo '<td><strong>Total</strong></td>';
                     echo '<td><strong>Rp. ' . number_format($finalPenetapanPts, 0, ',', '.') . '</strong></td>';
+                    echo '<td><strong></strong></td>';
+                    echo '<td><strong></strong></td>';
                     echo '<td><strong>Rp. ' . number_format($finalJumlahPts, 0, ',', '.') . '</strong></td>';
-                    echo '<td><strong></strong></td>';
-                    echo '<td><strong></strong></td>';
                     echo '<td><strong>Rp. ' . number_format($finalPenetapanPas, 0, ',', '.') . '</strong></td>';
+                    echo '<td><strong></strong></td>';
+                    echo '<td><strong></strong></td>';
                     echo '<td><strong>Rp. ' . number_format($finalJumlahPas, 0, ',', '.') . '</strong></td>';
-                    echo '<td><strong></strong></td>';
-                    echo '<td><strong></strong></td>';
                     echo '<td><strong>Rp. ' . number_format($finalPenetapanUs, 0, ',', '.') . '</strong></td>';
-                    echo '<td><strong>Rp. ' . number_format($finalJumlahUs, 0, ',', '.') . '</strong></td>';
+                    echo '<td><strong></strong></td>';
                     echo '<td></strong></td>';
-                    echo '<td></strong></td>';
+                    echo '<td></strong>Rp. ' . number_format($finalJumlahUs, 0, ',', '.') . '</td>';
                     echo '</tr>';
 
                     echo '</tbody>';
@@ -779,9 +780,9 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         echo '<tr>';
                         echo '<td colspan="2">Total</td>';
                         echo '<td><strong>Rp. ' . number_format($totalPenetapanSpp, 0, ',', '.') . '</strong></td>';
+                        echo '<td></td>';
+                        echo '<td><strong></td>';
                         echo '<td><strong>Rp. ' . number_format($totalJumlahSpp, 0, ',', '.') . '</strong></td>';
-                        echo '<td><strong></td>';
-                        echo '<td><strong></td>';
                         echo '</tr>';                            
                         echo '</tbody>';
                         echo '</table>'; 
@@ -848,9 +849,9 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     echo '<tr>';
                     echo '<td>Kelas ' . $kelas . '</td>';
                     echo '<td>Rp. ' . number_format($penetapanSppKelas, 0, ',', '.') . '</td>';
+                    echo '<td></td>';
+                    echo '<td></td>';
                     echo '<td>Rp. ' . number_format($totalSppKelas, 0, ',', '.') . '</td>';
-                    echo '<td></td>';
-                    echo '<td></td>';
                     echo '</tr>';
                     
                     // Tambahkan nilai ke total
@@ -862,9 +863,9 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     echo '<tr>';
                     echo '<td><strong>Total</strong></td>';
                     echo '<td><strong>Rp. ' . number_format($finalPenetapanSpp, 0, ',', '.') . '</strong></td>';
-                    echo '<td><strong>Rp. ' . number_format($finalJumlahSpp, 0, ',', '.') . '</strong></td>';
+                    echo '<td><strong></td>';
                     echo '<td><strong></strong></td>';
-                    echo '<td><strong></strong></td>';
+                    echo '<td><strong>Rp. ' . number_format($finalJumlahSpp, 0, ',', '.') . '</strong></strong></td>';
                     echo '</tr>';
 
                     echo '</tbody>';

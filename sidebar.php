@@ -47,7 +47,7 @@ require 'sidebar_function.php';
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="logo" style="text-align: center; margin-right: 10px;">
-                                <img src="assets/img/logo.png" width="50px" height="50px">
+                                <img src="assets/img/karmel-logo.png" width="50px" height="50px">
                                 <br><br>
                                 <div style="text-align: center;">
                                     <h6>Tahun Ajar</h6>

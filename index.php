@@ -45,7 +45,6 @@ require 'config.php';
                     <br>
                     <figure class="bg-light p-4"
                             style="border-left: .35rem solid #fcdb5e; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; opacity: 0.85;">
-                        <i class="fas fa-quote-left fa-2x mb-4" style="color: #fcdb5e;"></i>
                         <blockquote class="blockquote pb-2">
                             <i><h1>
                                 Selamat datang, Anda berada di tahun ajaran <u><?=$tahun_ajar;?></u>

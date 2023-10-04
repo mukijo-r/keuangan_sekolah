@@ -67,8 +67,9 @@ date_default_timezone_set('Asia/Jakarta');
                                             <th>Sub Kategori</th>
                                             <th>Periode</th>
                                             <th>Penetapan</th>
-                                            <th>Jumlah</th>
+                                            <th>Bulan ini</th>
                                             <th>Tunggakan</th>
+                                            <th>Jumlah</th>
                                             <th>Saldo</th>
                                             <th>Pencatat</th>
                                             <th>Keterangan</th>
@@ -115,7 +116,10 @@ date_default_timezone_set('Asia/Jakarta');
 
                                         $namaGuru = $data['nama_guru'];
                                         $bulan = $data['bulan'];
-                                        $nominal = $data['jumlah'];
+                                        $bulanIni = $data['bulan_ini'];
+                                        $tunggakan = $data['tunggakan'];
+                                        $nominal = $data['bulan_ini'];
+                                        $jumlah = $data['jumlah'];
                                         $keterangan = $data['keterangan'];
                                         $idSiswa = $data['id_siswa'];
 
@@ -125,7 +129,7 @@ date_default_timezone_set('Asia/Jakarta');
                                         $penetapan = $rowPenetapan['nominal'];
 
                                         // Hitung tunggakan
-                                        $tunggakan = $penetapan - $nominal;
+                                        
 
                                         // Menghitung saldo
                                         $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_siswa WHERE id_sub_kategori = '$idSubKategori' AND tanggal <= '$tanggalBayar'");
@@ -157,6 +161,7 @@ date_default_timezone_set('Asia/Jakarta');
                                             <td><?="Rp " . number_format($penetapan, 0, ',', '.');?></td>
                                             <td><?="Rp " . number_format($nominal, 0, ',', '.');?></td>
                                             <td><?="Rp " . number_format($tunggakan, 0, ',', '.');?></td>
+                                            <td><?="Rp " . number_format($jumlah, 0, ',', '.');?></td>
                                             <td><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
                                             <td><?=$namaGuru;?></td>
                                             <td><?=$keterangan;?></td>
@@ -237,6 +242,13 @@ date_default_timezone_set('Asia/Jakarta');
                                                             <div class="mb-3">
                                                                 <label for="nominalEdit">Penetapan :</label>                     
                                                                 <input type="text" name="nominalEdit" id="nominalEdit" value="<?=$penetapan;?>" class="form-control" readonly>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="bulanIniEdit">Bulan ini :</label>                     
+                                                                <input type="text" name="bulanIniEdit" id="bulanIniEdit" value="<?=$bulanIni;?>" class="form-control" readonly>
+                                                            </div><div class="mb-3">
+                                                                <label for="tunggakanEdit">Tunggakan :</label>                     
+                                                                <input type="text" name="tunggakanEdit" id="tunggakanEdit" value="<?=$tunggakan;?>" class="form-control" readonly>
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="jumlahEdit">jumlah Pembayaran :</label>                        
@@ -405,8 +417,11 @@ date_default_timezone_set('Asia/Jakarta');
                         <input type="text" name="nominal" id="nominal" class="form-control" readonly>
                     </div>
                     <div class="mb-3">
-                        <label for="jumlah">jumlah Pembayaran :</label>                        
-                        <input type="number" name="jumlah" id="jumlah" class="form-control">
+                        <label for="bulanIni">Bulan ini :</label>                        
+                        <input type="number" name="bulanIni" id="bulanIni" class="form-control">
+                    </div><div class="mb-3">
+                        <label for="tunggakan">Tunggakan :</label>                        
+                        <input type="number" name="tunggakan" id="tunggakan" class="form-control">
                     </div>
                     <div class="mb-3">   
                         <label for="guru">Penerima :</label>                     

@@ -885,14 +885,16 @@
         $id_kategori = $rowKategori['id_kategori'];
         $bulan = $_POST['bulan'];
         $penetapan = $_POST['nominal'];
-        $jumlah = $_POST['jumlah'];
+        $bulanIni = $_POST['bulanIni'];
+        $tunggakan = $_POST['tunggakan'];
+        $jumlah = $bulanIni + $tunggakan;
         $idGuru = $_POST['guru'];
         $keterangan = $_POST['keterangan'];    
 
         try {
-            $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `jumlah`, `id_guru`, `keterangan`) 
+            $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `bulan_ini`, `tunggakan`,`jumlah`, `id_guru`, `keterangan`) 
             VALUES 
-            ('$tanggalBayar','$idTahunAjar','$idSiswa','$id_kategori','$idSubKategori','$bulan','$jumlah','$idGuru','$keterangan')";
+            ('$tanggalBayar','$idTahunAjar','$idSiswa','$id_kategori','$idSubKategori','$bulan','$bulanIni', '$tunggakan', '$jumlah','$idGuru','$keterangan')";
                 
             $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
 
@@ -980,6 +982,8 @@
 
         $bulan = $_POST['bulanEdit'];
         $penetapan = $_POST['nominalEdit'];
+        $bulanIni = $_POST['bulanIniEdit'];
+        $tunggakan = $_POST['tunggakanEdit'];
         $jumlah = $_POST['jumlahEdit'];
         $guru = $_POST['guruEdit'];
         // Menggunakan query untuk mendapatkan id_guru berdasarkan nama_guru yang dipilih
@@ -1006,7 +1010,9 @@
             `id_siswa`='$idSiswa',        
             `id_sub_kategori`='$idSubKategori',
             `id_kategori`='$idKategori',  
-            `bulan`='$bulan', 
+            `bulan`='$bulan',
+            `bulan_ini`='$bulanIni',
+            `tunggakan`='$tunggakan', 
             `jumlah`='$jumlah', 
             `id_guru`='$idGuru', 
             `keterangan`='$keterangan'
@@ -1028,7 +1034,9 @@
             `id_siswa`='$idSiswa' AND         
             `id_sub_kategori`='$idSubKategori' AND
             `id_kategori`='$idKategori' AND 
-            `bulan`='$bulan' AND 
+            `bulan`='$bulan' AND
+            `bulan_ini`='$bulanIni' AND 
+            `tunggakan`='$tunggakan' AND  
             `jumlah`='$jumlah' AND 
             `id_guru`='$idGuru' AND 
             `keterangan`='$keterangan'";
