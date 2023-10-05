@@ -306,6 +306,9 @@ require 'config.php';
                                             <td style="width: 20%"></td>
                                         </tr>
                                         <?php
+
+                                        $totalMasuk = 0;
+                                        $totalKeluar = 0;
                                         
                                         while($data=mysqli_fetch_array($dataTransaksiUmum)){
                                             $idTransaksiMasukUmum = $data['id_tmn'];
@@ -325,10 +328,7 @@ require 'config.php';
                                             $queryKeluar = "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalBayar'";
 
                                             $masuk = mysqli_query($conn, $queryMasuk);
-                                            $keluar = mysqli_query($conn, $queryKeluar);
-
-                                            $totalMasuk = 0;
-                                            $totalKeluar = 0;
+                                            $keluar = mysqli_query($conn, $queryKeluar);                                           
 
                                             if ($rowMasuk = mysqli_fetch_assoc($masuk)) {
                                                 $totalMasuk = $rowMasuk['total_masuk'];

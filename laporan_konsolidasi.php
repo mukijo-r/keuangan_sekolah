@@ -56,8 +56,7 @@ require 'config.php';
                     <div class="container-fluid px-4">
                         <h3 class="mt-4">Laporan Keuangan Konsolidasi</h3>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Konsolidasi / Laporan</li>
-                                      
+                            <li class="breadcrumb-item active">Konsolidasi / Laporan</li>                                     
                             
                         </ol>
   
@@ -196,17 +195,16 @@ require 'config.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
-                                
-                                $queryDebetCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS debet FROM transaksi_masuk_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
-                                $queryKreditCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS kredit FROM transaksi_keluar_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
-                                $queryMasukCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir'");
-                                $queryKeluarCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir'");
-
+                                <?php
                                 $debetCashflow = 0;
                                 $kreditCashflow = 0;
                                 $totalMasukCashflow = 0;
                                 $totalKeluarCashflow = 0;
+                                
+                                $queryDebetCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS debet FROM transaksi_masuk_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
+                                $queryKreditCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS kredit FROM transaksi_keluar_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
+                                $queryMasukCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir'");
+                                $queryKeluarCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir'");                                
 
                                 if ($rowDebetCashflow = mysqli_fetch_assoc($queryDebetCashflow)) {
                                     $debetCashflow = $rowDebetCashflow['debet'];
@@ -235,7 +233,7 @@ require 'config.php';
                                     <td style="width: 10%"><?php echo ($saldoAwalCashflow == 0) ? '' : "Rp " . number_format($saldoAwalCashflow, 0, ',', '.');?></td>
                                     <td style="width: 10%"><?php echo ($debetCashflow == 0) ? '' : "Rp " . number_format($debetCashflow, 0, ',', '.');?></td>
                                     <td style="width: 10%"><?php echo ($kreditCashflow == 0) ? '' : "Rp " . number_format($kreditCashflow, 0, ',', '.');?></td>
-                                    <td style="width: 10%"><?php echo ($saldoAkhirCashflow == 0) ? '' : "Rp " . number_format($saldoAkhirCashflow, 0, ',', '.');?></td>
+                                    <td style="width: 10%"><?php echo ($totalMasukCashflow == 0) ? '' : "Rp " . number_format($saldoAkhirCashflow, 0, ',', '.');?></td>
                                     <td style="width: 20%"></td>
                                 </tr>
 
