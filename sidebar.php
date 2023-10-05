@@ -22,7 +22,7 @@ require 'sidebar_function.php';
 
             /* Style untuk kontainer gambar dengan border melingkar */
             .logo {
-                border-radius: 90%; /* Membuat border melingkar dengan radius 50% dari lebar atau tinggi kontainer */
+                border-radius: 100%; /* Membuat border melingkar dengan radius 50% dari lebar atau tinggi kontainer */
                 overflow: hidden; /* Menghilangkan bagian gambar yang mungkin melampaui border */
 
  /* Mengatur konten vertikal ke tengah */
@@ -122,8 +122,8 @@ require 'sidebar_function.php';
                             </div>
 
                             <div class="sb-sidenav-menu-heading">Master</div>
-                            <a class="nav-link" href="guru.php">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></i></div>
+                            <a class="nav-link" href="#" >
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
                                 Guru
                             </a>
                             <a class="nav-link" href="siswa.php">
@@ -134,7 +134,13 @@ require 'sidebar_function.php';
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-user-graduate"></i></div>
                                 Alumni
                             </a>
-                        </div>
+
+                            <div class="sb-sidenav-menu-heading">Info</div>
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalAbout">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-circle-info"></i></div>
+                                About
+                            </a>
+                        </div>                            
                     </div>
                     <div style="text-align: center;" class="sb-sidenav-footer">
                         <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalTahunAjar">Ganti Tahun Ajar</button>
@@ -184,5 +190,53 @@ require 'sidebar_function.php';
             </div>
         </div>
     </div>
+
+
+
+    <!-- Modal About-->
+    <div class="modal fade" id="modalAbout">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Info</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->      
+                <form method="post">
+                <div class="modal-body">
+                    <h5>Tentang Aplikasi</h5>
+                    <p>Sistem pengelolaan keuangan untuk SD Katolik Bhakti Rogojampi. </p>
+                    <h5>Fitur</h5>
+                    <ul>
+                        <li>Mengelola data siswa, guru, dan alumni,</li>
+                        <li>Mengelola iuran siswa,</li>
+                        <li>Mengelola tabungan siswa,</li>
+                        <li>Mengelola berbagai kategori kas,</li>
+                        <li>Membuat laporan keuangan bulanan.</li>
+                    </ul>
+                    <h5>Versi</h5>
+                    <p>1.0.0 </p>
+                    <h5>Tanggal Rilis</h5>
+                    <p>15 Oktober 2023 </p>
+                    <h5>Pengembangan</h5>
+                    <ul>
+                        <li>Pengembang : Mukijo</li>
+                        <li>Email : mkjjaya@gmail.com</li>
+                        <li>No.tlp : 0856-4334-6785</li>
+                        <li>Afiliasi : Universitas Siber Asia</li>
+                    </ul>
+                    <h5>Dukungan</h5>
+                    <p>Aplikasi didukung oleh XAMPP versi 8.0.19 ke atas.</p>
+                    <h5>Bantuan</h5>
+                    <p>Jika Anda memiliki pertanyaan atau masalah, silakan hubungi melalui email atau WA.</p>
+                    <p>Terima kasih telah menggunakan aplikasi ini!</p>                    
+                </div>
+                <br> 
+            </form>   
+            </div>
+        </div>
+    </div> 
 
 
