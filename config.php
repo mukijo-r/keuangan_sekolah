@@ -11,7 +11,7 @@ LEFT JOIN tahun_ajar ta ON tad.id_tahun_ajar = ta.id_tahun_ajar;";
 $result = mysqli_query($conn, $queryTahunAjarDefault);
 $dataTahunAjar = mysqli_fetch_assoc($result);
 $tahun_ajar = $dataTahunAjar['tahun_ajar'];
-//$idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+$idTahunAjarDefault = $dataTahunAjar['id_tahun_ajar'];
 $tahunAjarLap = $tahun_ajar;
 
 $idKategoriLap = 2;
