@@ -2475,11 +2475,30 @@
         $opsi = $_POST['idSubKategoriSiswa'];
         $jumlah = $_POST['jumlahTarik'];
 
+        $idGroupCashflow = 3;        
+        $bulan = $_POST['bulan'];
+        
+        $idGuru = $_POST['guru'];
+
+        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+        if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+            $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+            $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+        }
+
         if ($opsi == 5){
             $idSubKategoriCf = 6;
             $idKategoriTks = 1;
             $idSubKategoriTks = 5;
-            $uraian = "Tarik SPP ke Cash Flow";            
+            $uraian = "Tarik SPP ke Cash Flow";
+            $jumlahKeluar = 0.15 * $jumlah;
+            $insertTkc = mysqli_query($conn, "INSERT INTO 
+            `transaksi_keluar_cashflow`
+            (`tanggal`, `id_tahun_ajar`, `id_group_cashflow`, `id_subkategori_cashflow`, `bulan`, `jumlah`, `id_guru`, `keterangan`) 
+            VALUES 
+            ('$tanggal','$idTahunAjar',6,23,'$bulan','$jumlahKeluar','$idGuru','Dari transaksi keluar siswa, jangan diedit')"); 
+
         } elseif ($opsi == 9){
             $idSubKategoriCf = 7;
             $idKategoriTks = 10;
@@ -2495,19 +2514,7 @@
             $idKategoriTks = 10;
             $idSubKategoriTks = 11;
             $uraian = "15% Ujian ke Cash Flow";
-        }
-
-        $idGroupCashflow = 3;        
-        $bulan = $_POST['bulan'];
-        
-        $idGuru = $_POST['guru'];
-
-        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
-
-        if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
-            $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
-            $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
-        }
+        }        
 
         try {
             $queryInsertMasukCashflow = "INSERT INTO 
