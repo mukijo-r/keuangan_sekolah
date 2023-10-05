@@ -75,7 +75,10 @@ require 'config.php';
                                     LEFT JOIN
                                         kategori k ON sks.id_kategori = k.id_kategori
                                     GROUP BY 
-                                        s.nama, sks.id_sub_kategori;"); 
+                                        s.nama, sks.id_sub_kategori
+                                    ORDER BY
+                                        s.nama
+                                    "); 
                                         
                                 if ($dataPenetapan->num_rows > 0) {    
                                 ?>
@@ -111,7 +114,7 @@ require 'config.php';
                                                 if (isset($current_data[$id_sub_kategori])) {
                                                     echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
                                                 } else {
-                                                    echo "<td>0</td>"; // Jika tidak ada data untuk sub kategori ini
+                                                    echo "<td></td>"; // Jika tidak ada data untuk sub kategori ini
                                                 }
                                             }
                                             echo "</tr>";
