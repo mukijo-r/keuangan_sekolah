@@ -81,19 +81,24 @@ require 'config.php';
                                     </button>
                                 </div>
                                 <div class="col-md-2">
-                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
-                                    Import Excel
-                                </button>
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
+                                        Import Excel
+                                    </button>
                                 </div>
                                 <div class="col-md-2">
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalNaikKelas">
-                                    Naikkan Siswa
-                                </button>
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalNaikKelas">
+                                        Naikkan Siswa
+                                    </button>
                                 </div>
                                 <div class="col-md-2">
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLulus">
-                                    Luluskan Siswa
-                                </button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLulus">
+                                        Luluskan Siswa
+                                    </button>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalTarikSiswa">
+                                        Masukkan Siswa Lama
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -462,6 +467,54 @@ require 'config.php';
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-danger" name="luluskanSiswa">Luluskan</button> 
+                </div>
+                <br> 
+            </form>   
+            </div>
+        </div>
+    </div>
+
+        <!-- Modal Memasukkan Siswa Lama-->
+    <div class="modal fade" id="modalTarikSiswa">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Tambahkan Siswa Lama</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->      
+            <form method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nama">Nama :</label>
+                        <select class="form-select" name="idSiswa" id="idSiswa" aria-label="Nama">
+                            <option selected disabled>Pilih Nama</option>
+                            <?php
+                            // Ambil data nama dari tabel alumni
+                            $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama FROM siswa WHERE id_kelas = 404 AND `status` = 'drop out'");
+                            while ($siswa = mysqli_fetch_assoc($querySiswa)) {
+                                echo '<option value="' . $siswa['id_siswa'] . '">' . $siswa['nama'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="idKelas">Masukkan ke kelas :</label>
+                        <select class="form-select" name="idKelas" id="idKelas" aria-label="Kelas">
+                            <option selected>Kelas</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success" name="tarikSiswa">Tarik</button> 
                 </div>
                 <br> 
             </form>   

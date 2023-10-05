@@ -163,6 +163,123 @@
         }
     }
 
+    //Menaikkan siswa
+    if (isset($_POST['naikkanSiswa'])) {
+        try {
+            // Jalankan query update
+            $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama, id_kelas FROM siswa WHERE id_kelas IN (1, 2, 3, 4, 5)");
+    
+            while ($row = mysqli_fetch_assoc($querySiswa)) {
+                $idSiswa = $row['id_siswa'];
+                $nama = $row['nama'];
+                $idKelas = $row['id_kelas'];
+                $idKelasBaru = $idKelas + 1;
+                
+                // Eksekusi query update di sini
+                $naikkanSiswa = mysqli_query($conn, "UPDATE siswa SET id_kelas='$idKelasBaru' WHERE id_siswa='$idSiswa'");
+                
+                if (!$naikkanSiswa) {
+                    throw new Exception("Naikkan siswa gagal");
+                }
+            }
+    
+            // Tambahkan kode Anda untuk memeriksa apakah data sudah diperbarui dengan benar
+    
+            $_SESSION['flash_message'] = 'Naikkan siswa berhasil';
+            $_SESSION['flash_message_class'] = 'alert-success';
+            header('location:siswa.php');
+            exit;
+        } catch (Exception $e) {
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger';
+            header('location:siswa.php');
+            exit;
+        }
+    }
+
+    //Meluluskan siswa
+    if (isset($_POST['luluskanSiswa'])) {
+        try {
+            // Jalankan query select
+            $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama, id_kelas FROM siswa WHERE id_kelas = 6");
+    
+            while ($row = mysqli_fetch_assoc($querySiswa)) {
+                $idSiswa = $row['id_siswa'];
+                $nama = $row['nama'];
+                $idKelas = $row['id_kelas'];
+                $idKelasBaru = 404;
+                
+                // Eksekusi query update di sini
+                $luluskanSiswa = mysqli_query($conn, "UPDATE siswa SET `id_kelas`= $idKelasBaru, `status` = 'lulus' WHERE id_siswa='$idSiswa'");
+                
+                if (!$luluskanSiswa) {
+                    throw new Exception("Luluskan siswa gagal");
+                }
+            }
+    
+            // Tambahkan kode Anda untuk memeriksa apakah data sudah diperbarui dengan benar
+    
+            $_SESSION['flash_message'] = 'Luluskan siswa berhasil, siswa masuk ke data alumni';
+            $_SESSION['flash_message_class'] = 'alert-success';
+            header('location:siswa.php');
+            exit;
+        } catch (Exception $e) {
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger';
+            header('location:siswa.php');
+            exit;
+        }
+    }
+    
+    // Tarik Siswa Lama
+    if(isset($_POST['tarikSiswa'])){
+        $ids = $_POST['idSiswa'];
+        $idKelas = $_POST['idKelas'];
+        $status = "aktif";       
+
+        try {
+            // Coba jalankan query update
+            $quryEditSiswa = "UPDATE siswa 
+            SET 
+            id_kelas='$idKelas', 
+            `status`='$status' 
+            WHERE 
+            id_siswa='$ids'";
+
+            $editSiswa = mysqli_query($conn, $quryEditSiswa);
+
+            if (!$editSiswa) {
+                throw new Exception("Query update gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah benar-benar diperbarui dalam database
+            $cekQuery = "SELECT * FROM siswa 
+            WHERE 
+            id_siswa = '$ids' AND
+            id_kelas='$idKelas' AND
+            `status`='$status'
+            ";
+            $result = mysqli_query($conn, $cekQuery);
+
+            if ($result && mysqli_num_rows($result) == 1) {
+                // Data sudah benar-benar diperbarui dalam database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Tarik siswa lama berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:siswa.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database setelah edit, itu berarti gagal
+                throw new Exception("Data siswa tidak ditemukan setelah ditarik");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $cekQuery . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:siswa.php');
+            exit;
+        }
+    }
+
 
     // Tambah Guru
     if(isset($_POST['tambahGuru'])){
@@ -2301,74 +2418,6 @@
         }
     }
 
-    //Menaikkan siswa
-    if (isset($_POST['naikkanSiswa'])) {
-        try {
-            // Jalankan query update
-            $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama, id_kelas FROM siswa WHERE id_kelas IN (1, 2, 3, 4, 5)");
-    
-            while ($row = mysqli_fetch_assoc($querySiswa)) {
-                $idSiswa = $row['id_siswa'];
-                $nama = $row['nama'];
-                $idKelas = $row['id_kelas'];
-                $idKelasBaru = $idKelas + 1;
-                
-                // Eksekusi query update di sini
-                $naikkanSiswa = mysqli_query($conn, "UPDATE siswa SET id_kelas='$idKelasBaru' WHERE id_siswa='$idSiswa'");
-                
-                if (!$naikkanSiswa) {
-                    throw new Exception("Naikkan siswa gagal");
-                }
-            }
-    
-            // Tambahkan kode Anda untuk memeriksa apakah data sudah diperbarui dengan benar
-    
-            $_SESSION['flash_message'] = 'Naikkan siswa berhasil';
-            $_SESSION['flash_message_class'] = 'alert-success';
-            header('location:siswa.php');
-            exit;
-        } catch (Exception $e) {
-            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
-            $_SESSION['flash_message_class'] = 'alert-danger';
-            header('location:siswa.php');
-            exit;
-        }
-    }
-
-    //Meluluskan siswa
-    if (isset($_POST['luluskanSiswa'])) {
-        try {
-            // Jalankan query select
-            $querySiswa = mysqli_query($conn, "SELECT id_siswa, nama, id_kelas FROM siswa WHERE id_kelas = 6");
-    
-            while ($row = mysqli_fetch_assoc($querySiswa)) {
-                $idSiswa = $row['id_siswa'];
-                $nama = $row['nama'];
-                $idKelas = $row['id_kelas'];
-                $idKelasBaru = 404;
-                
-                // Eksekusi query update di sini
-                $luluskanSiswa = mysqli_query($conn, "UPDATE siswa SET `id_kelas`= $idKelasBaru, `status` = 'lulus' WHERE id_siswa='$idSiswa'");
-                
-                if (!$luluskanSiswa) {
-                    throw new Exception("Luluskan siswa gagal");
-                }
-            }
-    
-            // Tambahkan kode Anda untuk memeriksa apakah data sudah diperbarui dengan benar
-    
-            $_SESSION['flash_message'] = 'Luluskan siswa berhasil, siswa masuk ke data alumni';
-            $_SESSION['flash_message_class'] = 'alert-success';
-            header('location:siswa.php');
-            exit;
-        } catch (Exception $e) {
-            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
-            $_SESSION['flash_message_class'] = 'alert-danger';
-            header('location:siswa.php');
-            exit;
-        }
-    }
-
     // Tambah Pinjaman
     if(isset($_POST['pinjamKas'])){
         $tanggal = $_POST['tanggal'];
@@ -2587,6 +2636,7 @@
             exit;
         }
     }
+
     
 
 
