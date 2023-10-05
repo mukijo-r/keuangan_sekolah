@@ -277,59 +277,59 @@
         }
     }
 
-        // Import Excel
-        if (isset($_POST['importExcel'])) {
-            // Membaca file Excel yang diunggah
-            $inputFileName = $_FILES['formFile']['tmp_name'];
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
+    // Import Excel
+    if (isset($_POST['importExcel'])) {
+        // Membaca file Excel yang diunggah
+        $inputFileName = $_FILES['formFile']['tmp_name'];
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($inputFileName);
 
-            try {
-            // Loop melalui baris-baris data Excel (mulai dari baris kedua karena baris pertama biasanya adalah header)
-            foreach ($spreadsheet->getActiveSheet()->getRowIterator(2) as $row) {
-                $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(false);
+        try {
+        // Loop melalui baris-baris data Excel (mulai dari baris kedua karena baris pertama biasanya adalah header)
+        foreach ($spreadsheet->getActiveSheet()->getRowIterator(2) as $row) {
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
 
-                $data = [];
-                foreach ($cellIterator as $cell) {
-                    $data[] = $cell->getValue();
-                }
-
-                // Ambil data dari kolom-kolom Excel
-                $namaSiswa = $data[0];
-                $idKelas = $data[1];
-                $jk = $data[2];
-                $nisn = $data[3];
-                $tempatLahir = $data[4];
-                $tanggalLahir = $data[5];
-                $agama = $data[6];
-                $alamat = $data[7];
-                $status = $data[8];
-
-                // Lakukan operasi INSERT ke tabel "siswa" dalam database
-                $sql = "INSERT INTO siswa (nama, id_kelas, jk, nisn, tempat_lahir, tanggal_lahir, agama, alamat, `status`) VALUES ('$namaSiswa', '$idKelas', '$jk', '$nisn', '$tempatLahir', '$tanggalLahir', '$agama', '$alamat', '$status')";
-                
-                // // Eksekusi query INSERT
-                if (!mysqli_query($conn, $sql)) {
-                    throw new Exception(mysqli_error($conn));
-                }
+            $data = [];
+            foreach ($cellIterator as $cell) {
+                $data[] = $cell->getValue();
             }
 
-            // Tutup koneksi database
-            mysqli_close($conn);
+            // Ambil data dari kolom-kolom Excel
+            $namaSiswa = $data[0];
+            $idKelas = $data[1];
+            $jk = $data[2];
+            $nisn = $data[3];
+            $tempatLahir = $data[4];
+            $tanggalLahir = $data[5];
+            $agama = $data[6];
+            $alamat = $data[7];
+            $status = $data[8];
 
-            // Set pesan flash
-            $_SESSION['flash_message'] = 'Import Data Siswa Berhasil';
-            $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
-            header('location:siswa.php');
-            exit;
+            // Lakukan operasi INSERT ke tabel "siswa" dalam database
+            $sql = "INSERT INTO siswa (nama, id_kelas, jk, nisn, tempat_lahir, tanggal_lahir, agama, alamat, `status`) VALUES ('$namaSiswa', '$idKelas', '$jk', '$nisn', '$tempatLahir', '$tanggalLahir', '$agama', '$alamat', '$status')";
+            
+            // // Eksekusi query INSERT
+            if (!mysqli_query($conn, $sql)) {
+                throw new Exception(mysqli_error($conn));
+            }
         }
-        catch (Exception $e) {
-        // Tangani exception di sini
-        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
-        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+
+        // Tutup koneksi database
+        mysqli_close($conn);
+
+        // Set pesan flash
+        $_SESSION['flash_message'] = 'Import Data Siswa Berhasil';
+        $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
         header('location:siswa.php');
         exit;
-        }
+    }
+    catch (Exception $e) {
+    // Tangani exception di sini
+    $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+    $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+    header('location:siswa.php');
+    exit;
+    }
     }
 
     // Tabungan Masuk
@@ -887,6 +887,9 @@
         $penetapan = $_POST['nominal'];
         $bulanIni = $_POST['bulanIni'];
         $tunggakan = $_POST['tunggakan'];
+        if ($tunggakan == ''){
+            $tunggakan = 0;
+        }
         $jumlah = $bulanIni + $tunggakan;
         $idGuru = $_POST['guru'];
         $keterangan = $_POST['keterangan'];    
@@ -2462,6 +2465,118 @@
             $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryInsertKembali . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
             header('location:pinjam_kas.php');
+            exit;
+        }
+    }
+
+    // Tarik Dana ke Cashflow
+    if(isset($_POST['tarik2Cashflow'])){
+        $tanggal = $_POST['tanggal'];
+        $opsi = $_POST['idSubKategoriSiswa'];
+        $jumlah = $_POST['jumlahTarik'];
+
+        if ($opsi == 5){
+            $idSubKategoriCf = 6;
+            $idKategoriTks = 1;
+            $idSubKategoriTks = 5;
+            $uraian = "Tarik SPP ke Cash Flow";            
+        } elseif ($opsi == 9){
+            $idSubKategoriCf = 7;
+            $idKategoriTks = 10;
+            $idSubKategoriTks = 9;
+            $uraian = "Tarik PTS ke Cash Flow";
+        } elseif ($opsi == 10){
+            $idSubKategoriCf = 7;
+            $idKategoriTks = 10;
+            $idSubKategoriTks = 10;
+            $uraian = "Tarik PAS ke Cash Flow";
+        } elseif ($opsi == 11) {
+            $idSubKategoriCf = 8;
+            $idKategoriTks = 10;
+            $idSubKategoriTks = 11;
+            $uraian = "15% Ujian ke Cash Flow";
+        }
+
+        $idGroupCashflow = 3;        
+        $bulan = $_POST['bulan'];
+        
+        $idGuru = $_POST['guru'];
+
+        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+        if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+            $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+            $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+        }
+
+        try {
+            $queryInsertMasukCashflow = "INSERT INTO 
+            `transaksi_masuk_cashflow`
+            (`tanggal`, `id_tahun_ajar`, `id_group_cashflow`, `id_subkategori_cashflow`, `bulan`, `jumlah`, `id_guru`, `keterangan`) 
+            VALUES 
+            ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$idSubKategoriCf','$bulan','$jumlah','$idGuru','Dari transaksi keluar siswa, jangan diedit')";
+            
+            $insertMasukCashflow = mysqli_query($conn, $queryInsertMasukCashflow);
+
+            $queryKeluarSiswa = "INSERT INTO 
+            `transaksi_keluar_siswa`
+            (`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_sub_kategori`, `bulan`, `uraian`, `jumlah`, `id_guru`, `keterangan`) 
+            VALUES 
+            ('$tanggal','$idTahunAjar','$idKategoriTks','$idSubKategoriTks','$bulan','$uraian','$jumlah','$idGuru','Ke CF, jangan diedit');";
+
+            $insertKeluarSiswa = mysqli_query($conn, $queryKeluarSiswa);
+
+
+            if (!$insertMasukCashflow | !$insertKeluarSiswa) {
+                throw new Exception("Query gagal, periksa data"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $queryCekCf = "SELECT * FROM `transaksi_masuk_cashflow` 
+            WHERE
+            `tanggal`='$tanggal' AND
+            `id_tahun_ajar`='$idTahunAjar' AND
+            `id_group_cashflow`='$idGroupCashflow' AND
+            `id_subkategori_cashflow`='$idSubKategoriCf' AND
+            `bulan`='$bulan' AND
+            `jumlah`='$jumlah' AND
+            `id_guru`='$idGuru' AND
+            `keterangan`='$keterangan'
+             ";
+            
+            $resultCf = mysqli_query($conn, $queryCekCf);     
+
+            $queryCekTks = "SELECT * FROM `transaksi_keluar_siswa` 
+            WHERE
+            `tanggal`='$tanggal' AND
+            `id_tahun_ajar`='$idTahunAjar' AND
+            `id_kategori`='$idKategoriTks' AND
+            `id_sub_kategori`='$idSubKategoriTks' AND
+            `bulan`='$bulan' AND
+            `uraian`='$uraian' AND
+            `jumlah`='$jumlah' AND
+            `id_guru`='$idGuru' AND
+            `keterangan`= 'Ke CF, jangan diedit'
+             ";
+            
+            $resultTks = mysqli_query($conn, $queryCekTks);
+
+            
+            if ($resultCf == 1 && $resultTks == 1) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Tambah transaksi berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:transaksi_keluar_siswa.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data tidak ditemukan setelah ditambahkan");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . queryInsertMasukCashflow . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location:transaksi_keluar_siswa.php');
             exit;
         }
     }

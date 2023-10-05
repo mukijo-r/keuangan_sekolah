@@ -16,6 +16,7 @@ date_default_timezone_set('Asia/Jakarta');
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
     <body class="sb-nav-fixed">
         <?php include 'navbar.php'; ?>
@@ -29,11 +30,17 @@ date_default_timezone_set('Asia/Jakarta');
                             <li class="breadcrumb-item active">Transaksi Siswa / Transaksi Keluar</li>                            
                         </ol>                        
                         <br>
+                        <?php
+
+                        ?>
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalTambahTransSiswa">
                                         Pengeluaran Baru
+                                    </button><br><br>
+                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalKeluarCashflow">
+                                        Tarik ke Cash Flow
                                     </button>
                                 </div>
                                 <div class="col-md-8">
@@ -287,8 +294,7 @@ date_default_timezone_set('Asia/Jakarta');
         <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script>
-        <script>
-        </script>
+
     </body>   
 
     <!-- Modal Tambah Transaksi Keluar Siswa -->
@@ -374,5 +380,125 @@ date_default_timezone_set('Asia/Jakarta');
             </div>
         </div>
     </div>
+
+    <!-- Modal Tarik ke Cashflow -->
+    <div class="modal fade" id="modalKeluarCashflow">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Tarik ke Cash Flow </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal Body -->
+                <form method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="idTahunAjar" value="<?=$idTahunAjar;?>">
+                        <div class="mb-3">
+                            <label for="tanggal">Tanggal :</label>       
+                            <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                            <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
+                        </div> 
+                        <div class="mb-3">
+                                <label for="idSubKategoriSiswa">Pilih Transaksi :</label>
+                                <select class="form-select" name="idSubKategoriSiswa" id="idSubKategoriSiswa" aria-label="idSubKategoriSiswa">
+                                    <option selected disabled>Transaksi</option>
+                                    <option value="5">SPP</option>
+                                    <option value="9">Penilaian Tengah Semester</option>
+                                    <option value="10">Penilaian Akhir Semester</option>
+                                    <option value="11">15% Ujian Sekolah</option>
+                                </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bulan">Periode/Bulan :</label><br>
+                            <select class="form-select" name="bulan" id="bulan" aria-label="Bulan">
+                                <option selected>Pilih bulan</option>
+                                <option value="Januari">Januari</option>
+                                <option value="Februari">Februari</option>
+                                <option value="Maret">Maret</option>
+                                <option value="April">April</option>
+                                <option value="Mei">Mei</option>
+                                <option value="Juni">Juni</option>
+                                <option value="Juli">Juli</option>
+                                <option value="Agustus">Agustus</option>
+                                <option value="September">September</option>
+                                <option value="Oktober">Oktober</option>
+                                <option value="November">November</option>
+                                <option value="Desember">Desember</option>
+                                </select>
+                        </div>              
+                        <div class="mb-3">
+                            <label for="jumlahTarik">Jumlah :</label>
+                            <input type="number" name="jumlahTarik" id="jumlahTarik" class="form-control">
+                        </div>
+                        <div class="mb-3">   
+                            <label for="guru">Pencatat :</label>                     
+                            <select name="guru" class="form-select" id="guru" aria-label="Guru">>
+                            <option selected disabled>Guru Pencatat</option>
+                                <?php
+                                // Ambil data guru dari tabel guru
+                                $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
+                                while ($guru = mysqli_fetch_assoc($queryGuru)) {
+                                    echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary" name="tarik2Cashflow">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var idSubKategoriSiswaDropdown = document.getElementById('idSubKategoriSiswa');
+        var bulanDropdown = document.getElementById('bulan');
+        var jumlahInput = document.getElementById('jumlahTarik');
+
+        // Tambahkan event listener ketika nilai "idSubKategoriSiswa" berubah pada Tambah Transaksi siswa
+        idSubKategoriSiswaDropdown.addEventListener('change', function() {
+            var selectedIdSubKategoriSiswa = idSubKategoriSiswaDropdown.value;            
+        });
+
+        // Tambahkan event listener ketika nilai "bulan" berubah
+        bulanDropdown.addEventListener('change', function() {
+            var selectedBulan = bulanDropdown.value;
+            updateJumlahValue();
+        });
+
+        // Fungsi untuk mengambil nilai jumlah yang sesuai
+        function updateJumlahValue() {
+            // Dapatkan nilai terpilih dari dropdown
+            var selectedidSubKategoriSiswa = idSubKategoriSiswaDropdown.value;
+            var selectedBulan = bulanDropdown.value;
+
+            // Lakukan AJAX request untuk mengambil nilai jumlah
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'get_jumlah_tarik.php?idSubKategoriSiswa=' + selectedidSubKategoriSiswa + '&bulan=' + selectedBulan, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var responseText = xhr.responseText.trim();
+                    console.log(responseText); // Hapus spasi di awal dan akhir
+                    if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
+                        var jumlahValue = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
+                        jumlahInput.value = jumlahValue;
+                    } else {
+                        console.error('Nilai jumlah tidak valid: ' + responseText);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+    });
+</script>
+
+
     
 </html>
