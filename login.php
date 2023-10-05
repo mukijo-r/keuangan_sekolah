@@ -50,6 +50,26 @@ if(!isset($_SESSION['log'])){
         <div id="layoutAuthentication" class="with-background">
             <div id="layoutAuthentication_content">
                 <main>
+                    <br>
+                    <div class="row" style="text-align: center;" >
+                        <div class="col-md-3">
+                        </div>
+                        <div class="col-md-6">
+                            <figure class="bg-light p-4" style="opacity: 0.65;">
+                                <blockquote class="blockquote pb-2">
+                                    <h1>
+                                        SISTEM MANAJEMEN KEUANGAN
+                                    </h1>
+                                    <h1>
+                                        SEKOLAH DASAR KATOLIK BHAKTI ROGOJAMPI
+                                    </h1>
+                                </blockquote>
+                            </figure>
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+                    </div>
+
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-lg-5">

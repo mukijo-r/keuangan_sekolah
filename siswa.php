@@ -472,9 +472,9 @@ require 'config.php';
             </form>   
             </div>
         </div>
-    </div>
+    </div>    
 
-        <!-- Modal Memasukkan Siswa Lama-->
+    <!-- Modal Memasukkan Siswa Lama-->
     <div class="modal fade" id="modalTarikSiswa">
     <div class="modal-dialog">
         <div class="modal-content">
