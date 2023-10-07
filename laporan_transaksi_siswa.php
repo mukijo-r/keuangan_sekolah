@@ -61,9 +61,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                             <?php
                             $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahunAjarLap'");
                             $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
-                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar']; 
-
-                            
+                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar'];                             
                             ?>           
                             
                         </ol>
@@ -826,7 +824,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
 
                     $queryTotal = "SELECT
                     SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.jumlah ELSE 0 END) AS total_spp_kelas,
-                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN p.nominal ELSE 0 END) AS penetapan_spp_kelas,
+                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN p.nominal ELSE 0 END) AS penetapan_spp_kelas
 
                     FROM
                         transaksi_masuk_siswa tms
