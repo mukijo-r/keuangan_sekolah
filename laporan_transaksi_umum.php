@@ -382,39 +382,7 @@ require 'config.php';
                             $nipKepalaSekolah = $rowJabatan['nip_kepala_sekolah'];
 
                             ?>
-                            <div class="row" style="text-align: center; teks-kecil">
-                                <div class="col">
-                                    <h6>Bendahara Sekolah<h6><br><br><br>
-                                    <p><?=$bendahara;?></p>
-                                    <p>NIP : <?=$nipPembuatLaporan;?></p>
-                                    </div>
-                                    <div class="col">
-                                    <h6>Pembuat Laporan<h6><br><br><br>
-                                    <p><?=$pembuatLaporan;?></p>
-                                    <p>NIP : <?=$nipPembuatLaporan;?></p>
-                                </div>
-                            </div>
                             
-                            <div class="row" style="text-align: center; teks-kecil">
-                                <div class="col"><br><br>
-                                    <h6>Kepala Sekolah<h6><br><br><br>
-                                    <p><?=$kepalaSekolah;?></p>
-                                    <p>NIP : <?=$nipKepalaSekolah;?></p>
-                                    </div>
-                                    <div class="col"><br><br><br><br>
-
-                                </div>
-                            </div>
-                            <div class="row" style="teks-kecil">
-                                <div class="col"><br>
-
-                                </div>
-                                <div class="col"><br>
-                                    <h6>Telah Diperiksa Oleh Bagian Keuangan<h6>
-                                    <h6>Yayasan Karmel Malang<h6>
-                                    <h6>Malang <u>______________________________</u><h6>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div style="text-align: center;" class="sb-sidenav-footer">
