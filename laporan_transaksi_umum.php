@@ -144,10 +144,56 @@ require 'config.php';
                     $queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
                     $rowKategori = mysqli_fetch_assoc($queryKategori);
                     $namaKategori = $rowKategori['nama_kategori'];
-                    ?>
-                    
-                    
 
+                    $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahunAjarLap'");
+                    $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+                    $idTahunAjar = $rowTahunAjar['id_tahun_ajar']; 
+
+                    // Mendapatkan tahun bulan tanggal dari tahun ajar dan bulan
+                    list($tahunAwal, $tahunAkhir) = explode('/', $tahunAjarLap);
+
+                    // Konversi nama bulan ke angka
+                    if ($bulanLalu == 'Januari') {
+                        $bulanNum = 1;
+                    } elseif ($bulanLalu == 'Februari') {
+                        $bulanNum = 2;
+                    } elseif ($bulanLalu == 'Maret') {
+                        $bulanNum = 3;
+                    } elseif ($bulanLalu == 'April') {
+                        $bulanNum = 4;
+                    } elseif ($bulanLalu == 'Mei') {
+                        $bulanNum = 5;
+                    } elseif ($bulanLalu == 'Juni') {
+                        $bulanNum = 6;
+                    } elseif ($bulanLalu == 'Juli') {
+                        $bulanNum = 7;
+                    } elseif ($bulanLalu == 'Agustus') {
+                        $bulanNum = 8;
+                    } elseif ($bulanLalu == 'September') {
+                        $bulanNum = 9;
+                    } elseif ($bulanLalu == 'Oktober') {
+                        $bulanNum = 10;
+                    } elseif ($bulanLalu == 'November') {
+                        $bulanNum = 11;
+                    } elseif ($bulanLalu == 'Desember') {
+                        $bulanNum = 12;
+                    } else {
+                        $bulanNum = 'Bulan Tidak valid';
+                    }
+
+                    // Daftar bulan-bulan yang menggunakan tahun awal
+                    $bulanTahunAwal = range(7, 12); 
+
+                    if (in_array($bulanNum, $bulanTahunAwal)) {
+                        $tahunYangDigunakan = $tahunAwal;
+                    } else {
+                        $tahunYangDigunakan = $tahunAkhir;
+                    }
+
+                    // Mencari tanggal akhir dalam bulan sesuai tahun yang ditentukan
+                    $tanggalAkhir = date('Y-m-t', strtotime("$tahunYangDigunakan-$bulanNum-01"));
+
+                    ?>    
 
                     </div>
                     <div class="row" style="text-align: center; border:none">
@@ -157,58 +203,7 @@ require 'config.php';
                             <h5>Laporan Keuangan <?=$namaKategori?> </h5>
                             <h5>Bulan <?= $bulanLalu;?> </h5>
                             <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>
-                        </div>
-                        <?php
-                            $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahunAjarLap'");
-                            $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
-                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar']; 
-
-                            // Mendapatkan tahun bulan tanggal dari tahun ajar dan bulan
-                            list($tahunAwal, $tahunAkhir) = explode('/', $tahunAjarLap);
-
-                            // Konversi nama bulan ke angka
-                            if ($bulanLalu == 'Januari') {
-                                $bulanNum = 1;
-                            } elseif ($bulanLalu == 'Februari') {
-                                $bulanNum = 2;
-                            } elseif ($bulanLalu == 'Maret') {
-                                $bulanNum = 3;
-                            } elseif ($bulanLalu == 'April') {
-                                $bulanNum = 4;
-                            } elseif ($bulanLalu == 'Mei') {
-                                $bulanNum = 5;
-                            } elseif ($bulanLalu == 'Juni') {
-                                $bulanNum = 6;
-                            } elseif ($bulanLalu == 'Juli') {
-                                $bulanNum = 7;
-                            } elseif ($bulanLalu == 'Agustus') {
-                                $bulanNum = 8;
-                            } elseif ($bulanLalu == 'September') {
-                                $bulanNum = 9;
-                            } elseif ($bulanLalu == 'Oktober') {
-                                $bulanNum = 10;
-                            } elseif ($bulanLalu == 'November') {
-                                $bulanNum = 11;
-                            } elseif ($bulanLalu == 'Desember') {
-                                $bulanNum = 12;
-                            } else {
-                                $bulanNum = 'Bulan Tidak valid';
-                            }
-
-                            // Daftar bulan-bulan yang menggunakan tahun awal
-                            $bulanTahunAwal = range(7, 12); 
-
-                            if (in_array($bulanNum, $bulanTahunAwal)) {
-                                $tahunYangDigunakan = $tahunAwal;
-                            } else {
-                                $tahunYangDigunakan = $tahunAkhir;
-                            }
-
-                            // Mencari tanggal akhir dalam bulan sesuai tahun yang ditentukan
-                            $tanggalAkhir = date('Y-m-t', strtotime("$tahunYangDigunakan-$bulanNum-01"));
-
-
-                            ?>       
+                        </div>     
                     </div><br><br>  
                     
                     
@@ -271,12 +266,10 @@ require 'config.php';
 
                                         $dataTransaksiUmum = mysqli_query($conn, $queryTransaksiUmum);
 
-                                        $totalEntries = mysqli_num_rows($dataTransaksiUmum);
-                                        $i = $totalEntries;
-
-                                        $queryDebet = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap'");
-                                        $queryKredit = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap'");
-                                        $queryDebetBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_debet FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu'");
+                                        $queryDebet = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalAkhir'");
+                                        $queryKredit = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalAkhir'");
+                                        $queryDebetBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_debet FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu' AND id_tahun_ajar = '$idTahunAjar'");
+                                        $queryKreditBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_kredit FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu' AND id_tahun_ajar = '$idTahunAjar'");
 
                                         $totalDebet = 0;
                                         $totalKredit = 0;
@@ -294,8 +287,14 @@ require 'config.php';
                                             $DebetBulanLalu = $rowDebetBulanLalu['total_debet'];
                                         }
 
+                                        if ($rowKreditBulanLalu = mysqli_fetch_assoc($queryKreditBulanLalu)) {
+                                            $KreditBulanLalu = $rowKreditBulanLalu['total_kredit'];
+                                        }
+
+                                        $selisihBulanLalu = $DebetBulanLalu - $KreditBulanLalu;
+
                                         $saldo = $totalDebet - $totalKredit;
-                                        $saldoBulanLalu = $totalDebet - $DebetBulanLalu;
+                                        $saldoBulanLalu = $saldo - $selisihBulanLalu;
                                         ?>
                                         <tr>
                                             <td style="width: 10%"></td>
@@ -358,7 +357,7 @@ require 'config.php';
                                             <td colspan="2" style="text-align: center;">Total</td>
                                             <td style="width: 10%"><?= "Rp "  . number_format($totalMasuk, 0, ',', '.') ;?></td>
                                             <td style="width: 10%"><?= "Rp " . number_format($totalKeluar, 0, ',', '.') ;?></td>
-                                            <td style="width: 10%"><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
+                                            <td style="width: 10%"><?= "Rp " . number_format($saldo, 0, ',', '.') ;?></td>
                                             <td style="width: 20%"></td>
                                         </tr>
                                 </table><br><br>
@@ -369,22 +368,18 @@ require 'config.php';
                             MAX(CASE WHEN jabatan = 'Kepala Sekolah' THEN nama_lengkap END) AS kepala_sekolah,
                             MAX(CASE WHEN jabatan = 'Bendahara Sekolah' THEN nama_lengkap END) AS bendahara_sekolah,
                             MAX(CASE WHEN jabatan = 'Pembuat Laporan' THEN nama_lengkap END) AS pembuat_laporan,
-                            MAX(CASE WHEN jabatan = 'Pemeriksa' THEN nama_lengkap END) AS pemeriksa,
                             MAX(CASE WHEN jabatan = 'Kepala Sekolah' THEN nip END) AS nip_kepala_sekolah,
                             MAX(CASE WHEN jabatan = 'Bendahara Sekolah' THEN nip END) AS nip_bendahara_sekolah,
-                            MAX(CASE WHEN jabatan = 'Pembuat Laporan' THEN nip END) AS nip_pembuat_laporan,
-                            MAX(CASE WHEN jabatan = 'Pemeriksa' THEN nip END) AS nip_pemeriksa
+                            MAX(CASE WHEN jabatan = 'Pembuat Laporan' THEN nip END) AS nip_pembuat_laporan
                             FROM guru;");
 
                             $rowJabatan = mysqli_fetch_assoc($queryJabatan);
                             $bendahara = $rowJabatan['bendahara_sekolah'];
                             $pembuatLaporan = $rowJabatan['pembuat_laporan'];
                             $kepalaSekolah = $rowJabatan['kepala_sekolah'];
-                            $pemeriksa = $rowJabatan['pemeriksa'];
                             $nipBendahara = $rowJabatan['nip_bendahara_sekolah'];
                             $nipPembuatLaporan = $rowJabatan['nip_pembuat_laporan'];
                             $nipKepalaSekolah = $rowJabatan['nip_kepala_sekolah'];
-                            $nipPemeriksa = $rowJabatan['nip_pemeriksa']
 
                             ?>
                             <div class="row" style="text-align: center; teks-kecil">
@@ -401,34 +396,43 @@ require 'config.php';
                             </div>
                             
                             <div class="row" style="text-align: center; teks-kecil">
-                            <div class="col"><br><br>
+                                <div class="col"><br><br>
                                     <h6>Kepala Sekolah<h6><br><br><br>
                                     <p><?=$kepalaSekolah;?></p>
                                     <p>NIP : <?=$nipKepalaSekolah;?></p>
                                     </div>
-                                    <div class="col"><br><br>
-                                    <h6>Telah diperiksa<h6><br><br><br>
-                                    <p><?=$pemeriksa;?></p>
-                                    <p>NIP : <?=$nipPemeriksa;?></p>
+                                    <div class="col"><br><br><br><br>
+
+                                </div>
+                            </div>
+                            <div class="row" style="teks-kecil">
+                                <div class="col"><br>
+
+                                </div>
+                                <div class="col"><br>
+                                    <h6>Telah Diperiksa Oleh Bagian Keuangan<h6>
+                                    <h6>Yayasan Karmel Malang<h6>
+                                    <h6>Malang <u>______________________________</u><h6>
                                 </div>
                             </div>
                         </div>
-                    </div>                       
-                </main>
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
                     </div>
-                </footer>
+                    <div style="text-align: center;" class="sb-sidenav-footer">
+                        <form method="post" action="pdf_umum.php" target="_blank">
+                            <input type="hidden" name="idTahunAjar" value="<?= $idTahunAjar; ?>">
+                            <input type="hidden" name="tahunAjar" value="<?= $tahunAjarLap; ?>">
+                            <input type="hidden" name="bulan" value="<?=$bulanLalu; ?>">
+                            <input type="hidden" name="idKategori" value="<?=$idKategoriLap; ?>">
+                            <input type="hidden" name="queryTransaksiUmum" value="<?=$queryTransaksiUmum; ?>">
+                            <input type="hidden" name="saldoBulanLalu" value="<?=$saldoBulanLalu; ?>">
+                            <button type="submit" class="btn btn-primary" name="btnCetakLapUmum" id="btnCetakLapUmum">Cetak</button>  
+                        </form>                      
+                    </div><br>                   
+                </main>
             </div>
-        </div>
+        </div>     
+            
+        
         
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
