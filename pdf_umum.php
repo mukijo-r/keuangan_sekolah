@@ -39,9 +39,9 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, 'A4', true, 'UTF-8', false);
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('Nicola Asuni');
-$pdf->SetTitle('TCPDF Example 003');
-$pdf->SetSubject('TCPDF Tutorial');
+$pdf->SetAuthor('Mukijo');
+$pdf->SetTitle('Laporan Keuangan Umum');
+$pdf->SetSubject('TCPDF');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
 // set default header data
@@ -88,20 +88,20 @@ Tahun Ajar $tahunAjar
 
 
 EOD;
-$pdf->SetFont('times', '', 10);
+$pdf->SetFont('times', '', 11);
 $pdf->SetCellMargins(0, 1, 0, 0);
 $html = '<table border="0.75">';
 $html .= '<tr>
-    <th style="width: 10%"><strong> Tanggal</strong></th>
-    <th style="width: 28%"><strong> Uraian</strong></th>                                            
+    <th style="width: 11%"><strong> Tanggal</strong></th>
+    <th style="width: 27%"><strong> Uraian</strong></th>                                            
     <th style="width: 14%"><strong> Debet</strong></th>
     <th style="width: 14%"><strong> Kredit</strong></th>
     <th style="width: 14%"><strong> Saldo</strong></th>
     <th style="width: 20%"><strong> Keterangan</strong></th>
 </tr>
 <tr>
-<td style="width: 10%"></td>
-<td style="width: 28%"> Saldo bulan lalu</td>
+<td style="width: 11%"></td>
+<td style="width: 27%"> Saldo bulan lalu</td>
 <td style="width: 14%"> ' . (($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.')) . '</td>
 <td style="width: 14%"></td>
 <td style="width: 14%"> ' . (($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.')) . '</td>
@@ -143,8 +143,8 @@ while($data=mysqli_fetch_array($dataTransaksiUmum)){
     $saldo = $totalMasuk - $totalKeluar; 
     
     $html .= '<tr>';
-    $html .= '<td style="width: 10%"> ' . $tanggalTampil . '</td>';
-    $html .= '<td style="width: 28%"> '. $uraian . '</td>';
+    $html .= '<td style="width: 11%"> ' . $tanggalTampil . '</td>';
+    $html .= '<td style="width: 27%"> '. $uraian . '</td>';
     $html .= '<td style="width: 14%"> ' . (($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.')) . '</td>';
     $html .= '<td style="width: 14%"> ' . (($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.')) . '</td>';
     $html .= '<td style="width: 14%"> ' . (($saldo == 0) ? '' : "Rp " . number_format($saldo, 0, ',', '.')) . '</td>';
@@ -188,13 +188,13 @@ $html .= '</table><br><br><br><br>';
 $html .= '<table>';
 $html .= '<tr>';
 $html .= '<td style="width: 10%"></td>';
-$html .= '<td style="width: 60%">' . $bendahara . '</td>';
-$html .= '<td style="width: 30%">' . $pembuatLaporan . '</td>';
+$html .= '<td style="width: 60%"><u>' . $bendahara . '</u></td>';
+$html .= '<td style="width: 30%"><u>' . $pembuatLaporan . '</u></td>';
 $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td style="width: 10%"></td>';
-$html .= '<td style="width: 60%">' . $nipBendahara . '</td>';
-$html .= '<td style="width: 30%">' . $nipPembuatLaporan . '</td>';
+$html .= '<td style="width: 60%">NIP. ' . $nipBendahara . '</td>';
+$html .= '<td style="width: 30%">NIP. ' . $nipPembuatLaporan . '</td>';
 $html .= '</tr>';
 $html .= '</table><br><br>';
 
@@ -208,11 +208,11 @@ $html .= '</table><br><br><br><br>';
 $html .= '<table>';
 $html .= '<tr>';
 $html .= '<td style="width: 10%"></td>';
-$html .= '<td style="width: 55%">' . $kepalaSekolah . '</td>';
+$html .= '<td style="width: 55%"><u>' . $kepalaSekolah . '</u></td>';
 $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td style="width: 10%"></td>';
-$html .= '<td style="width: 55%">' . $nipKepalaSekolah . '</td>';
+$html .= '<td style="width: 55%">NIP. ' . $nipKepalaSekolah . '</td>';
 $html .= '</tr>';
 $html .= '</table><br>';
 

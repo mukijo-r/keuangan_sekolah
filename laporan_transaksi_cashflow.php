@@ -133,6 +133,51 @@ require 'config.php';
                             $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahunAjarLap'");
                             $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
                             $idTahunAjar = $rowTahunAjar['id_tahun_ajar']; 
+
+                            // Mendapatkan tahun bulan tanggal dari tahun ajar dan bulan
+                            list($tahunAwal, $tahunAkhir) = explode('/', $tahunAjarLap);
+
+                            // Konversi nama bulan ke angka
+                            if ($bulanLalu == 'Januari') {
+                                $bulanNum = 1;
+                            } elseif ($bulanLalu == 'Februari') {
+                                $bulanNum = 2;
+                            } elseif ($bulanLalu == 'Maret') {
+                                $bulanNum = 3;
+                            } elseif ($bulanLalu == 'April') {
+                                $bulanNum = 4;
+                            } elseif ($bulanLalu == 'Mei') {
+                                $bulanNum = 5;
+                            } elseif ($bulanLalu == 'Juni') {
+                                $bulanNum = 6;
+                            } elseif ($bulanLalu == 'Juli') {
+                                $bulanNum = 7;
+                            } elseif ($bulanLalu == 'Agustus') {
+                                $bulanNum = 8;
+                            } elseif ($bulanLalu == 'September') {
+                                $bulanNum = 9;
+                            } elseif ($bulanLalu == 'Oktober') {
+                                $bulanNum = 10;
+                            } elseif ($bulanLalu == 'November') {
+                                $bulanNum = 11;
+                            } elseif ($bulanLalu == 'Desember') {
+                                $bulanNum = 12;
+                            } else {
+                                $bulanNum = 'Bulan Tidak valid';
+                            }
+
+                            // Daftar bulan-bulan yang menggunakan tahun awal
+                            $bulanTahunAwal = range(7, 12); 
+
+                            if (in_array($bulanNum, $bulanTahunAwal)) {
+                                $tahunYangDigunakan = $tahunAwal;
+                            } else {
+                                $tahunYangDigunakan = $tahunAkhir;
+                            }
+
+                            // Mencari tanggal akhir dalam bulan sesuai tahun yang ditentukan
+                            $tanggalAkhir = date('Y-m-t', strtotime("$tahunYangDigunakan-$bulanNum-01"));
+
                             ?> 
                         </div>      
                     </div><br><br>
@@ -156,8 +201,6 @@ require 'config.php';
                                 $subKategoriCashflowData[$row['id_subkategori_cashflow']] = $row;
                             }
 
-                            // Inisialisasi nomor unik
-                            $nomorGroup = 1;
                             ?>
 
                             <!-- Buat tabel HTML -->
@@ -172,7 +215,7 @@ require 'config.php';
                                 <tbody>
                                     <tr>
                                         <td></td>
-                                        <td><strong>Pendapatan<strong></td>
+                                        <td><strong>Pendapatan</strong></td>
                                         <td></td>
                                     </tr>
                                     <?php
@@ -316,8 +359,10 @@ require 'config.php';
                                     }  
                                     
                                     // Menghitung saldo 
-                                    $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow");
-                                    $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow");
+                                    $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir'");
+                                    $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir'");
+
+                                    
                                     
                                     $totalMasuk = 0;
                                     $totalKeluar = 0;
@@ -344,8 +389,7 @@ require 'config.php';
                                     
                                     ?>
                                 </tbody>
-                            </table><br>
-                            
+                            </table><br>                            
                         </div>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
@@ -395,20 +439,18 @@ require 'config.php';
                             </table>
                         </div>
                     </div>
-
-    
-                
-
-
-            
-        </div>
-
-                
-
-
-  
-
-
+                <br><br><br>
+                <div style="text-align: center;" class="sb-sidenav-footer">
+                    <form method="post" action="pdf_cashflow.php" target="_blank">
+                        <input type="hidden" name="idTahunAjar" value="<?= $idTahunAjar; ?>">
+                        <input type="hidden" name="tahunAjar" value="<?= $tahunAjarLap; ?>">
+                        <input type="hidden" name="bulan" value="<?=$bulanLalu; ?>">
+                        <input type="hidden" name="tanggalAkhir" value="<?=$tanggalAkhir; ?>">
+                        <input type="hidden" name="saldoBulanLalu" value="<?=$saldoBulanLalu; ?>">
+                        <button type="submit" class="btn btn-primary" name="btnCetakLapCf" id="btnCetakLapCf">Cetak</button>  
+                    </form>                      
+                </div><br>
+            </div>
         </main>
     </body>
 </html>
