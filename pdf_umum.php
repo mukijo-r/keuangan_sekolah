@@ -163,10 +163,10 @@ $html .= '</table><br><br><br>';
 $queryJabatan = mysqli_query($conn, "SELECT
 MAX(CASE WHEN jabatan = 'Kepala Sekolah' THEN nama_lengkap END) AS kepala_sekolah,
 MAX(CASE WHEN jabatan = 'Bendahara Sekolah' THEN nama_lengkap END) AS bendahara_sekolah,
-MAX(CASE WHEN jabatan = 'Pembuat Laporan' THEN nama_lengkap END) AS pembuat_laporan,
+MAX(CASE WHEN jabatan = 'Tenaga Administrasi Sekolah' THEN nama_lengkap END) AS pembuat_laporan,
 MAX(CASE WHEN jabatan = 'Kepala Sekolah' THEN nip END) AS nip_kepala_sekolah,
 MAX(CASE WHEN jabatan = 'Bendahara Sekolah' THEN nip END) AS nip_bendahara_sekolah,
-MAX(CASE WHEN jabatan = 'Pembuat Laporan' THEN nip END) AS nip_pembuat_laporan
+MAX(CASE WHEN jabatan = 'Tenaga Administrasi Sekolah' THEN nip END) AS nip_pembuat_laporan
 FROM guru;");
 
 $rowJabatan = mysqli_fetch_assoc($queryJabatan);
