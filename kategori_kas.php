@@ -62,6 +62,7 @@ require 'config.php';
                                             <th>Jenis Kas</th>
                                             <th>Kelompok</th>
                                             <th>Penanggung Jawab</th>
+                                            <th>Kode</th>
                                             <th>Keterangan</th>
                                             <th colspan='2'>Aksi</th>
                                         </tr>
@@ -84,6 +85,7 @@ require 'config.php';
                                         $kelompok = $data['kelompok'];
                                         $idg = $data['id_guru'];
                                         $namaGuru = $data['nama_guru'];
+                                        $kode = $data['kode'];
                                         $keterangan = $data['keterangan'];                                    
                                     ?>
                                     <tr>
@@ -91,6 +93,7 @@ require 'config.php';
                                         <td><?=$kategoriKas;?></td>
                                         <td><?=$kelompok;?></td>
                                         <td><?=$namaGuru;?></td>
+                                        <td><?php if ($kode == 'ys'){echo 'Sekolah & Yayasan';} elseif ($kode == 's'){echo 'Sekolah';}?></td>
                                         <td><?=$keterangan;?></td>
                                         <td>
                                             <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditKategori<?=$idKat;?>">Edit</button>
@@ -117,14 +120,14 @@ require 'config.php';
                                                 <br>
                                                 <label for="kelompok">Kelompok :</label> 
                                                 <select class="form-select" name="kelompok" aria-label="Pilih Kelompok">
-                                                        <option selected><?=$kelompok;?></option>
+                                                        <option value="<?=$kelompok;?>"><?=$kelompok;?></option>
                                                         <option value="siswa">Siswa</option>
                                                         <option value="umum">Umum</option>
                                                     </select>
                                                 <br>
                                                 <label for="guru">Penannggung Jawab :</label>                     
                                                 <select name="guru" class="form-select" id="guru" aria-label="Guru">>
-                                                    <option selected><?=$namaGuru;?></option>
+                                                    <option value="<?=$idg;?>"><?=$namaGuru;?></option>
                                                     <?php
                                                         // Ambil data guru dari tabel guru
                                                         $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
@@ -132,6 +135,13 @@ require 'config.php';
                                                             echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
                                                         }
                                                     ?>
+                                                    </select>
+                                                <br>
+                                                <label for="kode">Kode :</label> 
+                                                <select class="form-select" name="kode" aria-label="Pilih Kode">
+                                                        <option value="<?=$kode;?>"><?php if ($kode == 'ys'){echo 'Sekolah & Yayasan';} elseif ($kode == 's'){echo 'Sekolah';}?></option>
+                                                        <option value="ys">Sekolah & Yayasan</option>
+                                                        <option value="s">Sekolah</option>
                                                     </select>
                                                 <br>
                                                 <label for="keterangan">Keterangan :</label>   
@@ -218,7 +228,7 @@ require 'config.php';
                         <option value="umum">Umum</option>
                     </select>
                 <br>
-                <label for="guru">Penannggung Jawab :</label>                     
+                <label for="guru">Penanggung Jawab :</label>                     
                 <select name="guru" class="form-select" id="guru" aria-label="Guru">>
                     <option selected disabled>Pilih Guru</option>
                     <?php
@@ -228,6 +238,13 @@ require 'config.php';
                             echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
                         }
                     ?>
+                    </select>
+                <br>
+                <label for="kode">Kode :</label> 
+                <select class="form-select" name="kode" aria-label="Pilih Kode">
+                        <option selected>Kode</option>
+                        <option value="ys">Sekolah & Yayasan</option>
+                        <option value="s">Sekolah</option>
                     </select>
                 <br>
                 <label for="keterangan">Keterangan :</label>   
