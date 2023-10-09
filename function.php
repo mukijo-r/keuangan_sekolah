@@ -704,10 +704,11 @@
         $jenisKas = $_POST['jenisKas'];
         $kelompok = $_POST['kelompok'];
         $namaGuru = $_POST['guru'];
+        $kode = $_POST['kode'];
         $keterangan = $_POST['keterangan'];
 
         try {
-            $queryInsertKategori = "INSERT INTO `kategori`(`nama_kategori`, `kelompok`, `id_guru`, `keterangan`) VALUES ('$jenisKas', '$kelompok', '$namaGuru','$keterangan')";
+            $queryInsertKategori = "INSERT INTO `kategori`(`nama_kategori`, `kelompok`, `id_guru`, `kode`, `keterangan`) VALUES ('$jenisKas', '$kelompok', '$namaGuru', '$kode', '$keterangan')";
                 
             $kategori = mysqli_query($conn, $queryInsertKategori);
 
@@ -743,11 +744,12 @@
         $idKas = $_POST['idk'];
         $jenisKas = $_POST['jenisKas'];
         $kelompok = $_POST['kelompok'];
-        $namaGuru = $_POST['guru'];
+        $idGuru = $_POST['guru'];
+        $kode = $_POST['kode'];
         $keterangan = $_POST['keterangan'];
 
         try {
-            $queryUpdateKategori = "UPDATE `kategori` SET `nama_kategori`='$jenisKas', `kelompok`='$kelompok', `id_guru`='$namaGuru', `keterangan`='$keterangan' WHERE `id_kategori`='$idKas'";
+            $queryUpdateKategori = "UPDATE `kategori` SET `nama_kategori`='$jenisKas', `kelompok`='$kelompok', `id_guru`='$idGuru', `kode`='$kode', `keterangan`='$keterangan' WHERE `id_kategori`='$idKas'";
             
             $kategori = mysqli_query($conn, $queryUpdateKategori);
 
@@ -756,7 +758,9 @@
             }
 
             // Query SELECT untuk memeriksa apakah data sudah masuk ke database
-            $result = mysqli_query($conn, "SELECT * FROM kategori WHERE nama_kategori='$jenisKas' AND `kelompok`='$kelompok' AND `id_guru`='$namaGuru' AND `keterangan`='$keterangan'");
+
+            $queryResult = "SELECT * FROM kategori WHERE nama_kategori='$jenisKas' AND `kelompok`='$kelompok' AND `id_guru`='$idGuru' AND `kode`='$kode' AND `keterangan`='$keterangan'";
+            $result = mysqli_query($conn, $queryResult);
 
             if ($result && mysqli_num_rows($result) === 1) {
                 // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
@@ -770,7 +774,7 @@
             }
         } catch (Exception $e) {
             // Tangani exception jika terjadi kesalahan
-            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryResult . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
             echo $queryInsertTabung;
             header('location:kategori_kas.php');
@@ -2499,7 +2503,7 @@
             
             $result = mysqli_query($conn, $queryCek);
 
-            if ($result && mysqli_num_rows($result) > 0) {
+            if ($result) {
                 // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
                 $_SESSION['flash_message'] = 'Pengembalian pinjaman berhasil';
                 $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
@@ -2511,7 +2515,7 @@
             }
         } catch (Exception $e) {
             // Tangani exception jika terjadi kesalahan
-            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryInsertKembali . $e->getMessage();
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
             header('location:pinjam_kas.php');
             exit;
