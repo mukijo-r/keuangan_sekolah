@@ -116,6 +116,7 @@ date_default_timezone_set('Asia/Jakarta');
 
                                         $namaGuru = $data['nama_guru'];
                                         $bulan = $data['bulan'];
+                                        $penetapan = $data['penetapan'];
                                         $bulanIni = $data['bulan_ini'];
                                         $tunggakan = $data['tunggakan'];
                                         $nominal = $data['bulan_ini'];
@@ -123,10 +124,6 @@ date_default_timezone_set('Asia/Jakarta');
                                         $keterangan = $data['keterangan'];
                                         $idSiswa = $data['id_siswa'];
 
-                                        // Ambil nominal penetapan
-                                        $queryPenetapan = mysqli_query($conn, "SELECT nominal FROM penetapan WHERE id_siswa = '$idSiswa' AND id_sub_kategori = '$idSubKategori'");
-                                        $rowPenetapan = mysqli_fetch_assoc($queryPenetapan);
-                                        $penetapan = $rowPenetapan['nominal'];
 
                                         // Hitung tunggakan
                                         
@@ -409,7 +406,7 @@ date_default_timezone_set('Asia/Jakarta');
                         <input type="number" name="bulanIni" id="bulanIni" class="form-control">
                     </div><div class="mb-3">
                         <label for="tunggakan">Tunggakan :</label>                        
-                        <input type="number" name="tunggakan" id="tunggakan" class="form-control">
+                        <input type="number" name="tunggakan" id="tunggakan" placeholder="0" class="form-control">
                     </div>
                     <div class="mb-3">   
                         <label for="guru">Penerima :</label>                     
