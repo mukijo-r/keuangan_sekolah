@@ -122,7 +122,7 @@ require 'sidebar_function.php';
                             </div>
 
                             <div class="sb-sidenav-menu-heading">Master</div>
-                            <a class="nav-link" href="#" >
+                            <a class="nav-link" href="guru.php" >
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
                                 Guru
                             </a>
