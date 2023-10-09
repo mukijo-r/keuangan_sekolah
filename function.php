@@ -1016,9 +1016,9 @@
         $keterangan = $_POST['keterangan'];    
 
         try {
-            $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `bulan_ini`, `tunggakan`,`jumlah`, `id_guru`, `keterangan`) 
+            $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `penetapan`, `bulan_ini`, `tunggakan`,`jumlah`, `id_guru`, `keterangan`) 
             VALUES 
-            ('$tanggalBayar','$idTahunAjar','$idSiswa','$id_kategori','$idSubKategori','$bulan','$bulanIni', '$tunggakan', '$jumlah','$idGuru','$keterangan')";
+            ('$tanggalBayar','$idTahunAjar','$idSiswa','$id_kategori','$idSubKategori','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$idGuru','$keterangan')";
                 
             $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
 
