@@ -117,7 +117,7 @@ require 'config.php';
                                     </thead>
                                     <tbody>
                                     <?php 
-                                    $dataGuru = mysqli_query($conn, "select * from guru");
+                                    $dataGuru = mysqli_query($conn, "select * from guru WHERE id_guru <> 404");
                                     $i = 1;
                                     while($data=mysqli_fetch_array($dataGuru)){
                                         $namaGuru = $data['nama_lengkap'];
@@ -168,6 +168,7 @@ require 'config.php';
                                                     <option value="Guru">Guru</option>
                                                     <option value="Bendahara Sekolah">Bendahara Sekolah</option>
                                                     <option value="Kepala Sekolah">Kepala Sekolah</option>
+                                                    <option value="Tenaga Administrasi Sekolah">Tenaga Administrasi Sekolah</option>
                                                 </select>
                                                 <br>
                                                 <input type="hidden" name="idg" value="<?=$idg;?>">
@@ -257,6 +258,7 @@ require 'config.php';
                     <option value="Guru">Guru</option>
                     <option value="Bendahara Sekolah">Bendahara Sekolah</option>
                     <option value="Kepala Sekolah">Kepala Sekolah</option>
+                    <option value="Tenaga Administrasi Sekolah">Tenaga Administrasi Sekolah</option>
                 </select>
             </div>
             <div class="text-center">
