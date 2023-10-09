@@ -225,6 +225,13 @@ require 'config.php';
                                 $saldoAkhirCashflow = $totalMasukCashflow - $totalKeluarCashflow;
                                 $selisihDebetKreditCashflow = $debetCashflow - $kreditCashflow;
                                 $saldoAwalCashflow = $saldoAkhirCashflow - $selisihDebetKreditCashflow;
+
+                                $queryKeteranganCf = mysqli_query($conn, "SELECT `keterangan` FROM `kategori` WHERE `nama_kategori` = 'Cash Flow'");
+
+                                if ($rowKeteranganCf = mysqli_fetch_assoc($queryKeteranganCf)) {
+                                    $keteranganCf = $rowKeteranganCf['keterangan'];
+                                }                              
+
                                 
                                 ?>
                                 <tr>
@@ -233,8 +240,8 @@ require 'config.php';
                                     <td style="width: 10%"><?php echo ($saldoAwalCashflow == 0) ? '' : "Rp " . number_format($saldoAwalCashflow, 0, ',', '.');?></td>
                                     <td style="width: 10%"><?php echo ($debetCashflow == 0) ? '' : "Rp " . number_format($debetCashflow, 0, ',', '.');?></td>
                                     <td style="width: 10%"><?php echo ($kreditCashflow == 0) ? '' : "Rp " . number_format($kreditCashflow, 0, ',', '.');?></td>
-                                    <td style="width: 10%"><?php echo ($totalMasukCashflow == 0) ? '' : "Rp " . number_format($saldoAkhirCashflow, 0, ',', '.');?></td>
-                                    <td style="width: 20%"></td>
+                                    <td style="width: 10%"><?php echo ($saldoAkhirCashflow == 0) ? '' : "Rp " . number_format($saldoAkhirCashflow, 0, ',', '.');?></td>
+                                    <td style="width: 20%"><?=$keteranganCf;?></td>
                                 </tr>
 
                                 <?php 
@@ -322,9 +329,10 @@ require 'config.php';
                                 GROUP BY
                                     k.id_kategori, k.nama_kategori;
                                 ";
-                                // Perhitungan saldo
+                                // Perhitungan kas ys
                                 $dataKasYs = mysqli_query($conn, $queryKasYs);
                                 $i = 2;
+                                $totalSaldoAwalYs = 0;
                                 $totalDebetYs = 0;
                                 $totalKreditYs = 0;
                                 $totalSaldoAkhirYs = 0;
@@ -339,8 +347,8 @@ require 'config.php';
                                     $debetYs = $data['total_masuk'];
                                     $kreditYs = $data['total_keluar'];
                                     
-                                    // Menghitung saldo
-                                    $querySaldoYs = mysqli_query($conn, "SELECT
+                                    // Menghitung saldo ys
+                                    $querySaldoYs = "SELECT
                                     k.id_kategori,
                                     k.nama_kategori,
                                     (SUM(COALESCE(masuk.total_masuk, 0)) - SUM(COALESCE(keluar.total_keluar, 0))) AS saldo
@@ -407,14 +415,22 @@ require 'config.php';
                                 ON k.id_kategori = keluar.id_kategori
                                 WHERE
                                     k.kode = 'ys'
-                                ");
+                                ";
+                                $saldoYs = mysqli_query($conn, $querySaldoYs);
 
-                                if ($rowSaldoYs = mysqli_fetch_assoc($querySaldoYs)) {
+                                if ($rowSaldoYs = mysqli_fetch_assoc($saldoYs)) {
                                     $saldoAkhirYs = $rowSaldoYs['saldo'];
                                 }
 
                                 $selisihDebetKreditYs = $debetYs - $kreditYs;
                                 $saldoAwalYs = $saldoAkhirYs - $selisihDebetKreditYs;
+
+                                $queryGetKeteranganKasYs = "SELECT `keterangan` FROM `kategori` WHERE `id_kategori` = $idKategori";
+                                $queryKeteranganYs = mysqli_query($conn, $queryGetKeteranganKasYs);
+
+                                if ($rowKeteranganYs = mysqli_fetch_assoc($queryKeteranganYs)) {
+                                    $keteranganYs = $rowKeteranganYs['keterangan'];
+                                } 
 
                                     ?>
                                     <tr>
@@ -424,14 +440,15 @@ require 'config.php';
                                         <td><?php echo ($debetYs == 0) ? '' : "Rp " . number_format($debetYs, 0, ',', '.');?></td>
                                         <td><?php echo ($kreditYs == 0) ? '' : "Rp " . number_format($kreditYs, 0, ',', '.');?></td>
                                         <td><?php echo ($saldoAkhirYs == 0) ? '' : "Rp " . number_format($saldoAkhirYs, 0, ',', '.');?></td>
-                                        <td></td>
+                                        <td><?=$keteranganYs;?></td>
                                     </tr>
                                     <?php
+                                    $totalSaldoAwalYs += $saldoAwalYs;
                                     $totalDebetYs += $debetYs;
                                     $totalKreditYs += $kreditYs;
                                     $totalSaldoAkhirYs += $saldoAkhirYs;                                    
                                     }                                    
-
+                                    $ysSaldoAwal = $saldoAwalCashflow + $totalSaldoAwalYs;
                                     $ysDebet = $debetCashflow + $totalDebetYs;
                                     $ysKredit = $kreditCashflow + $totalKreditYs;
                                     $ysSaldo = $saldoAkhirCashflow + $totalSaldoAkhirYs;
@@ -439,7 +456,7 @@ require 'config.php';
                                     <tr>
                                         <td></td>                                        
                                         <td></td>
-                                        <td></td>
+                                        <td><strong><?php echo ($ysSaldoAwal == 0) ? '' : "Rp " . number_format($ysSaldoAwal, 0, ',', '.');?></strong></td>
                                         <td><strong><?php echo ($ysDebet == 0) ? '' : "Rp " . number_format($ysDebet, 0, ',', '.');?></strong></td>
                                         <td><strong><?php echo ($ysKredit == 0) ? '' : "Rp " . number_format($ysKredit, 0, ',', '.');?></strong></td>
                                         <td><strong><?php echo ($ysSaldo == 0) ? '' : "Rp " . number_format($ysSaldo, 0, ',', '.');?></strong></td>
@@ -527,6 +544,7 @@ require 'config.php';
                                 
                                 $dataKasS = mysqli_query($conn, $queryKasS);
                                 $i = 5;
+                                $totalSaldoAwalS = 0;
                                 $totalDebetS = 0;
                                 $totalKreditS = 0;
                                 $totalSaldoAkhirS = 0;
@@ -542,7 +560,8 @@ require 'config.php';
                                     $kreditS = $data['total_keluar'];
                                     
                                     // Menghitung saldo
-                                    $querySaldoS = mysqli_query($conn, "SELECT
+
+                                    $querySaldoS = "SELECT
                                     k.id_kategori,
                                     k.nama_kategori,
                                     (SUM(COALESCE(masuk.total_masuk, 0)) - SUM(COALESCE(keluar.total_keluar, 0))) AS saldo
@@ -609,14 +628,21 @@ require 'config.php';
                                 ON k.id_kategori = keluar.id_kategori
                                 WHERE
                                     k.kode = 's'
-                                ");
+                                ";
+                                    $saldoS = mysqli_query($conn, $querySaldoS);
 
-                                if ($rowSaldoS = mysqli_fetch_assoc($querySaldoS)) {
+                                if ($rowSaldoS = mysqli_fetch_assoc($saldoS)) {
                                     $saldoAkhirS = $rowSaldoS['saldo'];
                                 }
 
                                 $selisihDebetKreditS = $debetS - $kreditS;
                                 $saldoAwalS = $saldoAkhirS - $selisihDebetKreditS;
+
+                                $queryGetKeteranganKasS = "SELECT `keterangan` FROM `kategori` WHERE `id_kategori` = $idKategori";
+                                $queryKeteranganS = mysqli_query($conn, $queryGetKeteranganKasS);
+                                if ($rowKeteranganS = mysqli_fetch_assoc($queryKeteranganS)) {
+                                    $keteranganS = $rowKeteranganS['keterangan'];
+                                }
 
                                     ?>
                                     <tr>
@@ -626,14 +652,16 @@ require 'config.php';
                                         <td><?php echo ($debetS == 0) ? '' : "Rp " . number_format($debetS, 0, ',', '.');?></td>
                                         <td><?php echo ($kreditS == 0) ? '' : "Rp " . number_format($kreditS, 0, ',', '.');?></td>
                                         <td><?php echo ($saldoAkhirS == 0) ? '' : "Rp " . number_format($saldoAkhirS, 0, ',', '.');?></td>
-                                        <td></td>
+                                        <td><?=$keteranganS;?></td>
                                     </tr>
                                     <?php
+                                    $totalSaldoAwalS += $saldoAwalS;
                                     $totalDebetS += $debetS;
                                     $totalKreditS += $kreditS;
                                     $totalSaldoAkhirS += $saldoAkhirS;                                    
                                     }                                    
 
+                                    $konsolidasiSaldoAwal = $ysSaldoAwal + $totalSaldoAwalS;
                                     $konsolidasiDebet = $ysDebet + $totalDebetS;
                                     $konsolidasiKredit = $ysKredit + $totalKreditS;
                                     $konsolidasiSaldo = $ysSaldo + $totalSaldoAkhirS;
@@ -641,7 +669,7 @@ require 'config.php';
                                     <tr>
                                         <td></td>                                        
                                         <td></td>
-                                        <td></td>
+                                        <td><strong><?php echo ($konsolidasiSaldoAwal == 0) ? '' : "Rp " . number_format($konsolidasiSaldoAwal, 0, ',', '.');?></strong></td>
                                         <td><strong><?php echo ($konsolidasiDebet == 0) ? '' : "Rp " . number_format($konsolidasiDebet, 0, ',', '.');?></strong></td>
                                         <td><strong><?php echo ($konsolidasiKredit == 0) ? '' : "Rp " . number_format($konsolidasiKredit, 0, ',', '.');?></strong></td>
                                         <td><strong><?php echo ($konsolidasiSaldo == 0) ? '' : "Rp " . number_format($konsolidasiSaldo, 0, ',', '.');?></strong></td>
@@ -668,6 +696,7 @@ require 'config.php';
                                 </thead>
                                 <tbody>
                                 <?php
+
                                 $queryGuru = mysqli_query($conn, "SELECT
                                 kat.nama_kategori,
                                 g.nama_lengkap AS nama_guru 
@@ -682,7 +711,7 @@ require 'config.php';
                                 $pinjamCf = mysqli_query($conn, $queryPinjamCf);
                                 $rowPinjamCf = mysqli_fetch_assoc($pinjamCf);
                                 $jumlahPinjamCf = $rowPinjamCf['total_jumlah'];
-                                $keteranganCf = $rowPinjamCf['keterangan_terakhir'];                                
+                                $keteranganPinjamCf = $rowPinjamCf['keterangan_terakhir'];                                
 
                                 $tunaiKasCf = $saldoAkhirCashflow - $jumlahPinjamCf;
 
@@ -696,7 +725,7 @@ require 'config.php';
                                         <td><?php echo ($saldoAkhirCashflow == 0) ? '' : "Rp " . number_format($saldoAkhirCashflow, 0, ',', '.');?></td>
                                         <td><?php echo ($tunaiKasCf == 0) ? '' : "Rp " . number_format($tunaiKasCf, 0, ',', '.');?></td>
                                         <td><?php echo ($jumlahPinjamCf == 0) ? '' : "Rp " . number_format($jumlahPinjamCf, 0, ',', '.');?></td>
-                                        <td><?=$keteranganCf;?></td>
+                                        <td><?=$keteranganPinjamCf;?></td>
                                     </tr>
                                                                     
                                     <?php 
@@ -814,10 +843,34 @@ require 'config.php';
                                 }
                                 ?>
                                 <tbody>
-                        </table>
+                        </table><br><br>
+
+                    <div style="text-align: center;" class="sb-sidenav-footer">
+                        <form method="post" action="pdf_konsolidasi.php" target="_blank">
+                            <input type="hidden" name="idTahunAjar" value="<?= $idTahunAjar; ?>">
+                            <input type="hidden" name="tahunAjar" value="<?= $tahunAjarLap; ?>">
+                            <input type="hidden" name="bulan" value="<?=$bulanLalu; ?>">
+                            <input type="hidden" name="tanggalAkhir" value="<?=$tanggalAkhir; ?>">                            
+                            <input type="hidden" name="saldoAwalCashflow" value="<?=$saldoAwalCashflow; ?>">
+                            <input type="hidden" name="debetCashflow" value="<?=$debetCashflow; ?>">
+                            <input type="hidden" name="kreditCashflow" value="<?=$kreditCashflow; ?>">
+                            <input type="hidden" name="saldoAkhirCashflow" value="<?=$saldoAkhirCashflow; ?>">
+                            <input type="hidden" name="queryKasYs" value="<?=$queryKasYs; ?>">
+                            <input type="hidden" name="queryKasS" value="<?=$queryKasS; ?>">
+                            <input type="hidden" name="tunaiKasCf" value="<?=$tunaiKasCf; ?>">
+                            <input type="hidden" name="namaGuru" value="<?=$namaGuru; ?>">
+                            <input type="hidden" name="jumlahPinjamCf" value="<?=$jumlahPinjamCf; ?>">
+                            <input type="hidden" name="keteranganCf" value="<?=$keteranganCf; ?>">
+                            <input type="hidden" name="keteranganPinjamCf" value="<?=$keteranganPinjamCf; ?>">
+                            <input type="hidden" name="queryPemegang" value="<?=$queryPemegang; ?>">
+                            <button type="submit" class="btn btn-primary" name="btnCetakLapKonsol" id="btnCetakLapKonsol">Cetak</button>  
+                        </form>                      
+                    </div><br>
                                 
                 </main>
             </div>
         </div>
     </body>
 </html>
+
+$queryGetKeteranganKasYs
