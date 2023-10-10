@@ -110,7 +110,7 @@ Tahun Ajar $tahunAjar
 
 EOD;
 
-$pdf->SetFont('times', '', 9);
+$pdf->SetFont('times', '', 10);
 $pdf->SetCellMargins(0, 1, 0, 0);
 $html = '';
 for ($kelas = 1; $kelas <= 6; $kelas++) {
@@ -215,7 +215,7 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
         <td>Rp. ' . number_format($tunggakanKomputer, 0, ',', '.') . '</td>
         <td>Rp. ' . number_format($jumlahKomputer, 0, ',', '.') . '</td>
         </tr>';
-
+       
         // Tambahkan nilai ke total
         $totalPenetapanKegiatan += $penetapanKegiatan;
         $totalBulanIniKegiatan += $bulanIniKegiatan;

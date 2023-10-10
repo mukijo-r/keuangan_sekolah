@@ -104,7 +104,7 @@ if ($bulanNum == 1) {
 $pdf->SetFont('helvetica', '', 10);
 $txt = <<<EOD
 Laporan Keuangan Ujian
-Bulan $bulanNum
+Bulan $bulan
 Tahun Ajar $tahunAjar
 
 
@@ -234,7 +234,7 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
     }
         // Tampilkan baris total
     $html .= '<tr>
-    <td colspan="2"><strong>Total</strong></td>
+    <td colspan="2"><strong> Total</strong></td>
     <td><strong>Rp. ' . number_format($totalPenetapanPts, 0, ',', '.') . '</strong></td>
     <td><strong>Rp. ' . number_format($totalBulanIniPts, 0, ',', '.') . '</strong></td>
     <td><strong>Rp. ' . number_format($totalTunggakanPts, 0, ',', '.') . '</strong></td>
@@ -262,24 +262,24 @@ $html .= '
         <div class="card-body">
             <table border="0.75">
                 <tr>
-                    <th rowspan="2" style="vertical-align: middle;">Kelas</th>
+                    <th rowspan="2" style="vertical-align: middle;"> Kelas</th>
                     <th colspan="4" style="text-align: center;">Iuran PTS</th>
                     <th colspan="4" style="text-align: center;">Iuran PAS</th>
                     <th colspan="4" style="text-align: center;">Iuran US</th>
                 </tr>
                 <tr>
-                    <td>Penetapan</td>
-                    <td>Bulan ini</td>
-                    <td>Tunggakan</td>
-                    <td>Jumlah</td>
-                    <td>Penetapan</td>
-                    <td>Bulan ini</td>
-                    <td>Tunggakan</td>
-                    <td>Jumlah</td>
-                    <td>Penetapan</td>
-                    <td>Bulan ini</td>
-                    <td>Tunggakan</td>
-                    <td>Jumlah</td>
+                    <td> Penetapan</td>
+                    <td> Bulan ini</td>
+                    <td> Tunggakan</td>
+                    <td> Jumlah</td>
+                    <td> Penetapan</td>
+                    <td> Bulan ini</td>
+                    <td> Tunggakan</td>
+                    <td> Jumlah</td>
+                    <td> Penetapan</td>
+                    <td> Bulan ini</td>
+                    <td> Tunggakan</td>
+                    <td> Jumlah</td>
                 </tr>';
 
 
@@ -360,7 +360,7 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
     $totalUsKelas = $rowKelas['total_us_kelas'];     
 
     $html .= '<tr>
-        <td>Kelas ' . $kelas . '</td>
+        <td> Kelas ' . $kelas . '</td>
         <td>Rp. ' . number_format($penetapanPtsKelas, 0, ',', '.') . '</td>
         <td>Rp. ' . number_format($bulanIniPtsKelas, 0, ',', '.') . '</td>
         <td>Rp. ' . number_format($tunggakanPtsKelas, 0, ',', '.') . '</td>
