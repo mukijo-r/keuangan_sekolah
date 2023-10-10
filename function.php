@@ -644,7 +644,6 @@
     // Ambil Tabungan
     if(isset($_POST['ambilTab'])){
         $tanggal = $_POST['tanggal'];
-        $bulan = $_POST['bulan'];
         $tanggalAmbil = date("Y-m-d H:i", strtotime($tanggal));
         $idSiswa = $_POST['ids'];
         $ambilTab = $_POST['jumlahAmbil'];
@@ -668,8 +667,8 @@
         try {
             // Coba jalankan query
             $queryambilTabungan = "INSERT INTO tabung_ambil
-            (`tanggal`, `id_tahun_ajar`, `bulan', `id_kategori`, `id_siswa`, `jumlah`, `id_guru`, `keterangan`) 
-            VALUES ('$tanggalAmbil','$idTahunAjar', '$bulan', '8','$idSiswa','$ambilTab','$idGuru','$keterangan')";
+            (`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_siswa`, `jumlah`, `id_guru`, `keterangan`) 
+            VALUES ('$tanggalAmbil','$idTahunAjar', '8','$idSiswa','$ambilTab','$idGuru','$keterangan')";
             
             $ambilTabungan = mysqli_query($conn, $queryambilTabungan);
 

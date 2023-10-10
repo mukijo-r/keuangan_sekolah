@@ -320,7 +320,6 @@ require 'config.php';
                                         WHERE
                                             tba.id_kategori <> 1
                                             AND ta.id_tahun_ajar = $idTahunAjar
-                                            AND tba.bulan = '$bulanLalu'
                                         GROUP BY tba.id_kategori
                                     ) AS keluar
                                 ON k.id_kategori = keluar.id_kategori
@@ -532,7 +531,6 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             ta.id_tahun_ajar = $idTahunAjar
-                                            AND tba.bulan = '$bulanLalu'
                                         GROUP BY tba.id_kategori
                                     ) AS keluar
                                 ON k.id_kategori = keluar.id_kategori
@@ -797,7 +795,6 @@ require 'config.php';
                                             GROUP BY tba.id_kategori
                                         ) AS keluar
                                     ON k.id_kategori = keluar.id_kategori
-                                    -- Tambahkan JOIN dengan tabel 'guru'
                                     LEFT JOIN guru g ON k.id_guru = g.id_guru
                                     GROUP BY
                                         k.id_kategori, k.nama_kategori, g.nama_lengkap
