@@ -243,9 +243,9 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
 
                             $queryPenerimaan = "SELECT
                             s.nama AS nama_siswa,
-                            SUM(CASE WHEN subkat.nama_sub_kategori = 'Kegiatan' THEN p.nominal ELSE 0 END) AS penetapan_kegiatan,
-                            SUM(CASE WHEN subkat.nama_sub_kategori = 'Pramuka' THEN p.nominal ELSE 0 END) AS penetapan_pramuka,
-                            SUM(CASE WHEN subkat.nama_sub_kategori = 'Komputer' THEN p.nominal ELSE 0 END) AS penetapan_komputer,
+                            SUM(CASE WHEN subkat.nama_sub_kategori = 'Kegiatan' THEN tms.penetapan ELSE 0 END) AS penetapan_kegiatan,
+                            SUM(CASE WHEN subkat.nama_sub_kategori = 'Pramuka' THEN tms.penetapan ELSE 0 END) AS penetapan_pramuka,
+                            SUM(CASE WHEN subkat.nama_sub_kategori = 'Komputer' THEN tms.penetapan ELSE 0 END) AS penetapan_komputer,
                             SUM(CASE WHEN subkat.nama_sub_kategori = 'Kegiatan' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_kegiatan,
                             SUM(CASE WHEN subkat.nama_sub_kategori = 'Pramuka' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_pramuka,
                             SUM(CASE WHEN subkat.nama_sub_kategori = 'Komputer' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_komputer,
@@ -262,8 +262,6 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                                 siswa s ON tms.id_siswa = s.id_siswa
                             LEFT JOIN
                                 sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
-                            LEFT JOIN
-                                penetapan p ON tms.id_siswa = p.id_siswa AND tms.id_sub_kategori = p.id_sub_kategori
                             WHERE
                                 tms.id_tahun_ajar = $idTahunAjar AND 
                                 MONTH(tms.tanggal) = $bulanNum AND
@@ -427,9 +425,9 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         for ($kelas = 1; $kelas <= 6; $kelas++) {
 
                         $queryTotal = "SELECT
-                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'Kegiatan' THEN p.nominal ELSE 0 END) AS penetapan_kegiatan_kelas,
-                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'Pramuka' THEN p.nominal ELSE 0 END) AS penetapan_pramuka_kelas,
-                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'Komputer' THEN p.nominal ELSE 0 END) AS penetapan_komputer_kelas,
+                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'Kegiatan' THEN tms.penetapan ELSE 0 END) AS penetapan_kegiatan_kelas,
+                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'Pramuka' THEN tms.penetapan ELSE 0 END) AS penetapan_pramuka_kelas,
+                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'Komputer' THEN tms.penetapan ELSE 0 END) AS penetapan_komputer_kelas,
                         SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'Kegiatan' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_kegiatan_kelas,
                         SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'Pramuka' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_pramuka_kelas,
                         SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'Komputer' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_komputer_kelas,
@@ -446,8 +444,6 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                             siswa s ON tms.id_siswa = s.id_siswa
                         LEFT JOIN
                             sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
-                        LEFT JOIN
-                            penetapan p ON tms.id_siswa = p.id_siswa AND tms.id_sub_kategori = p.id_sub_kategori
                         WHERE
                             tms.id_tahun_ajar = $idTahunAjar AND 
                             MONTH(tms.tanggal) = $bulanNum";
@@ -468,10 +464,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         $penetapanKomputerKelas = $rowKelas['penetapan_komputer_kelas'];
                         $bulanIniKomputerKelas = $rowKelas['bulan_ini_komputer_kelas'];
                         $tunggakanKomputerKelas = $rowKelas['tunggakan_komputer_kelas'];
-                        $totalKomputerKelas = $rowKelas['total_komputer_kelas'];
-                        
-                        
-                        
+                        $totalKomputerKelas = $rowKelas['total_komputer_kelas'];     
                         
                         echo '<tr>';
                         echo '<td>Kelas ' . $kelas . '</td>';
@@ -510,15 +503,15 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         echo '<tr>';
                         echo '<td><strong>Total</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalPenetapanKegiatan, 0, ',', '.') . '</strong></td>';
-                        echo '<td><strong>Rp. ' . number_format($finalBulanIniKegiatan, 0, ',', '.') . '</strong></td>';//bulan ini kegiatan
+                        echo '<td><strong>Rp. ' . number_format($finalBulanIniKegiatan, 0, ',', '.') . '</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalTunggakanKegiatan, 0, ',', '.') . '</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalJumlahKegiatan, 0, ',', '.') . '</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalPenetapanPramuka, 0, ',', '.') . '</strong></td>';
-                        echo '<td><strong>Rp. ' . number_format($finalBulanIniPramuka, 0, ',', '.') . '</strong></td>';//bulan ini pramuka
+                        echo '<td><strong>Rp. ' . number_format($finalBulanIniPramuka, 0, ',', '.') . '</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalTunggakanPramuka, 0, ',', '.') . '</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalJumlahPramuka, 0, ',', '.') . '</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalPenetapanKomputer, 0, ',', '.') . '</strong></td>';
-                        echo '<td><strong>Rp. ' . number_format($finalBulanIniKomputer, 0, ',', '.') . '</strong></td>';//bulan ini komputer
+                        echo '<td><strong>Rp. ' . number_format($finalBulanIniKomputer, 0, ',', '.') . '</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalTunggakanKomputer, 0, ',', '.') . '</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($finalJumlahKomputer, 0, ',', '.') . '</strong></td>';
                         echo '</tr>';
@@ -527,11 +520,11 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         echo '</div>';
                         echo '</div><br>';
                         echo '<div style="text-align: center;" class="sb-sidenav-footer">';
-                        echo '<form method="post" action="pdf_umum.php" target="_blank">';
+                        echo '<form method="post" action="pdf_ekstra.php" target="_blank">';
                         echo '<input type="hidden" name="idTahunAjar" value="' . $idTahunAjar . '">';
-                        echo '<input type="hidden" name="bulan" value="' . $bulanNum . '>';
+                        echo '<input type="hidden" name="bulan" value="' . $bulanNum . '">';
                         echo '<input type="hidden" name="idKategori" value="' . $idKategoriLap . '">';
-                        echo '<button type="submit" class="btn btn-primary" name="btnCetakLapUmum" id="btnCetakLapUmum">Cetak</button>';  
+                        echo '<button type="submit" class="btn btn-primary" name="btnCetakLapEkstra" id="btnCetakLapEkstra">Cetak</button>';  
                         echo '</form>';                      
                         echo '</div><br>';  
                 }
@@ -573,9 +566,9 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
 
                             $queryPenerimaan = "SELECT
                             s.nama AS nama_siswa,
-                            SUM(CASE WHEN subkat.nama_sub_kategori = 'PTS' THEN p.nominal ELSE 0 END) AS penetapan_pts,
-                            SUM(CASE WHEN subkat.nama_sub_kategori = 'PAS' THEN p.nominal ELSE 0 END) AS penetapan_pas,
-                            SUM(CASE WHEN subkat.nama_sub_kategori = 'US' THEN p.nominal ELSE 0 END) AS penetapan_us,
+                            SUM(CASE WHEN subkat.nama_sub_kategori = 'PTS' THEN tms.penetapan ELSE 0 END) AS penetapan_pts,
+                            SUM(CASE WHEN subkat.nama_sub_kategori = 'PAS' THEN tms.penetapan ELSE 0 END) AS penetapan_pas,
+                            SUM(CASE WHEN subkat.nama_sub_kategori = 'US' THEN tms.penetapan ELSE 0 END) AS penetapan_us,
                             SUM(CASE WHEN subkat.nama_sub_kategori = 'PTS' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_pts,
                             SUM(CASE WHEN subkat.nama_sub_kategori = 'PAS' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_pas,
                             SUM(CASE WHEN subkat.nama_sub_kategori = 'US' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_us,
@@ -592,8 +585,6 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                                 siswa s ON tms.id_siswa = s.id_siswa
                             LEFT JOIN
                                 sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
-                            LEFT JOIN
-                                penetapan p ON tms.id_siswa = p.id_siswa AND tms.id_sub_kategori = p.id_sub_kategori
                             WHERE
                                 tms.id_tahun_ajar = $idTahunAjar AND 
                                 MONTH(tms.tanggal) = $bulanNum AND
@@ -757,9 +748,9 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         for ($kelas = 1; $kelas <= 6; $kelas++) {
 
                         $queryTotal = "SELECT
-                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'PTS' THEN p.nominal ELSE 0 END) AS penetapan_pts_kelas,
-                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'PAS' THEN p.nominal ELSE 0 END) AS penetapan_pas_kelas,
-                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'US' THEN p.nominal ELSE 0 END) AS penetapan_us_kelas,
+                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'PTS' THEN tms.penetapan ELSE 0 END) AS penetapan_pts_kelas,
+                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'PAS' THEN tms.penetapan ELSE 0 END) AS penetapan_pas_kelas,
+                        SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'US' THEN tms.penetapan ELSE 0 END) AS penetapan_us_kelas,
                         SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'PTS' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_pts_kelas,
                         SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'PAS' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_pas_kelas,
                         SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'US' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_us_kelas,
@@ -776,8 +767,6 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                             siswa s ON tms.id_siswa = s.id_siswa
                         LEFT JOIN
                             sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
-                        LEFT JOIN
-                            penetapan p ON tms.id_siswa = p.id_siswa AND tms.id_sub_kategori = p.id_sub_kategori
                         WHERE
                             tms.id_tahun_ajar = $idTahunAjar AND 
                             MONTH(tms.tanggal) = $bulanNum";
@@ -798,10 +787,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         $penetapanUsKelas = $rowKelas['penetapan_us_kelas'];
                         $bulanIniUsKelas = $rowKelas['bulan_ini_us_kelas'];
                         $tunggakanUsKelas = $rowKelas['tunggakan_us_kelas'];
-                        $totalUsKelas = $rowKelas['total_us_kelas'];
-                        
-                        
-                        
+                        $totalUsKelas = $rowKelas['total_us_kelas'];                                                                       
                         
                         echo '<tr>';
                         echo '<td>Kelas ' . $kelas . '</td>';
@@ -857,11 +843,11 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         echo '</div>';
                         echo '</div><br>';
                         echo '<div style="text-align: center;" class="sb-sidenav-footer">';
-                        echo '<form method="post" action="pdf_umum.php" target="_blank">';
+                        echo '<form method="post" action="pdf_ujian.php" target="_blank">';
                         echo '<input type="hidden" name="idTahunAjar" value="' . $idTahunAjar . '">';
                         echo '<input type="hidden" name="bulan" value="' . $bulanNum . '>';
                         echo '<input type="hidden" name="idKategori" value="' . $idKategoriLap . '">';
-                        echo '<button type="submit" class="btn btn-primary" name="btnCetakLapUmum" id="btnCetakLapUmum">Cetak</button>';  
+                        echo '<button type="submit" class="btn btn-primary" name="btnCetakLapUjian" id="btnCetakLapUjian">Cetak</button>';  
                         echo '</form>';                      
                         echo '</div><br>';  
                 }
@@ -893,7 +879,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
 
                         $queryPenerimaan = "SELECT
                         s.nama AS nama_siswa,
-                        SUM(CASE WHEN subkat.nama_sub_kategori = 'SPP' THEN p.nominal ELSE 0 END) AS penetapan_spp,
+                        SUM(CASE WHEN subkat.nama_sub_kategori = 'SPP' THEN tms.penetapan ELSE 0 END) AS penetapan_spp,
                         SUM(CASE WHEN subkat.nama_sub_kategori = 'SPP' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_spp,
                         SUM(CASE WHEN subkat.nama_sub_kategori = 'SPP' THEN tms.tunggakan ELSE 0 END) AS tunggakan_spp,
                         SUM(CASE WHEN subkat.nama_sub_kategori = 'SPP' THEN tms.jumlah ELSE 0 END) AS jumlah_spp
@@ -904,8 +890,6 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                             siswa s ON tms.id_siswa = s.id_siswa
                         LEFT JOIN
                             sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
-                        LEFT JOIN
-                            penetapan p ON tms.id_siswa = p.id_siswa AND tms.id_sub_kategori = p.id_sub_kategori
                         WHERE
                             tms.id_tahun_ajar = $idTahunAjar AND 
                             MONTH(tms.tanggal) = $bulanNum AND
@@ -995,7 +979,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     for ($kelas = 1; $kelas <= 6; $kelas++) {
 
                     $queryTotal = "SELECT
-                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN p.nominal ELSE 0 END) AS penetapan_spp_kelas,
+                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.penetapan ELSE 0 END) AS penetapan_spp_kelas,
                     SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_spp_kelas,
                     SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.tunggakan ELSE 0 END) AS tunggakan_spp_kelas,
                     SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.jumlah ELSE 0 END) AS total_spp_kelas,
@@ -1006,8 +990,6 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         siswa s ON tms.id_siswa = s.id_siswa
                     LEFT JOIN
                         sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
-                    LEFT JOIN
-                        penetapan p ON tms.id_siswa = p.id_siswa AND tms.id_sub_kategori = p.id_sub_kategori
                     WHERE
                         tms.id_tahun_ajar = $idTahunAjar AND 
                         MONTH(tms.tanggal) = $bulanNum";
@@ -1048,6 +1030,14 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     echo '</table>'; 
                     echo '</div>';
                     echo '</div>';
+                    echo '<div style="text-align: center;" class="sb-sidenav-footer">';
+                    echo '<form method="post" action="pdf_spp.php" target="_blank">';
+                    echo '<input type="hidden" name="idTahunAjar" value="' . $idTahunAjar . '">';
+                    echo '<input type="hidden" name="bulan" value="' . $bulanNum . '>';
+                    echo '<input type="hidden" name="idKategori" value="' . $idKategoriLap . '">';
+                    echo '<button type="submit" class="btn btn-primary" name="btnCetakLapSpp" id="btnCetakLapSpp">Cetak</button>';  
+                    echo '</form>';                      
+                    echo '</div><br>'; 
                 }
 
                 function tabelTunggal($idTahunAjar, $bulanNum, $idKategoriLap) {
@@ -1081,16 +1071,17 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
 
                         $queryPenerimaan = "SELECT
                         s.nama AS nama_siswa,
-                        SUM(CASE WHEN subkat.nama_sub_kategori = '$namaKategori' THEN tms.jumlah ELSE 0 END) AS jumlah_subkat,
-                        SUM(CASE WHEN subkat.nama_sub_kategori = '$namaKategori' THEN p.nominal ELSE 0 END) AS penetapan_subkat
+                        SUM(CASE WHEN subkat.nama_sub_kategori = '$namaKategori' THEN tms.penetapan ELSE 0 END) AS penetapan_subkat,
+                        SUM(CASE WHEN subkat.nama_sub_kategori = '$namaKategori' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_subkat,
+                        SUM(CASE WHEN subkat.nama_sub_kategori = '$namaKategori' THEN tms.tunggakan ELSE 0 END) AS tunggakan_subkat,
+                        SUM(CASE WHEN subkat.nama_sub_kategori = '$namaKategori' THEN tms.jumlah ELSE 0 END) AS jumlah_subkat
+                        
                         FROM
                             transaksi_masuk_siswa tms
                         LEFT JOIN
                             siswa s ON tms.id_siswa = s.id_siswa
                         LEFT JOIN
                             sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
-                        LEFT JOIN
-                            penetapan p ON tms.id_siswa = p.id_siswa AND tms.id_sub_kategori = p.id_sub_kategori
                         WHERE
                             tms.id_tahun_ajar = $idTahunAjar AND 
                             MONTH(tms.tanggal) = $bulanNum AND
@@ -1100,33 +1091,39 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         ";
                         $i = 1;
                         $totalPenetapanSubkat = 0;
+                        $totalBulanIniSubkat = 0;
+                        $totalTunggakanSubkat = 0;
                         $totalJumlahSubkat = 0;
 
                         $penerimaanSubkat = mysqli_query($conn, $queryPenerimaan);
                         while($rowPenerimaan=mysqli_fetch_array($penerimaanSubkat)){
                             $namaSiswa = $rowPenerimaan['nama_siswa'];                    
                             $penetapanSubkat = $rowPenerimaan['penetapan_subkat'];
+                            $bulanIniSubkat = $rowPenerimaan['bulan_ini_subkat'];
+                            $tunggakanSubkat = $rowPenerimaan['tunggakan_subkat'];
                             $jumlahSubkat = $rowPenerimaan['jumlah_subkat'];
 
                         echo '<tr>';
                         echo '<td>' . $i++ . '</td>';
                         echo '<td>' . $namaSiswa . '</td>';
                         echo '<td>Rp. ' . number_format($penetapanSubkat, 0, ',', '.') . '</td>';
+                        echo '<td>Rp. ' . number_format($bulanIniSubkat, 0, ',', '.') . '</td>';
+                        echo '<td>Rp. ' . number_format($tunggakanSubkat, 0, ',', '.') . '</td>';
                         echo '<td>Rp. ' . number_format($jumlahSubkat, 0, ',', '.') . '</td>';
-                        echo '<td></td>';
-                        echo '<td></td>';
                         echo '</tr>';
 
                         // Tambahkan nilai ke total
                         $totalPenetapanSubkat += $penetapanSubkat;
+                        $totalBulanIniSubkat += $bulanIniSubkat;
+                        $totalTunggakanSubkat += $tunggakanSubkat;
                         $totalJumlahSubkat += $jumlahSubkat;
                     }
                             // Tampilkan baris total
                         echo '<tr>';
                         echo '<td colspan="2">Total</td>';
                         echo '<td><strong>Rp. ' . number_format($totalPenetapanSubkat, 0, ',', '.') . '</strong></td>';
-                        echo '<td></td>';
-                        echo '<td><strong></td>';
+                        echo '<td><strong>Rp. ' . number_format($totalBulanIniSubkat, 0, ',', '.') . '</strong></td>';
+                        echo '<td><strong>Rp. ' . number_format($totalTunggakanSubkat, 0, ',', '.') . '</strong></td>';
                         echo '<td><strong>Rp. ' . number_format($totalJumlahSubkat, 0, ',', '.') . '</strong></td>';
                         echo '</tr>';                            
                         echo '</tbody>';
@@ -1161,17 +1158,23 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
 
                     // Simpan total kolom per kelas
                     $penetapanSubkatKelas = 0;
+                    $bulanIniSubkatKelas = 0;
+                    $tunggakanSubkatKelas = 0;
                     $totalSubkatKelas = 0;
 
                     $finalPenetapanSubkat = 0;
+                    $finalBulanIniSubkat = 0;
+                    $finalTunggakanSubkat = 0;
                     $finalJumlahSubkat = 0;
 
                     // Loop untuk menghitung total kolom per kelas
                     for ($kelas = 1; $kelas <= 6; $kelas++) {
 
                     $queryTotal = "SELECT
+                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = '$namaKategori' THEN tms.penetapan ELSE 0 END) AS penetapan_subkat_kelas,
+                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = '$namaKategori' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_subkat_kelas,
+                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = '$namaKategori' THEN tms.tunggakan ELSE 0 END) AS tunggakan_subkat_kelas,
                     SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = '$namaKategori' THEN tms.jumlah ELSE 0 END) AS total_subkat_kelas,
-                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = '$namaKategori' THEN p.nominal ELSE 0 END) AS penetapan_subkat_kelas
 
                     FROM
                         transaksi_masuk_siswa tms
@@ -1179,8 +1182,6 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         siswa s ON tms.id_siswa = s.id_siswa
                     LEFT JOIN
                         sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
-                    LEFT JOIN
-                        penetapan p ON tms.id_siswa = p.id_siswa AND tms.id_sub_kategori = p.id_sub_kategori
                     WHERE
                         tms.id_tahun_ajar = $idTahunAjar AND 
                         MONTH(tms.tanggal) = $bulanNum";
@@ -1189,18 +1190,22 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
 
                     $rowKelas=mysqli_fetch_array($resultTotal);
                     $penetapanSubkatKelas =  $rowKelas['penetapan_subkat_kelas'];
+                    $bulanIniSubkatKelas = $rowKelas['bulan_ini_subkat_kelas'];
+                    $tunggakanSubkatKelas = $rowKelas['tunggakan_subkat_kelas'];
                     $totalSubkatKelas = $rowKelas['total_subkat_kelas'];
                     
                     echo '<tr>';
                     echo '<td>Kelas ' . $kelas . '</td>';
                     echo '<td>Rp. ' . number_format($penetapanSubkatKelas, 0, ',', '.') . '</td>';
-                    echo '<td></td>';
-                    echo '<td></td>';
+                    echo '<td>Rp. ' . number_format($bulanIniSubkatKelas, 0, ',', '.') . '</td>';
+                    echo '<td>Rp. ' . number_format($tunggakanSubkatKelas, 0, ',', '.') . '</td>';
                     echo '<td>Rp. ' . number_format($totalSubkatKelas, 0, ',', '.') . '</td>';
                     echo '</tr>';
                     
                     // Tambahkan nilai ke total
                     $finalPenetapanSubkat += $penetapanSubkatKelas;
+                    $finalBulanIniSubkat += $bulanIniSubkatKelas;
+                    $finalTunggakanSubkat += $tunggakanSubkatKelas;
                     $finalJumlahSubkat += $totalSubkatKelas;
                     
                     }
@@ -1208,8 +1213,8 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     echo '<tr>';
                     echo '<td><strong>Total</strong></td>';
                     echo '<td><strong>Rp. ' . number_format($finalPenetapanSubkat, 0, ',', '.') . '</strong></td>';
-                    echo '<td><strong></td>';
-                    echo '<td><strong></strong></td>';
+                    echo '<td><strong>Rp. ' . number_format($finalBulanIniSubkat, 0, ',', '.') . '</strong></strong></td>';
+                    echo '<td><strong>Rp. ' . number_format($finalTunggakanSubkat, 0, ',', '.') . '</strong></strong></td>';
                     echo '<td><strong>Rp. ' . number_format($finalJumlahSubkat, 0, ',', '.') . '</strong></strong></td>';
                     echo '</tr>';
 
@@ -1217,6 +1222,14 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     echo '</table>'; 
                     echo '</div>';
                     echo '</div>';
+                    echo '<div style="text-align: center;" class="sb-sidenav-footer">';
+                    echo '<form method="post" action="pdf_lap_siswa_lain.php" target="_blank">';
+                    echo '<input type="hidden" name="idTahunAjar" value="' . $idTahunAjar . '">';
+                    echo '<input type="hidden" name="bulan" value="' . $bulanNum . '>';
+                    echo '<input type="hidden" name="idKategori" value="' . $idKategoriLap . '">';
+                    echo '<button type="submit" class="btn btn-primary" name="btnCetakLapTunggal" id="btnCetakLapTunggal">Cetak</button>';  
+                    echo '</form>';                      
+                    echo '</div><br>';
                 }
                 
                 ?>              
