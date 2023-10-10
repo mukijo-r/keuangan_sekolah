@@ -32,9 +32,9 @@ require 'config.php';
                         <div class="container-fluid px-4">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalAmbilTransTabung">
+                                    <!-- <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalAmbilTransTabung">
                                         Mengambil
-                                    </button>
+                                    </button> -->
                                 </div>
                                 <div class="col-md-8">
                                     <?php
@@ -97,6 +97,7 @@ require 'config.php';
                                         guru g ON ta.id_guru = g.id_guru
                                     WHERE
                                         ta.id_tahun_ajar = $idTahunAjar
+                                    ORDER BY ta.tanggal DESC
                                     ");
 
                                     $totalEntries = mysqli_num_rows($dataTabungan);
@@ -179,28 +180,10 @@ require 'config.php';
             
             <form method="post">
             <div class="modal-body">
-                <h6>Ambil tabungan<h6>
-                <br>
                 <label for="tanggal">Tanggal Pengambilan :</label>       
                 <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
                 <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
-                <br>
-                <label for="bulan">Bulan :</label><br>
-                    <select class="form-select" name="bulan" aria-label="Bulan">
-                        <option selected>Pilih bulan</option>
-                        <option value="Januari">Januari</option>
-                        <option value="Februari">Februari</option>
-                        <option value="Maret">Maret</option>
-                        <option value="April">April</option>
-                        <option value="Mei">Mei</option>
-                        <option value="Juni">Juni</option>
-                        <option value="Juli">Juli</option>
-                        <option value="Agustus">Agustus</option>
-                        <option value="September">September</option>
-                        <option value="Oktober">Oktober</option>
-                        <option value="November">November</option>
-                        <option value="Desember">Desember</option>
-                    </select>
+                <br>               
                 <label for="nama">Nama :</label>       
                 <input type="text" name="nama" class="form-control">
                 <br>

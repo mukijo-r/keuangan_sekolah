@@ -100,8 +100,8 @@ require 'config.php';
                                         $idSiswa = $data['id_siswa'];
 
                                         // Menghitung saldo
-                                        $querySaldoTabung = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM tabung_masuk WHERE id_siswa = $idSiswa AND id_tb_masuk <= '$tanggal'");
-                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa AND id_tb_ambil <= '$tanggal'");
+                                        $querySaldoTabung = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM tabung_masuk WHERE id_siswa = $idSiswa AND tanggal <= '$tanggal'");
+                                        $querySaldoAmbil = mysqli_query($conn, "SELECT SUM(jumlah) AS total_ambil FROM tabung_ambil WHERE id_siswa = $idSiswa AND tanggal <= '$tanggal'");
 
                                         if ($rowSaldo = mysqli_fetch_assoc($querySaldoTabung)) {
                                             $saldo_masuk = $rowSaldo['total_masuk'];
