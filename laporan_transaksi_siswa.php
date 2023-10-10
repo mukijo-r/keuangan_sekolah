@@ -333,7 +333,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                             $totalBulanIniKomputer += $bulanIniKomputer;
                             $totalTunggakanKomputer += $tunggakanKomputer;
                             $totalJumlahKomputer += $jumlahKomputer;
-                        }
+                            }
                                 // Tampilkan baris total
                             echo '<tr>';
                             echo '<td colspan="2">Total</td>';
@@ -845,7 +845,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         echo '<div style="text-align: center;" class="sb-sidenav-footer">';
                         echo '<form method="post" action="pdf_ujian.php" target="_blank">';
                         echo '<input type="hidden" name="idTahunAjar" value="' . $idTahunAjar . '">';
-                        echo '<input type="hidden" name="bulan" value="' . $bulanNum . '>';
+                        echo '<input type="hidden" name="bulan" value="' . $bulanNum . '">';
                         echo '<input type="hidden" name="idKategori" value="' . $idKategoriLap . '">';
                         echo '<button type="submit" class="btn btn-primary" name="btnCetakLapUjian" id="btnCetakLapUjian">Cetak</button>';  
                         echo '</form>';                      
