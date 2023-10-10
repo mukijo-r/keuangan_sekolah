@@ -112,7 +112,7 @@ require 'config.php';
                                             <th>NIP</th>
                                             <th>Jenis Kelamin</th>
                                             <th>Jabatan</th>
-                                            <th colspan='2'>Aksi</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -135,7 +135,7 @@ require 'config.php';
                                         <td>
                                             <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditGuru<?=$idg;?>">Edit</button>
                                             <input type="hidden" name="idgis" value="<?=$idg;?>">
-                                            <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusGuru<?=$idg;?>">Hapus</button> 
+                                            <!-- <button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusGuru<?=$idg;?>">Hapus</button>  -->
                                         </td>
                                     </tr>
                                     <!-- Modal Edit Guru-->
