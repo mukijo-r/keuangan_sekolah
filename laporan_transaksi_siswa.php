@@ -982,7 +982,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.penetapan ELSE 0 END) AS penetapan_spp_kelas,
                     SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_spp_kelas,
                     SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.tunggakan ELSE 0 END) AS tunggakan_spp_kelas,
-                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.jumlah ELSE 0 END) AS total_spp_kelas,
+                    SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.jumlah ELSE 0 END) AS total_spp_kelas
 
                     FROM
                         transaksi_masuk_siswa tms
@@ -1033,7 +1033,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                     echo '<div style="text-align: center;" class="sb-sidenav-footer">';
                     echo '<form method="post" action="pdf_spp.php" target="_blank">';
                     echo '<input type="hidden" name="idTahunAjar" value="' . $idTahunAjar . '">';
-                    echo '<input type="hidden" name="bulan" value="' . $bulanNum . '>';
+                    echo '<input type="hidden" name="bulan" value="' . $bulanNum . '">';
                     echo '<input type="hidden" name="idKategori" value="' . $idKategoriLap . '">';
                     echo '<button type="submit" class="btn btn-primary" name="btnCetakLapSpp" id="btnCetakLapSpp">Cetak</button>';  
                     echo '</form>';                      
