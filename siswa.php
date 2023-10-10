@@ -130,7 +130,7 @@ require 'config.php';
                             echo '<th>Tanggal Lahir</th>';
                             echo '<th>Agama</th>';
                             echo '<th>Alamat</th>';
-                            echo '<th colspan="2">Aksi</th>';
+                            echo '<th>Aksi</th>';
                             echo '</tr>';
                             echo '</thead>';
                             echo '<tbody>';
@@ -179,7 +179,7 @@ require 'config.php';
                                 echo '<td>';
                                 echo '<button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditSiswa' . $ids . '">Edit</button>';
                                 echo '<input type="hidden" name="idsis" value="' . $ids . '">';
-                                echo '<button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusSiswa' . $ids . '">Hapus</button>';
+                                //echo '<button type="button" class="btn btn-danger" name="tblHapus" data-bs-toggle="modal" data-bs-target="#modalHapusSiswa' . $ids . '">Hapus</button>';
                                 echo '</td>';
                                 echo '</tr>';
                                 ?>
