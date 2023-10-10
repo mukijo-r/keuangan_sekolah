@@ -925,7 +925,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
                         $totalbulanIniSpp += $bulanIniSpp;
                         $totalTunggakanSpp += $tunggakanSpp;
                         $totalJumlahSpp += $jumlahSpp;
-                    }
+                        }
                             // Tampilkan baris total
                         echo '<tr>';
                         echo '<td colspan="2">Total</td>';
