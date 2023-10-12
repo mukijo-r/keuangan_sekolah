@@ -72,7 +72,7 @@ $pdf->AddPage();
 $idTahunAjar = $_POST['idTahunAjar'];
 $tahunAjar = $_POST['tahunAjar'];
 $bulan = $_POST['bulan'];
-$tanggalAkhir = $_POST['tanggalAkhir'];
+$tanggalAkhir2 = $_POST['tanggalAkhir2'];
 
 
 
@@ -246,8 +246,8 @@ foreach ($groupCashflowData2 as $groupId2 => $group2) {
 }
 
 // Menghitung saldo
-$queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir'");
-$queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir'");
+$queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir2'");
+$queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir2'");
 
 $totalMasuk = 0;
 $totalKeluar = 0;

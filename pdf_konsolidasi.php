@@ -72,7 +72,7 @@ $pdf->AddPage();
 $idTahunAjar = $_POST['idTahunAjar'];
 $tahunAjar = $_POST['tahunAjar'];
 $bulan = $_POST['bulan'];
-$tanggalAkhir = $_POST['tanggalAkhir'];
+$tanggalAkhir2 = $_POST['tanggalAkhir2'];
 $saldoAwalCashflow = $_POST['saldoAwalCashflow'];
 $debetCashflow = $_POST['debetCashflow'];
 $kreditCashflow = $_POST['kreditCashflow'];
@@ -86,18 +86,11 @@ $keteranganPinjamCf = $_POST['keteranganPinjamCf'];
 $namaGuru = $_POST['namaGuru'];
 $queryPemegang = $_POST['queryPemegang'];
 
-
-
-
-
-
-
 $pdf->SetFont('helvetica', '', 10);
 $txt = <<<EOD
 Laporan Keuangan Konsolidasi
 Bulan $bulan
 Tahun Ajar $tahunAjar
-
 
 EOD;
 
@@ -155,7 +148,7 @@ while($data=mysqli_fetch_array($dataKasYs)){
             JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tm.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
             UNION ALL
             SELECT
                 tn.id_kategori,
@@ -164,7 +157,7 @@ while($data=mysqli_fetch_array($dataKasYs)){
             JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tn.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
             UNION ALL
             SELECT
                 tbm.id_kategori,
@@ -173,7 +166,7 @@ while($data=mysqli_fetch_array($dataKasYs)){
             JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tbm.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
         ) AS masuk
     ON k.id_kategori = masuk.id_kategori
     LEFT JOIN
@@ -185,7 +178,7 @@ while($data=mysqli_fetch_array($dataKasYs)){
             JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tks.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
             UNION ALL
             SELECT
                 tkn.id_kategori,
@@ -194,7 +187,7 @@ while($data=mysqli_fetch_array($dataKasYs)){
             JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tkn.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
             UNION ALL
             SELECT
                 tba.id_kategori,
@@ -203,7 +196,7 @@ while($data=mysqli_fetch_array($dataKasYs)){
             JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tba.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
         ) AS keluar
     ON k.id_kategori = keluar.id_kategori
     WHERE
@@ -284,7 +277,7 @@ while($data=mysqli_fetch_array($dataKasS)){
             JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tm.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
             UNION ALL
             SELECT
                 tn.id_kategori,
@@ -293,7 +286,7 @@ while($data=mysqli_fetch_array($dataKasS)){
             JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tn.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
             UNION ALL
             SELECT
                 tbm.id_kategori,
@@ -302,7 +295,7 @@ while($data=mysqli_fetch_array($dataKasS)){
             JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tbm.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
         ) AS masuk
     ON k.id_kategori = masuk.id_kategori
     LEFT JOIN
@@ -314,7 +307,7 @@ while($data=mysqli_fetch_array($dataKasS)){
             JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tks.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
             UNION ALL
             SELECT
                 tkn.id_kategori,
@@ -323,7 +316,7 @@ while($data=mysqli_fetch_array($dataKasS)){
             JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tkn.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
             UNION ALL
             SELECT
                 tba.id_kategori,
@@ -332,7 +325,7 @@ while($data=mysqli_fetch_array($dataKasS)){
             JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
             WHERE
                 tba.id_kategori = $idKategori
-                AND tanggal <= '$tanggalAkhir'
+                AND tanggal <= '$tanggalAkhir2'
         ) AS keluar
     ON k.id_kategori = keluar.id_kategori
     WHERE
@@ -422,7 +415,22 @@ while($data=mysqli_fetch_array($pemegangKas)){
     $kasKeluar = $data['total_keluar'];
 
     
-    $queryPinjamKas = mysqli_query($conn, "SELECT SUM(`jumlah`) AS total_jumlah, MAX(`keterangan`) AS keterangan_terakhir FROM `pinjam` WHERE `tanggal` <= '$tanggalAkhir' AND `id_kategori` = '$idKategori'");
+    $queryPinjamKas = mysqli_query($conn, "SELECT 
+    SUM(`jumlah`) AS total_jumlah, 
+    (SELECT 
+    `keterangan`
+    FROM 
+    `pinjam`
+    WHERE 
+    `tanggal` <= '$tanggalAkhir2' 
+    AND `id_kategori` = $idKategori
+    ORDER BY tanggal DESC limit 1) AS keterangan_terakhir 
+    FROM 
+    `pinjam` 
+    WHERE 
+    `tanggal` <= '$tanggalAkhir2' 
+    AND `id_kategori` = $idKategori;");
+    
     $rowPinjamKas = mysqli_fetch_assoc($queryPinjamKas);
     $jumlahPinjamKas = $rowPinjamKas['total_jumlah'];
     $keteranganPinjamKas = $rowPinjamKas['keterangan_terakhir'];                                  

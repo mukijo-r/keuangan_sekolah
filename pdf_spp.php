@@ -256,6 +256,7 @@ $finalPenetapanSpp += $penetapanSppKelas;
 $finalBulanIniSpp += $bulanIniSppKelas;
 $finalTunggakanSpp += $tunggakanSppKelas;
 $finalJumlahSpp += $totalSppKelas;
+$selisihPenetapanJumlah = $finalJumlahSpp - $finalPenetapanSpp;
 
 }
 
@@ -266,7 +267,22 @@ $html .= '<td><strong> Rp. ' . number_format($finalBulanIniSpp, 0, ',', '.') . '
 $html .= '<td><strong> Rp. ' . number_format($finalTunggakanSpp, 0, ',', '.') . '</strong></td>';
 $html .= '<td><strong> Rp. ' . number_format($finalJumlahSpp, 0, ',', '.') . '</strong></td>';
 $html .= '</tr>';
-$html .= '</table>';      
+$html .= '</table><br><br>'; 
+
+$html .= 'Selisih Penerimaan SPP bulan ini Terhadap Penetapan <br><br>';
+$html .= '<table border="0.75">
+    <tr>
+        <th style="width: 30%"> Penetapan SPP' . $tahunAjar . '</th>
+        <th style="width: 20%"> SPP Masuk </th>
+        <th style="width: 20%"> Selisih Penerimaan</th>
+    </tr>
+    <tr>
+        <td style="width: 30%"> Rp. ' . number_format($finalPenetapanSpp, 0, ',', '.') . '</td>
+        <td style="width: 20%"> Rp. ' . number_format($finalJumlahSpp, 0, ',', '.') . '</td>
+        <td style="width: 20%"> Rp. ' . number_format($selisihPenetapanJumlah, 0, ',', '.') . '</td>
+    </tr></table><br><br><br>';
+
+
 
 $queryJabatan = mysqli_query($conn, "SELECT
 MAX(CASE WHEN jabatan = 'Kepala Sekolah' THEN nama_lengkap END) AS kepala_sekolah,
