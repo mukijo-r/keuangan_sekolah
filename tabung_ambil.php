@@ -65,6 +65,7 @@ require 'config.php';
                                             <th>Guru Pencatat</th>
                                             <th>Saldo</th>
                                             <th>Keterangan</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
