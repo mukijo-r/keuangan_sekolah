@@ -316,7 +316,7 @@ date_default_timezone_set('Asia/Jakarta');
                                     <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript --> 
                                 </select>
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="bulan">Periode/Bulan :</label><br>
                             <select class="form-select" name="bulan" aria-label="Bulan">
                                 <option selected>Pilih bulan</option>
@@ -333,7 +333,7 @@ date_default_timezone_set('Asia/Jakarta');
                                 <option value="November">November</option>
                                 <option value="Desember">Desember</option>
                                 </select>
-                        </div>              
+                        </div>               -->
                         <div class="mb-3">
                             <label for="jumlah">Jumlah Pemasukan :</label>                        
                             <input type="number" name="jumlah" id="jumlah" class="form-control">

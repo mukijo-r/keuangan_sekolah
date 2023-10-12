@@ -284,6 +284,7 @@ date_default_timezone_set('Asia/Jakarta');
                 <form method="post">
                     <div class="modal-body">
                         <div class="mb-3">
+                        <label for="tanggal">Tanggal :</label>
                         <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
                         <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
                         </div> 
@@ -293,14 +294,14 @@ date_default_timezone_set('Asia/Jakarta');
                                     <option selected disabled>Pilih Kategori Kas</option>
                                     <?php
                                     // Ambil data kelas dari tabel kelas
-                                    $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum'");
+                                    $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum' AND id_kategori <> 1 ");
                                     while ($kategori = mysqli_fetch_assoc($queryKategori)) {
                                         echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
                                     }
                                     ?>
                                 </select>
                         </div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label for="bulan">Periode/Bulan :</label><br>
                             <select class="form-select" name="bulan" aria-label="Bulan">
                                 <option selected>Pilih bulan</option>
@@ -317,7 +318,7 @@ date_default_timezone_set('Asia/Jakarta');
                                 <option value="November">November</option>
                                 <option value="Desember">Desember</option>
                                 </select>
-                        </div>              
+                        </div>               -->
                         <div class="mb-3">
                             <label for="uraian">Uraian :</label>                        
                             <input type="text" name="uraian" id="uraian" class="form-control">

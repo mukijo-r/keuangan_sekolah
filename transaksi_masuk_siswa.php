@@ -31,9 +31,14 @@ date_default_timezone_set('Asia/Jakarta');
                         <br>
                         <div class="container-fluid px-4">
                             <div class="row">
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalTambahTransSiswa">
                                         Pemasukan Baru
+                                    </button>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTransSiswaKolektif">
+                                        Kolektif
                                     </button>
                                 </div>
                                 <div class="col-md-8">
@@ -368,7 +373,7 @@ date_default_timezone_set('Asia/Jakarta');
                     </div>
                     <div class="mb-3">
                             <label for="subKategori">Sub Kategori :</label>
-                            <select class="form-select" name="subKategori" id="subKategori" aria-label="subKategori">
+                            <select class="form-select" name="subKategori" id="subKategori" aria-label="subKategori" required>
                                 <option selected disabled>Pilih Kategori</option>
                                 <?php
                                 // Ambil data kelas dari tabel kelas
@@ -381,7 +386,7 @@ date_default_timezone_set('Asia/Jakarta');
                     </div>
                     <div class="mb-3">
                         <label for="bulan">Bulan :</label><br>
-                        <select class="form-select" name="bulan" aria-label="Bulan">
+                        <select class="form-select" name="bulan" id="bulan" aria-label="Bulan">
                             <option selected>Pilih bulan</option>                            
                             <option value="Juli">Juli</option>
                             <option value="Agustus">Agustus</option>
@@ -406,8 +411,87 @@ date_default_timezone_set('Asia/Jakarta');
                         <input type="number" name="bulanIni" id="bulanIni" class="form-control">
                     </div><div class="mb-3">
                         <label for="tunggakan">Tunggakan :</label>                        
-                        <input type="number" name="tunggakan" id="tunggakan" placeholder="0" class="form-control">
+                        <input type="number" name="tunggakan" id="tunggakan" class="form-control">
                     </div>
+                    <div class="mb-3">   
+                        <label for="guru">Penerima :</label>                     
+                        <select name="guru" class="form-select" id="guru" aria-label="Guru">>
+                        <option selected disabled>Guru Penerima</option>
+                            <?php
+                            // Ambil data guru dari tabel guru
+                            $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
+                            while ($guru = mysqli_fetch_assoc($queryGuru)) {
+                                echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                    <label for="keterangan">Keterangan :</label>   
+                        <textarea name="keterangan" class="form-control" id="keterangan" rows="2"></textarea>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary" name="tambahTransMasukSiswa">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- Modal Tambah Transaksi Siswa Kolektif-->
+    <div class="modal fade" id="modalTambahTransSiswaKolektif">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Tambah Transaksi Siswa Kolektif</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal Body -->
+            <form method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="tanggal">Tanggal Bayar :</label>
+                        <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                        <input type="datetime-local" name="tanggalKolektif" value="<?=$tanggalSaatIni;?>" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                            <label for="kelas">Kelas :</label>
+                            <select class="form-select" name="kelasKolektif" id="kelasKolektif" aria-label="Kelas">
+                                <option selected disabled>Pilih Kelas</option>
+                                <?php
+                                // Ambil data kelas dari tabel kelas
+                                $queryKelas = mysqli_query($conn, "SELECT id_kelas, nama_kelas FROM kelas");
+                                while ($kelas = mysqli_fetch_assoc($queryKelas)) {
+                                    echo '<option value="' . $kelas['id_kelas'] . '">' . $kelas['nama_kelas'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                    </div>                    
+                    <div class="mb-3">
+                            <label for="subKategori">Sub Kategori :</label>
+                            <select class="form-select" name="subKategoriKolektif" id="subKategoriKolektif" aria-label="subKategori" required>
+                                <option selected disabled>Pilih Kategori</option>
+                                <?php
+                                // Ambil data kelas dari tabel kelas
+                                $querySubKategori = mysqli_query($conn, "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa WHERE id_kategori <> 1");
+                                while ($subKategori = mysqli_fetch_assoc($querySubKategori)) {
+                                    echo '<option value="' . $subKategori['id_sub_kategori'] . '">' . $subKategori['nama_sub_kategori'] . '</option>';
+                                }
+                                ?>
+                            </select>
+                    </div>                               
+                    <div class="mb-3">
+                        <label for="nominal">Penetapan per siswa :</label>                        
+                        <input type="text" name="nominalKolektif" id="nominalKolektif" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bulanIni">Jumlah total :</label>                        
+                        <input type="number" name="bulanIniKolektif" id="bulanIniKolektif" class="form-control">
+                    </div>                    
                     <div class="mb-3">   
                         <label for="guru">Penerima :</label>                     
                         <select name="guru" class="form-select" id="guru" aria-label="Guru">>
@@ -449,8 +533,15 @@ date_default_timezone_set('Asia/Jakarta');
         var kategoriDropdown = document.getElementById('subKategori');
         var nominalInput = document.getElementById('nominal');
 
+        var kategoriDropdownKolektif = document.getElementById('subKategoriKolektif');
+        var nominalInput = document.getElementById('nominalKolektif');
+
         var kategoriDropdownEdit = document.getElementById('subKategoriEdit');
         var nominalInputEdit = document.getElementById('nominalEdit');
+
+        // Temukan elemen bulan dan tunggakan
+        var bulanDropdown = document.getElementById('bulan');
+        var tunggakanInput = document.getElementById('tunggakan');
 
         // Tambahkan event listener ketika nilai "kelas" berubah pada Tambah Transaksi siswa
         kelasDropdown.addEventListener('change', function() {
@@ -467,10 +558,8 @@ date_default_timezone_set('Asia/Jakarta');
                     // Bersihkan dropdown "siswa" dan tambahkan opsi-opsi baru
                     siswaDropdown.innerHTML = '<option selected disabled>Pilih Siswa</option>';
                     dataSiswa.forEach(function(siswa) {
-                        siswaDropdown.innerHTML += '<option value="' + siswa.id_siswa + '">' + siswa.nama + '</option>';
-                        
-                    });                
-                                      
+                        siswaDropdown.innerHTML += '<option value="' + siswa.id_siswa + '">' + siswa.nama + '</option>';                        
+                    });                               
                 }
             };
             xhr.send();
@@ -548,6 +637,63 @@ date_default_timezone_set('Asia/Jakarta');
                     if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
                         var nominalValueEdit = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
                         nominalInputEdit.value = nominalValueEdit;
+                    } else {
+                        console.error('Nilai nominal tidak valid: ' + responseText);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        // Tambahkan event listener ketika nilai "siswa", "kategori" dan "bulan" berubah
+        bulanDropdown.addEventListener('change', function() {
+            updateTunggakanValue();
+        });
+
+        // Fungsi untuk mendapatkan nilai tunggakan yang sesuai
+        function updateTunggakanValue() {
+            //dapatkan nilai terpilih dari dropdown
+            var selectedSiswa = siswaDropdown.value;
+            var selectedKategori = kategoriDropdown.value;
+            var selectedBulan = bulanDropdown.value;
+
+            //lakukan AJAX request untuk mengambil nilai tunggakan
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'get_tunggakan.php?siswa=' + selectedSiswa + '&subKategori=' + selectedKategori + '&bulan=' + selectedBulan, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var responseText = xhr.responseText.trim(); // Hapus spasi di awal dan akhir
+                    if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
+                        var tunggakanValue = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
+                        tunggakanInput.value = tunggakanValue;
+                    } else {
+                        console.error('Nilai nominal tidak valid: ' + responseText);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        // Tambahkan event listener ketika nilai "kategori" berubah
+        kategoriDropdownKolektif.addEventListener('change', function() {
+            updateNominalValue();
+        });
+
+        // Fungsi untuk mengambil nilai nominal yang sesuai
+        function updateNominalValue() {
+            // Dapatkan nilai terpilih dari dropdown
+            var selectedSiswa = siswaDropdown.value;
+            var selectedKategori = kategoriDropdownKolektif.value;
+
+            // Lakukan AJAX request untuk mengambil nilai nominal
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'get_nominal.php?siswa=' + selectedSiswa + '&subKategori=' + selectedKategori, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var responseText = xhr.responseText.trim(); // Hapus spasi di awal dan akhir
+                    if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
+                        var nominalValue = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
+                        nominalInput.value = nominalValue;
                     } else {
                         console.error('Nilai nominal tidak valid: ' + responseText);
                     }
