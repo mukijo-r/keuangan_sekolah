@@ -176,7 +176,11 @@ require 'config.php';
                             }
 
                             // Mencari tanggal akhir dalam bulan sesuai tahun yang ditentukan
+                            //$tanggalAkhir = date('Y-m-t', strtotime("$tahunYangDigunakan-$bulanNum-01"));
+
                             $tanggalAkhir = date('Y-m-t', strtotime("$tahunYangDigunakan-$bulanNum-01"));
+                            $tanggalAkhir2 = date('Y-m-t H:i:s', strtotime($tanggalAkhir . ' 23:59:59'));
+
 
                             ?> 
                         </div>      
@@ -254,18 +258,18 @@ require 'config.php';
                                     }  
                                     
                                     // Menghitung jumlah penerimaan 
-                                    $queryMasukBulan = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE id_tahun_ajar='$idTahunAjar' AND bulan = '$bulanLalu'");
-                                    $queryKeluarBulan = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE id_tahun_ajar='$idTahunAjar' AND bulan = '$bulanLalu'");
+                                    $queryMasukBulan = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk_bulan FROM transaksi_masuk_cashflow WHERE id_tahun_ajar='$idTahunAjar' AND bulan = '$bulanLalu'");
+                                    $queryKeluarBulan = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar_bulan FROM transaksi_keluar_cashflow WHERE id_tahun_ajar='$idTahunAjar' AND bulan = '$bulanLalu'");
 
                                     $totalMasukBulan = 0;
                                     $totalKeluarBulan = 0;
 
                                     if ($rowMasuk = mysqli_fetch_assoc($queryMasukBulan)) {
-                                        $totalMasukBulan = $rowMasuk['total_masuk'];
+                                        $totalMasukBulan = $rowMasuk['total_masuk_bulan'];
                                     }
 
                                     if ($rowKeluar = mysqli_fetch_assoc($queryKeluarBulan)) {
-                                        $totalKeluarBulan = $rowKeluar['total_keluar'];
+                                        $totalKeluarBulan = $rowKeluar['total_keluar_bulan'];
                                     }
 
                                     $laba = $totalMasukBulan - $totalKeluarBulan;
@@ -358,20 +362,20 @@ require 'config.php';
                                         $nomorGroup++;
                                     }  
                                     
-                                    // Menghitung saldo 
-                                    $queryMasuk = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir'");
-                                    $queryKeluar = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir'");
-
-                                    
+                                    // Menghitung saldo
+                                    $queryMasuk = "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir2'";
+                                    $queryKeluar = "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir2'";
+                                    $masuk = mysqli_query($conn, $queryMasuk);
+                                    $keluar = mysqli_query($conn, $queryKeluar);
                                     
                                     $totalMasuk = 0;
                                     $totalKeluar = 0;
 
-                                    if ($rowMasuk = mysqli_fetch_assoc($queryMasuk)) {
+                                    if ($rowMasuk = mysqli_fetch_assoc($masuk)) {
                                         $totalMasuk = $rowMasuk['total_masuk'];
                                     }
 
-                                    if ($rowKeluar = mysqli_fetch_assoc($queryKeluar)) {
+                                    if ($rowKeluar = mysqli_fetch_assoc($keluar)) {
                                         $totalKeluar = $rowKeluar['total_keluar'];
                                     }
 
@@ -445,7 +449,7 @@ require 'config.php';
                         <input type="hidden" name="idTahunAjar" value="<?= $idTahunAjar; ?>">
                         <input type="hidden" name="tahunAjar" value="<?= $tahunAjarLap; ?>">
                         <input type="hidden" name="bulan" value="<?=$bulanLalu; ?>">
-                        <input type="hidden" name="tanggalAkhir" value="<?=$tanggalAkhir; ?>">
+                        <input type="hidden" name="tanggalAkhir2" value="<?=$tanggalAkhir2; ?>">
                         <input type="hidden" name="saldoBulanLalu" value="<?=$saldoBulanLalu; ?>">
                         <button type="submit" class="btn btn-primary" name="btnCetakLapCf" id="btnCetakLapCf">Cetak</button>  
                     </form>                      

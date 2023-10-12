@@ -192,6 +192,7 @@ require 'config.php';
 
                     // Mencari tanggal akhir dalam bulan sesuai tahun yang ditentukan
                     $tanggalAkhir = date('Y-m-t', strtotime("$tahunYangDigunakan-$bulanNum-01"));
+                    $tanggalAkhir2 = date('Y-m-t H:i:s', strtotime($tanggalAkhir . ' 23:59:59'));
 
                     ?>    
 
@@ -266,8 +267,8 @@ require 'config.php';
 
                                         $dataTransaksiUmum = mysqli_query($conn, $queryTransaksiUmum);
 
-                                        $queryDebet = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalAkhir'");
-                                        $queryKredit = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalAkhir'");
+                                        $queryDebet = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalAkhir2'");
+                                        $queryKredit = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalAkhir2'");
                                         $queryDebetBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_debet FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu' AND id_tahun_ajar = '$idTahunAjar'");
                                         $queryKreditBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_kredit FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu' AND id_tahun_ajar = '$idTahunAjar'");
 

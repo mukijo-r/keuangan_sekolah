@@ -176,6 +176,7 @@ require 'config.php';
 
                             // Mencari tanggal akhir dalam bulan sesuai tahun yang ditentukan
                             $tanggalAkhir = date('Y-m-t', strtotime("$tahunYangDigunakan-$bulanNum-01"));
+                            $tanggalAkhir2 = date('Y-m-t H:i:s', strtotime($tanggalAkhir . ' 23:59:59'));
 
 
                             ?> 
@@ -203,8 +204,8 @@ require 'config.php';
                                 
                                 $queryDebetCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS debet FROM transaksi_masuk_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
                                 $queryKreditCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS kredit FROM transaksi_keluar_cashflow WHERE bulan = '$bulanLalu' AND id_tahun_ajar = $idTahunAjar");
-                                $queryMasukCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir'");
-                                $queryKeluarCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir'");                                
+                                $queryMasukCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_cashflow WHERE tanggal <= '$tanggalAkhir2'");
+                                $queryKeluarCashflow = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_cashflow WHERE tanggal <= '$tanggalAkhir2'");                                
 
                                 if ($rowDebetCashflow = mysqli_fetch_assoc($queryDebetCashflow)) {
                                     $debetCashflow = $rowDebetCashflow['debet'];
@@ -705,7 +706,22 @@ require 'config.php';
                                 $rowGuru = mysqli_fetch_assoc($queryGuru);
                                 $namaGuru =  $rowGuru['nama_guru'];
 
-                                $queryPinjamCf = "SELECT SUM(`jumlah`) AS total_jumlah, MAX(`keterangan`) AS keterangan_terakhir FROM `pinjam` WHERE `tanggal` <= '$tanggalAkhir' AND `id_kategori` = 1";
+                                $queryPinjamCf = "SELECT 
+                                SUM(`jumlah`) AS total_jumlah, 
+                                (SELECT 
+                                `keterangan`
+                                FROM 
+                                `pinjam`
+                                WHERE 
+                                `tanggal` <= '$tanggalAkhir2' 
+                                AND `id_kategori` = 1
+                                ORDER BY tanggal DESC limit 1) AS keterangan_terakhir 
+                                FROM 
+                                `pinjam` 
+                                WHERE 
+                                `tanggal` <= '$tanggalAkhir2' 
+                                AND `id_kategori` = 1;";                                
+                                
                                 $pinjamCf = mysqli_query($conn, $queryPinjamCf);
                                 $rowPinjamCf = mysqli_fetch_assoc($pinjamCf);
                                 $jumlahPinjamCf = $rowPinjamCf['total_jumlah'];
@@ -816,9 +832,24 @@ require 'config.php';
                                     $kasMasuk = $data['total_masuk'];
                                     $kasKeluar = $data['total_keluar'];
 
-                                    
-                                    $queryPinjamKas = mysqli_query($conn, "SELECT SUM(`jumlah`) AS total_jumlah, MAX(`keterangan`) AS keterangan_terakhir FROM `pinjam` WHERE `tanggal` <= '$tanggalAkhir' AND `id_kategori` = '$idKategori'");
-                                    $rowPinjamKas = mysqli_fetch_assoc($queryPinjamKas);
+                                    $queryPinjamKas = "SELECT 
+                                    SUM(`jumlah`) AS total_jumlah, 
+                                    (SELECT 
+                                    `keterangan`
+                                    FROM 
+                                    `pinjam`
+                                    WHERE 
+                                    `tanggal` <= '$tanggalAkhir2' 
+                                    AND `id_kategori` = $idKategori
+                                    ORDER BY tanggal DESC limit 1) AS keterangan_terakhir 
+                                    FROM 
+                                    `pinjam` 
+                                    WHERE 
+                                    `tanggal` <= '$tanggalAkhir2' 
+                                    AND `id_kategori` = $idKategori;";
+
+                                    $pinjamKas = mysqli_query($conn, $queryPinjamKas);
+                                    $rowPinjamKas = mysqli_fetch_assoc($pinjamKas);
                                     $jumlahPinjamKas = $rowPinjamKas['total_jumlah'];
                                     $keteranganKas = $rowPinjamKas['keterangan_terakhir'];                                  
  
@@ -847,7 +878,7 @@ require 'config.php';
                             <input type="hidden" name="idTahunAjar" value="<?= $idTahunAjar; ?>">
                             <input type="hidden" name="tahunAjar" value="<?= $tahunAjarLap; ?>">
                             <input type="hidden" name="bulan" value="<?=$bulanLalu; ?>">
-                            <input type="hidden" name="tanggalAkhir" value="<?=$tanggalAkhir; ?>">                            
+                            <input type="hidden" name="tanggalAkhir2" value="<?=$tanggalAkhir2; ?>">                            
                             <input type="hidden" name="saldoAwalCashflow" value="<?=$saldoAwalCashflow; ?>">
                             <input type="hidden" name="debetCashflow" value="<?=$debetCashflow; ?>">
                             <input type="hidden" name="kreditCashflow" value="<?=$kreditCashflow; ?>">
@@ -856,7 +887,7 @@ require 'config.php';
                             <input type="hidden" name="queryKasS" value="<?=$queryKasS; ?>">
                             <input type="hidden" name="tunaiKasCf" value="<?=$tunaiKasCf; ?>">
                             <input type="hidden" name="namaGuru" value="<?=$namaGuru; ?>">
-                            <input type="hidden" name="jumlahPinjamCf" value="<?=$jumlahPinjamCf; ?>">
+                            <input type="hidden" name="jumlahPinjamCf" value="<?=$jumlahPinjamCf;?>">
                             <input type="hidden" name="keteranganCf" value="<?=$keteranganCf; ?>">
                             <input type="hidden" name="keteranganPinjamCf" value="<?=$keteranganPinjamCf; ?>">
                             <input type="hidden" name="queryPemegang" value="<?=$queryPemegang; ?>">
@@ -870,4 +901,3 @@ require 'config.php';
     </body>
 </html>
 
-$queryGetKeteranganKasYs
