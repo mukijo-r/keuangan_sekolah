@@ -76,11 +76,12 @@ require 'config.php';
                                     </thead>
                                     <tbody>
                                     <?php 
+                                    
                                     $dataPinjam = mysqli_query($conn, "SELECT
                                     kategori.nama_kategori AS kategori,
-                                    MAX(pinjam.tanggal) AS tanggal,
+                                    MIN(pinjam.tanggal) AS tanggal,
                                     SUM(pinjam.jumlah) AS total_jumlah,
-                                    MAX(pinjam.keterangan) AS keterangan
+                                    MIN(pinjam.keterangan) AS keterangan
                                 FROM
                                     pinjam
                                 INNER JOIN
