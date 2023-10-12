@@ -402,7 +402,7 @@
 
         try {
         // Loop melalui baris-baris data Excel (mulai dari baris kedua karena baris pertama biasanya adalah header)
-        foreach ($spreadsheet->getActiveSheet()->getRowIterator(2) as $row) {
+        foreach ($spreadsheet->getActiveSheet()->getRowIterator(1) as $row) {
             $cellIterator = $row->getCellIterator();
             $cellIterator->setIterateOnlyExistingCells(false);
 
@@ -1229,6 +1229,36 @@
     if(isset($_POST['tambahTransKeluarSiswa'])){
         $tanggal = $_POST['tanggal'];
         $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1250,7 +1280,7 @@
         $rowKategori = mysqli_fetch_assoc($queryGetKategori);
 
         $id_kategori = $rowKategori['id_kategori'];
-        $bulan = $_POST['bulan'];
+        //$bulan = $_POST['bulan'];
         $uraian = $_POST['uraian'];
         $jumlah = $_POST['jumlah'];
         $idGuru = $_POST['guru'];
@@ -1292,7 +1322,7 @@
             }
         } catch (Exception $e) {
             // Tangani exception jika terjadi kesalahan
-            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryInsertTransSiswa . $e->getMessage();
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
             header('location:transaksi_keluar_siswa.php');
             exit;
@@ -1432,6 +1462,36 @@
     if(isset($_POST['tambahTransMasukUmum'])){
         $tanggal = $_POST['tanggal'];
         $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1447,8 +1507,7 @@
             exit;
         }        
         
-        $idKategori = $_POST['kategori'];
-        $bulan = $_POST['bulan'];
+        $idKategori = $_POST['kategori'];        
         $uraian = $_POST['uraian'];
         $jumlah = $_POST['jumlah'];
         $idGuru = $_POST['guru'];
@@ -1622,6 +1681,36 @@
     if(isset($_POST['tambahTransKeluarUmum'])){
         $tanggal = $_POST['tanggal'];
         $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1637,8 +1726,7 @@
             exit;
         }        
         
-        $idKategori = $_POST['kategori'];
-        $bulan = $_POST['bulan'];
+        $idKategori = $_POST['kategori'];        
         $uraian = $_POST['uraian'];
         $jumlah = $_POST['jumlah'];
         $idGuru = $_POST['guru'];
@@ -2080,9 +2168,39 @@
     // Tambah Transaksi Masuk Cashflow
     if(isset($_POST['tambahTransMasukCashflow'])){
         $tanggal = $_POST['tanggal'];
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
+
         $idGroupCashflow = $_POST['groop'];
         $subKategori = $_POST['subKategori'];
-        $bulan = $_POST['bulan'];
         $jumlah = $_POST['jumlah'];
         $idGuru = $_POST['guru'];
         $keterangan = $_POST['keterangan'];
@@ -2252,9 +2370,39 @@
     // Tambah Transaksi Keluar Cashflow
     if(isset($_POST['tambahTransKeluarCashflow'])){
         $tanggal = $_POST['tanggal'];
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
+
         $idGroupCashflow = $_POST['groop'];
-        $subKategori = $_POST['subKategori'];
-        $bulan = $_POST['bulan'];
+        $subKategori = $_POST['subKategori'];        
         $jumlah = $_POST['jumlah'];
         $idGuru = $_POST['guru'];
         $keterangan = $_POST['keterangan'];
@@ -2315,8 +2463,9 @@
     if(isset($_POST['ubahTransKeluarCashflow'])){
         $idCashflowKeluar = $_POST['idTkc'];
         $tanggal = $_POST['tanggal'];
-        $idGroupCashflow = $_POST['groop'];
-        $idSubKategori = $_POST['subKategori'];
+        $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));
+        $idGroupCashflow = $_POST['groopEdit'];
+        $idSubKategori = $_POST['subKategoriEdit'];
         $bulan = $_POST['bulan'];
         $jumlah = $_POST['jumlah'];
         $idGuru = $_POST['guru'];
@@ -2332,7 +2481,7 @@
         try {
             $queryUpdateKeluarCashflow = "UPDATE `transaksi_keluar_cashflow` 
             SET 
-            `tanggal`='$tanggal',
+            `tanggal`='$tanggalBayar',
             `id_tahun_ajar`='$idTahunAjar',
             `id_group_cashflow`='$idGroupCashflow',
             `id_subkategori_cashflow`='$idSubKategori',
@@ -2353,7 +2502,7 @@
             // Query SELECT untuk memeriksa apakah data sudah keluar ke database
             $queryCek = "SELECT * FROM `transaksi_keluar_cashflow` 
             WHERE
-            `tanggal`='$tanggal' AND
+            `tanggal`='$tanggalBayar' AND
             `id_tahun_ajar`='$idTahunAjar' AND
             `id_group_cashflow`='$idGroupCashflow' AND
             `id_subkategori_cashflow`='$idSubKategori' AND
@@ -2377,7 +2526,7 @@
             }
         } catch (Exception $e) {
             // Tangani exception jika terjadi kesalahan
-            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $queryUpdateKeluarCashflow . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
             header('location:transaksi_keluar_cashflow.php');
             exit;
@@ -2544,36 +2693,46 @@
             $idKategoriTks = 1;
             $idSubKategoriTks = 5;
             $uraian = "Tarik SPP ke Cash Flow";
-            $jumlahKeluar = 0.15 * $jumlah;
+            $jumlahTarik = $jumlah;
+            $jumlahKeluar = 0.05 * $jumlah;
             $insertTkc = mysqli_query($conn, "INSERT INTO 
             `transaksi_keluar_cashflow`
             (`tanggal`, `id_tahun_ajar`, `id_group_cashflow`, `id_subkategori_cashflow`, `bulan`, `jumlah`, `id_guru`, `keterangan`) 
             VALUES 
-            ('$tanggal','$idTahunAjar',6,23,'$bulan','$jumlahKeluar','$idGuru','Dari transaksi keluar siswa, jangan diedit')"); 
+            ('$tanggal','$idTahunAjar',6,23,'$bulan','$jumlahKeluar','$idGuru','Dari transaksi keluar siswa')"); 
 
         } elseif ($opsi == 9){
             $idSubKategoriCf = 7;
             $idKategoriTks = 10;
             $idSubKategoriTks = 9;
-            $uraian = "Tarik PTS ke Cash Flow";
+            $jumlahTarik = 0.2 * $jumlah;
+            $uraian = "20% PTS ke Cash Flow";
         } elseif ($opsi == 10){
             $idSubKategoriCf = 7;
             $idKategoriTks = 10;
             $idSubKategoriTks = 10;
-            $uraian = "Tarik PAS ke Cash Flow";
+            $jumlahTarik = 0.2 * $jumlah;
+            $uraian = "20% PAS ke Cash Flow";
         } elseif ($opsi == 11) {
             $idSubKategoriCf = 8;
             $idKategoriTks = 10;
             $idSubKategoriTks = 11;
-            $uraian = "15% Ujian ke Cash Flow";
-        }        
+            $jumlahTarik = 0.2 * $jumlah;
+            $uraian = "20% US ke Cash Flow";
+        }  elseif ($opsi == 8) {
+            $idSubKategoriCf = 13;
+            $idKategoriTks = 4;
+            $idSubKategoriTks = 8;
+            $jumlahTarik = 0.15 * $jumlah;
+            $uraian = "15% Komputer ke Cash Flow";
+        }      
 
         try {
             $queryInsertMasukCashflow = "INSERT INTO 
             `transaksi_masuk_cashflow`
             (`tanggal`, `id_tahun_ajar`, `id_group_cashflow`, `id_subkategori_cashflow`, `bulan`, `jumlah`, `id_guru`, `keterangan`) 
             VALUES 
-            ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$idSubKategoriCf','$bulan','$jumlah','$idGuru','Dari transaksi keluar siswa, jangan diedit')";
+            ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$idSubKategoriCf','$bulan','$jumlahTarik','$idGuru','Dari transaksi keluar siswa')";
             
             $insertMasukCashflow = mysqli_query($conn, $queryInsertMasukCashflow);
 
@@ -2581,7 +2740,7 @@
             `transaksi_keluar_siswa`
             (`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_sub_kategori`, `bulan`, `uraian`, `jumlah`, `id_guru`, `keterangan`) 
             VALUES 
-            ('$tanggal','$idTahunAjar','$idKategoriTks','$idSubKategoriTks','$bulan','$uraian','$jumlah','$idGuru','Ke CF, jangan diedit');";
+            ('$tanggal','$idTahunAjar','$idKategoriTks','$idSubKategoriTks','$bulan','$uraian','$jumlahTarik','$idGuru','Ke CF');";
 
             $insertKeluarSiswa = mysqli_query($conn, $queryKeluarSiswa);
 
@@ -2598,7 +2757,7 @@
             `id_group_cashflow`='$idGroupCashflow' AND
             `id_subkategori_cashflow`='$idSubKategoriCf' AND
             `bulan`='$bulan' AND
-            `jumlah`='$jumlah' AND
+            `jumlah`='$jumlahTarik' AND
             `id_guru`='$idGuru' AND
             `keterangan`='$keterangan'
              ";
@@ -2613,7 +2772,7 @@
             `id_sub_kategori`='$idSubKategoriTks' AND
             `bulan`='$bulan' AND
             `uraian`='$uraian' AND
-            `jumlah`='$jumlah' AND
+            `jumlah`='$jumlahTarik' AND
             `id_guru`='$idGuru' AND
             `keterangan`= 'Ke CF, jangan diedit'
              ";
@@ -2633,7 +2792,7 @@
             }
         } catch (Exception $e) {
             // Tangani exception jika terjadi kesalahan
-            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . queryInsertMasukCashflow . $e->getMessage();
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
             header('location:transaksi_keluar_siswa.php');
             exit;
