@@ -38,7 +38,7 @@ date_default_timezone_set('Asia/Jakarta');
                                 </div>
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTransSiswaKolektif">
-                                        Kolektif
+                                        Pemasukan Kolektif
                                     </button>
                                 </div>
                                 <div class="col-md-8">
@@ -534,7 +534,9 @@ date_default_timezone_set('Asia/Jakarta');
         var nominalInput = document.getElementById('nominal');
 
         var kategoriDropdownKolektif = document.getElementById('subKategoriKolektif');
-        var nominalInput = document.getElementById('nominalKolektif');
+        var nominalInputKolektif = document.getElementById('nominalKolektif');
+        var kelasDropdownKolektif = document.getElementById('kelasKolektif');
+        var jumlahInputKolektif = document.getElementById('bulanIniKolektif');
 
         var kategoriDropdownEdit = document.getElementById('subKategoriEdit');
         var nominalInputEdit = document.getElementById('nominalEdit');
@@ -676,24 +678,47 @@ date_default_timezone_set('Asia/Jakarta');
 
         // Tambahkan event listener ketika nilai "kategori" berubah
         kategoriDropdownKolektif.addEventListener('change', function() {
-            updateNominalValue();
+            updateNominalKolektifValue();
+            updateTotalKolektifValue();
         });
 
         // Fungsi untuk mengambil nilai nominal yang sesuai
-        function updateNominalValue() {
+        function updateNominalKolektifValue() {
             // Dapatkan nilai terpilih dari dropdown
-            var selectedSiswa = siswaDropdown.value;
-            var selectedKategori = kategoriDropdownKolektif.value;
+            var selectedKategoriKolektif = kategoriDropdownKolektif.value;
 
             // Lakukan AJAX request untuk mengambil nilai nominal
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'get_nominal.php?siswa=' + selectedSiswa + '&subKategori=' + selectedKategori, true);
+            xhr.open('GET', 'get_nominal_kolektif.php?subKategori=' + selectedKategoriKolektif, true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var responseText = xhr.responseText.trim(); // Hapus spasi di awal dan akhir
                     if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
-                        var nominalValue = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
-                        nominalInput.value = nominalValue;
+                        var nominalValueKolektif = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
+                        nominalInputKolektif.value = nominalValueKolektif;
+                    } else {
+                        console.error('Nilai nominal tidak valid: ' + responseText);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        // Fungsi untuk mengambil nilai nominal yang sesuai
+        function updateTotalKolektifValue() {
+            // Dapatkan nilai terpilih dari dropdown
+            var selectedKelasKolektif = kelasDropdownKolektif.value;
+            var selectedKategoriKolektif = kategoriDropdownKolektif.value;
+
+            // Lakukan AJAX request untuk mengambil nilai nominal
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'get_total_kolektif.php?kelas=' + selectedKelasKolektif + '&subKategori=' + selectedKategoriKolektif, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var responseText = xhr.responseText.trim(); // Hapus spasi di awal dan akhir
+                    if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
+                        var jumlahValueKolektif = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
+                        jumlahInputKolektif.value = jumlahValueKolektif;
                     } else {
                         console.error('Nilai nominal tidak valid: ' + responseText);
                     }
