@@ -977,7 +977,7 @@
             // Kelas tidak ditemukan, tangani kesalahan di sini
             $_SESSION['flash_message'] = 'Tahun ajar tidak ditemukan.';
             $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
-            header('location: tabung.php');
+            header('location: transaksi_masuk_siswa.php');
             exit;
         }
         
@@ -1046,6 +1046,116 @@
             exit;
         }
     }
+
+    // Tambah Transaksi Masuk Siswa Kolektif
+    if(isset($_POST['tambahTransSiswaKolektif'])){
+        $tanggal = $_POST['tanggalKolektif'];
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
+
+        // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
+        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
+
+        if ($queryTahunAjar && mysqli_num_rows($queryTahunAjar) > 0) {
+            $dataTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
+            $idTahunAjar = $dataTahunAjar['id_tahun_ajar'];
+        } else {
+            // Kelas tidak ditemukan, tangani kesalahan di sini
+            $_SESSION['flash_message'] = 'Tahun ajar tidak ditemukan.';
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+            header('location: siswa.php');
+            exit;
+        }
+        
+        $kelas = $_POST['kelasKolektif'];
+        // Menggunakan query untuk mendapatkan id_siswa berdasarkan nama_kelas yang dipilih
+        $queryGetSiswa = mysqli_query($conn, "SELECT id_siswa FROM siswa WHERE id_kelas = '$kelas'");
+
+        $idSubKategori = $_POST['subKategoriKolektif']; 
+        // Menggunakan query untuk mendapatkan id_kategori berdasarkan id_subkategori yang dipilih
+        $queryGetKategori = mysqli_query($conn, "SELECT id_kategori FROM sub_kategori_siswa WHERE id_sub_kategori = '$idSubKategori'");
+        $rowKategori = mysqli_fetch_assoc($queryGetKategori);
+        $idKategori = $rowKategori['id_kategori'];
+
+        $penetapan = $_POST['nominalKolektif'];
+        $bulanIni = $penetapan;
+        $tunggakan = 0;
+        $jumlah = $bulanIni + $tunggakan;
+        $idGuru = $_POST['guru'];
+        $keterangan = $_POST['keterangan'];    
+
+        try {
+            if ($queryGetSiswa && mysqli_num_rows($queryGetSiswa) > 0) {
+                $siswaArray = []; // Buat array untuk menyimpan data siswa
+            
+                while ($row = mysqli_fetch_assoc($queryGetSiswa)) {
+                    $siswaArray[] = $row['id_siswa']; // Tambahkan id_siswa ke dalam array
+                }               
+            
+                for ($i = 0; $i < count($siswaArray); $i++) {
+                    $idSiswa = $siswaArray[$i];
+                    $tanggalBayar = date("Y-m-d H:i:$i", strtotime($tanggal));
+                    $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `penetapan`, `bulan_ini`, `tunggakan`, `jumlah`, `id_guru`, `keterangan`) 
+                    VALUES 
+                    ('$tanggalBayar','$idTahunAjar','$idSiswa','$idKategori','$idSubKategori','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$idGuru','$keterangan')";
+            
+                    $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
+                }
+            }           
+
+            if (!$insertTransSiswa) {
+                throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
+            }
+
+            // Query SELECT untuk memeriksa apakah data sudah masuk ke database
+            $result = mysqli_query($conn, "SELECT * FROM `transaksi_masuk_siswa` WHERE bulan = '$bulan' and id_siswa = $idSiswa and jumlah=$jumlah");
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
+                $_SESSION['flash_message'] = 'Tambah transaksi siswa berhasil';
+                $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
+                header('location:transaksi_masuk_siswa.php');
+                exit;
+            } else {
+                // Data tidak ada dalam database, itu berarti gagal
+                throw new Exception("Data transaksi tidak ditemukan setelah ditambahkan");
+            }
+        } catch (Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal        
+            header('location:transaksi_masuk_siswa.php');
+            exit;
+        }
+    }    
 
     // Edit Transaksi Masuk Siswa
     if(isset($_POST['editTransSiswa'])){

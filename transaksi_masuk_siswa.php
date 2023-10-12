@@ -106,7 +106,7 @@ date_default_timezone_set('Asia/Jakarta');
                                         $idTransaksiMasukSiswa = $data['id_tms'];                                         
                                         $tanggal = $data['tanggal'];
                                         $tanggalTampil = date("d-m-Y", strtotime($tanggal));
-                                        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
+                                        $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));
                                         $tahunAjar = $data['tahun_ajar'];                                        
                                         $kelas = $data['id_kelas'];
                                         $idSiswa = $data['id_siswa'];
@@ -486,7 +486,7 @@ date_default_timezone_set('Asia/Jakarta');
                     </div>                               
                     <div class="mb-3">
                         <label for="nominal">Penetapan per siswa :</label>                        
-                        <input type="text" name="nominalKolektif" id="nominalKolektif" class="form-control" readonly>
+                        <input type="text" name="nominalKolektif" id="nominalKolektif" class="form-control">
                     </div>
                     <div class="mb-3">
                         <label for="bulanIni">Jumlah total :</label>                        
@@ -513,7 +513,7 @@ date_default_timezone_set('Asia/Jakarta');
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary" name="tambahTransMasukSiswa">Simpan</button>
+                    <button type="submit" class="btn btn-primary" name="tambahTransSiswaKolektif">Simpan</button>
                 </div>
             </form>
         </div>
