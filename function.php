@@ -965,7 +965,7 @@
     // Tambah Transaksi Masuk Siswa
     if(isset($_POST['tambahTransMasukSiswa'])){
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -1105,10 +1105,6 @@
         $rowKategori = mysqli_fetch_assoc($queryGetKategori);
         $idKategori = $rowKategori['id_kategori'];
 
-        $penetapan = $_POST['nominalKolektif'];
-        $bulanIni = $penetapan;
-        $tunggakan = 0;
-        $jumlah = $bulanIni + $tunggakan;
         $idGuru = $_POST['guru'];
         $keterangan = $_POST['keterangan'];    
 
@@ -1123,6 +1119,14 @@
                 for ($i = 0; $i < count($siswaArray); $i++) {
                     $idSiswa = $siswaArray[$i];
                     $tanggalBayar = date("Y-m-d H:i:$i", strtotime($tanggal));
+                    $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori = '$idSubKategori' AND id_siswa = '$idSiswa'";
+                    $getPenetapan = mysqli_query($conn, $queryGetPenetapan);
+                    $rowPenetapan = mysqli_fetch_assoc($getPenetapan);
+                    $penetapan = floatval($rowPenetapan['nominal']);
+                    $bulanIni = $penetapan;
+                    $tunggakan = 0;
+                    $jumlah = $bulanIni + $tunggakan;
+
                     $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `penetapan`, `bulan_ini`, `tunggakan`, `jumlah`, `id_guru`, `keterangan`) 
                     VALUES 
                     ('$tanggalBayar','$idTahunAjar','$idSiswa','$idKategori','$idSubKategori','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$idGuru','$keterangan')";

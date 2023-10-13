@@ -138,7 +138,8 @@ require 'config.php';
                     if(isset($_POST['btnTampilLapSiswa'])){
                         $tahunAjarLap = $_POST['tahunAjar'];
                         $bulanLalu = $_POST['bulan'];
-                        $idKategoriLap = $_POST['kategori'];                    } 
+                        $idKategoriLap = $_POST['kategori'];                    
+                    } 
 
                     $queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
                     $rowKategori = mysqli_fetch_assoc($queryKategori);
