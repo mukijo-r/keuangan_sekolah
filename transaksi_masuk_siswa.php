@@ -348,7 +348,7 @@ date_default_timezone_set('Asia/Jakarta');
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="tanggal">Tanggal Bayar :</label>
-                        <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                        <?php $tanggalSaatIni = date('Y-m-d\TH:i:s', time());?>
                         <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
                     </div>
                     <div class="mb-3">
@@ -455,7 +455,7 @@ date_default_timezone_set('Asia/Jakarta');
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="tanggal">Tanggal Bayar :</label>
-                        <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                        <?php $tanggalSaatIni = date('Y-m-d\TH:i:s', time());?>
                         <input type="datetime-local" name="tanggalKolektif" value="<?=$tanggalSaatIni;?>" class="form-control">
                     </div>
                     <div class="mb-3">
@@ -477,17 +477,13 @@ date_default_timezone_set('Asia/Jakarta');
                                 <option selected disabled>Pilih Kategori</option>
                                 <?php
                                 // Ambil data kelas dari tabel kelas
-                                $querySubKategori = mysqli_query($conn, "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa WHERE id_kategori <> 1");
+                                $querySubKategori = mysqli_query($conn, "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa");
                                 while ($subKategori = mysqli_fetch_assoc($querySubKategori)) {
                                     echo '<option value="' . $subKategori['id_sub_kategori'] . '">' . $subKategori['nama_sub_kategori'] . '</option>';
                                 }
                                 ?>
                             </select>
-                    </div>                               
-                    <div class="mb-3">
-                        <label for="nominal">Penetapan per siswa :</label>                        
-                        <input type="text" name="nominalKolektif" id="nominalKolektif" class="form-control">
-                    </div>
+                    </div>                             
                     <div class="mb-3">
                         <label for="bulanIni">Jumlah total :</label>                        
                         <input type="number" name="bulanIniKolektif" id="bulanIniKolektif" class="form-control">
@@ -534,7 +530,7 @@ date_default_timezone_set('Asia/Jakarta');
         var nominalInput = document.getElementById('nominal');
 
         var kategoriDropdownKolektif = document.getElementById('subKategoriKolektif');
-        var nominalInputKolektif = document.getElementById('nominalKolektif');
+        //var nominalInputKolektif = document.getElementById('nominalKolektif');
         var kelasDropdownKolektif = document.getElementById('kelasKolektif');
         var jumlahInputKolektif = document.getElementById('bulanIniKolektif');
 
@@ -678,31 +674,31 @@ date_default_timezone_set('Asia/Jakarta');
 
         // Tambahkan event listener ketika nilai "kategori" berubah
         kategoriDropdownKolektif.addEventListener('change', function() {
-            updateNominalKolektifValue();
+            //updateNominalKolektifValue();
             updateTotalKolektifValue();
         });
 
-        // Fungsi untuk mengambil nilai nominal yang sesuai
-        function updateNominalKolektifValue() {
-            // Dapatkan nilai terpilih dari dropdown
-            var selectedKategoriKolektif = kategoriDropdownKolektif.value;
+        // // Fungsi untuk mengambil nilai nominal yang sesuai
+        // function updateNominalKolektifValue() {
+        //     // Dapatkan nilai terpilih dari dropdown
+        //     var selectedKategoriKolektif = kategoriDropdownKolektif.value;
 
-            // Lakukan AJAX request untuk mengambil nilai nominal
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'get_nominal_kolektif.php?subKategori=' + selectedKategoriKolektif, true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var responseText = xhr.responseText.trim(); // Hapus spasi di awal dan akhir
-                    if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
-                        var nominalValueKolektif = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
-                        nominalInputKolektif.value = nominalValueKolektif;
-                    } else {
-                        console.error('Nilai nominal tidak valid: ' + responseText);
-                    }
-                }
-            };
-            xhr.send();
-        }
+        //     // Lakukan AJAX request untuk mengambil nilai nominal
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open('GET', 'get_nominal_kolektif.php?subKategori=' + selectedKategoriKolektif, true);
+        //     xhr.onreadystatechange = function() {
+        //         if (xhr.readyState === 4 && xhr.status === 200) {
+        //             var responseText = xhr.responseText.trim(); // Hapus spasi di awal dan akhir
+        //             if (/^\d+$/.test(responseText)) { // Periksa apakah respons hanya mengandung angka
+        //                 var nominalValueKolektif = parseInt(responseText.replace(/"/g, '')); // Hapus tanda kutip ganda
+        //                 nominalInputKolektif.value = nominalValueKolektif;
+        //             } else {
+        //                 console.error('Nilai nominal tidak valid: ' + responseText);
+        //             }
+        //         }
+        //     };
+        //     xhr.send();
+        // }
 
         // Fungsi untuk mengambil nilai nominal yang sesuai
         function updateTotalKolektifValue() {
