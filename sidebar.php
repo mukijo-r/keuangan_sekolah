@@ -67,6 +67,7 @@ require 'sidebar_function.php';
                                     <a class="nav-link" href="penetapan.php">Penetapan</a>
                                     <a class="nav-link" href="transaksi_masuk_siswa.php">Transaksi Masuk</a>
                                     <a class="nav-link" href="transaksi_keluar_siswa.php">Transaksi Keluar</a>
+                                    <a class="nav-link" href="tabulasi_iuran_siswa.php">Tabulasi</a>
                                     <a class="nav-link" href="rekapan_transaksi_siswa.php">Rekapan</a>
                                     <a class="nav-link" href="laporan_transaksi_siswa.php">Laporan</a>
                                 </nav>
