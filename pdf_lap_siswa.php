@@ -40,7 +40,7 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, 'A4', true, 'UTF-8', false);
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Mukijo');
-$pdf->SetTitle('Laporan Keuangan Siswa');
+$pdf->SetTitle('Laporan Keuangan Umum');
 $pdf->SetSubject('TCPDF');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -72,23 +72,21 @@ $pdf->AddPage();
 $idTahunAjar = $_POST['idTahunAjar'];
 $tahunAjar = $_POST['tahunAjar'];
 $bulan = $_POST['bulan'];
-$idKategoriLap = $_POST['idKategori'];
+$idSubKategori = $_POST['idSubKategori'];
+$namaSubKategori = $_POST['namaSubKategori'];
 $queryTransaksiSiswa = $_POST['queryTransaksiSiswa'];
 $saldoBulanLalu = $_POST['saldoBulanLalu'];
 
-$queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
-$rowKategori = mysqli_fetch_assoc($queryKategori);
-$namaKategori = $rowKategori['nama_kategori'];
 
 $pdf->SetFont('helvetica', '', 10);
 $txt = <<<EOD
-Laporan Keuangan $namaKategori
+Laporan Keuangan $namaSubKategori
 Bulan $bulan
 Tahun Ajar $tahunAjar
 
 
 EOD;
-$pdf->SetFont('times', '', 11);
+$pdf->SetFont('times', '', 10);
 $pdf->SetCellMargins(0, 1, 0, 0);
 $html = '<table border="0.75">';
 $html .= '<tr>
@@ -107,27 +105,30 @@ $html .= '<tr>
 <td style="width: 14%"> ' . (($saldoBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu, 0, ',', '.')) . '</td>
 <td style="width: 20%"></td>
 </tr>';
+
 $totalMasuk = 0;
 $totalKeluar = 0;
 
 $dataTransaksiSiswa = mysqli_query($conn, $queryTransaksiSiswa);
 
 while($data=mysqli_fetch_array($dataTransaksiSiswa)){
-    $idTransaksiMasukSiswa = $data['id_tms'];
     $tanggal =  $data['tanggal'];
     $tanggalMasuk = date("Y-m-d", strtotime($tanggal));
     $tanggalTampil = date("d-m-Y", strtotime($tanggal));
-    $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));
-    $idKategori = $data['id_kategori']; 
-    $kategori = $data['kategori'];                                          
+    $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));                                       
     $uraian = $data['uraian'];
-    $jumlahMasuk = $data['jumlah_masuk'];
-    $jumlahKeluar = $data['jumlah_keluar'];                                        
-    $keterangan = $data['keterangan'];                                      
+    if ($uraian == '1' || $uraian == '2' ||$uraian == '3' ||$uraian == '4' ||$uraian == '5' ||$uraian == '6'){
+        $uraianCetak = "Iuran kelas " . $uraian;
+    } else {
+        $uraianCetak = $uraian;
+    }
+    $pemasukan = $data['pemasukan'];
+    $pengeluaran = $data['pengeluaran'];
+    $keterangan = $data['keterangan'];
 
     // Menghitung saldo
-    $queryMasuk = "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_siswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalBayar'";
-    $queryKeluar = "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_siswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalBayar'";
+    $queryMasuk = "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_siswa WHERE id_sub_kategori = '$idSubKategori' AND tanggal <= '$tanggalBayar'";
+    $queryKeluar = "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_siswa WHERE id_sub_kategori = '$idSubKategori' AND tanggal <= '$tanggalBayar'";
 
     $masuk = mysqli_query($conn, $queryMasuk);
     $keluar = mysqli_query($conn, $queryKeluar);                                           
@@ -140,13 +141,13 @@ while($data=mysqli_fetch_array($dataTransaksiSiswa)){
         $totalKeluar = $rowKeluar['total_keluar'];
     }
 
-    $saldo = $totalMasuk - $totalKeluar; 
+    $saldo = $totalMasuk - $totalKeluar;  
     
     $html .= '<tr>';
     $html .= '<td style="width: 11%"> ' . $tanggalTampil . '</td>';
-    $html .= '<td style="width: 27%"> '. $uraian . '</td>';
-    $html .= '<td style="width: 14%"> ' . (($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.')) . '</td>';
-    $html .= '<td style="width: 14%"> ' . (($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.')) . '</td>';
+    $html .= '<td style="width: 27%"> '. $uraianCetak . '</td>';
+    $html .= '<td style="width: 14%"> ' . (($pemasukan == 0) ? '' : "Rp " . number_format($pemasukan, 0, ',', '.')) . '</td>';
+    $html .= '<td style="width: 14%"> ' . (($pengeluaran == 0) ? '' : "Rp " . number_format($pengeluaran, 0, ',', '.')) . '</td>';
     $html .= '<td style="width: 14%"> ' . (($saldo == 0) ? '' : "Rp " . number_format($saldo, 0, ',', '.')) . '</td>';
     $html .= '<td style="width: 20%"> ' . $keterangan . '</td>';
     $html .= '</tr>';
@@ -154,9 +155,9 @@ while($data=mysqli_fetch_array($dataTransaksiSiswa)){
 
 $html .= '<tr>';
 $html .= '<td colspan="2" style="text-align: center;">Total</td>';
-$html .= '<td style="width: 14%"> ' . (($totalMasuk == 0) ? '' : "Rp " . number_format($totalMasuk, 0, ',', '.')) . '</td>';
-$html .= '<td style="width: 14%"> ' . (($totalKeluar == 0) ? '' : "Rp " . number_format($totalKeluar, 0, ',', '.')) . '</td>';
-$html .= '<td style="width: 14%"> ' . (($saldo == 0) ? '' : "Rp " . number_format($saldo, 0, ',', '.')) . '</td>';
+$html .= '<td style="width: 14%"><strong> ' . (($totalMasuk == 0) ? '' : "Rp " . number_format($totalMasuk, 0, ',', '.')) . '</strong></td>';
+$html .= '<td style="width: 14%"><strong> ' . (($totalKeluar == 0) ? '' : "Rp " . number_format($totalKeluar, 0, ',', '.')) . '</strong></td>';
+$html .= '<td style="width: 14%"><strong> ' . (($saldo == 0) ? '' : "Rp " . number_format($saldo, 0, ',', '.')) . '</strong></td>';
 $html .= '<td style="width: 20%"></td></tr>';
 $html .= '</table><br><br><br>';
 

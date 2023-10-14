@@ -110,14 +110,14 @@ require 'config.php';
                                     <div class="col">
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
-                                                <label class="input-group-text" for="kategori">Kategori</label>
+                                                <label class="input-group-text" for="subKategoriSiswa">Kategori</label>
                                             </div>
-                                            <select class="custom-select" name="kategori" id="kategori">
+                                            <select class="custom-select" name="subKategoriSiswa" id="subKategoriSiswa">
                                                 <option value="">Pilih Kategori</option>
                                                 <?php
-                                                $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='siswa' AND id_kategori <> 8");
-                                                while ($kategori = mysqli_fetch_assoc($queryKategori)) {
-                                                    echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
+                                                $querySubKategori = mysqli_query($conn, "SELECT id_sub_kategori, nama_sub_kategori FROM sub_kategori_siswa");
+                                                while ($subKategori = mysqli_fetch_assoc($querySubKategori)) {
+                                                    echo '<option value="' . $subKategori['id_sub_kategori'] . '">' . $subKategori['nama_sub_kategori'] . '</option>';
                                                 }
                                                 ?>
                                             </select>
@@ -138,12 +138,12 @@ require 'config.php';
                     if(isset($_POST['btnTampilLapSiswa'])){
                         $tahunAjarLap = $_POST['tahunAjar'];
                         $bulanLalu = $_POST['bulan'];
-                        $idKategoriLap = $_POST['kategori'];                    
+                        $idSubKategoriLap = $_POST['subKategoriSiswa'];                    
                     } 
 
-                    $queryKategori = mysqli_query($conn, "SELECT nama_kategori FROM kategori WHERE id_kategori='$idKategoriLap'");
-                    $rowKategori = mysqli_fetch_assoc($queryKategori);
-                    $namaKategori = $rowKategori['nama_kategori'];
+                    $querySubKategori = mysqli_query($conn, "SELECT nama_sub_kategori FROM sub_kategori_siswa WHERE id_sub_kategori='$idSubKategoriLap'");
+                    $rowSubKategori = mysqli_fetch_assoc($querySubKategori);
+                    $namaSubKategori = $rowSubKategori['nama_sub_kategori'];
 
                     $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahunAjarLap'");
                     $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
@@ -201,7 +201,7 @@ require 'config.php';
                         <div class="col-md-3" style="text-align: right; border:none">
                         </div>
                         <div class="col-md-6">
-                            <h5>Laporan Keuangan <?=$namaKategori?> </h5>
+                            <h5>Laporan Keuangan <?=$namaSubKategori?> </h5>
                             <h5>Bulan <?= $bulanLalu;?> </h5>
                             <h5>Tahun Ajar <?=$tahunAjarLap; ?> </h5>
                         </div>     
@@ -224,59 +224,141 @@ require 'config.php';
                                     </thead>
                                     <tbody>
                                         <?php 
-                                        $queryTransaksiSiswa = "SELECT
-                                        tms.id_tms, 
-                                        tms.tanggal,
-                                        tms.id_kategori,
-                                        k.nama_kategori AS kategori,
-                                        s.nama AS uraian,
-                                        tms.jumlah AS jumlah_masuk,
-                                        0 AS jumlah_keluar,
-                                        tms.keterangan
-                                        FROM 
-                                            transaksi_masuk_siswa tms
-                                        JOIN
-                                            kategori k ON tms.id_kategori = k.id_kategori
-                                        JOIN 
-                                            siswa s ON tms.id_siswa = s.id_siswa
-                                        WHERE 
-                                            tms.id_tahun_ajar = '$idTahunAjar'
-                                            AND tms.id_kategori = '$idKategoriLap'
-                                            AND tms.bulan = '$bulanLalu'
-                                        GROUP BY 
-                                            uraian
+                                        $queryTransaksiSiswa = "SELECT 
+                                            MAX(tanggal) AS tanggal,
+                                            s.id_kelas AS uraian,
+                                            SUM(jumlah) AS pemasukan,
+                                            0 AS pengeluaran,
+                                            (SELECT 
+                                            `keterangan`
+                                            FROM 
+                                            `transaksi_masuk_siswa` JOIN siswa s ON tms.id_siswa = s.id_siswa
+                                            WHERE 
+                                            `id_kelas` = 1
+                                            AND `id_sub_kategori` = $idSubKategoriLap
+                                            ORDER BY tanggal DESC limit 1) AS keterangan
+                                            FROM transaksi_masuk_siswa tms
+                                            JOIN 
+                                                siswa s ON tms.id_siswa = s.id_siswa
+                                            WHERE id_tahun_ajar = $idTahunAjar AND bulan = '$bulanLalu' AND id_sub_kategori = $idSubKategoriLap AND s.id_kelas = 1
+                                            GROUP BY uraian
                                         UNION ALL
-                                        SELECT
-                                            tks.id_tks,
-                                            tks.tanggal,
-                                            tks.id_kategori,
-                                            k.nama_kategori AS id_kategori,
-                                            tks.uraian,
-                                            0 AS jumlah_masuk,
-                                            tks.jumlah AS jumlah_keluar,
-                                            tks.keterangan
-                                        FROM 
-                                            transaksi_keluar_siswa tks
-                                        JOIN
-                                            kategori k ON tks.id_kategori = k.id_kategori
-                                        WHERE 
-                                            tks.id_tahun_ajar = '$idTahunAjar'
-                                            AND tks.id_kategori = '$idKategoriLap'
-                                            AND tks.bulan = '$bulanLalu'
-                                        GROUP BY 
-                                            tks.uraian
-                                        ORDER BY tanggal ASC";
+                                            SELECT 
+                                                MAX(tanggal) AS tanggal,
+                                                s.id_kelas AS uraian,
+                                                SUM(jumlah) AS pemasukan,
+                                                0 AS pengeluaran,
+                                                (SELECT 
+                                                `keterangan`
+                                                FROM 
+                                                `transaksi_masuk_siswa` JOIN siswa s ON tms.id_siswa = s.id_siswa
+                                                WHERE 
+                                                `id_kelas` = 1
+                                                AND `id_sub_kategori` = $idSubKategoriLap
+                                                ORDER BY tanggal DESC limit 1) AS keterangan
+                                            FROM transaksi_masuk_siswa tms
+                                            JOIN 
+                                                siswa s ON tms.id_siswa = s.id_siswa
+                                            WHERE id_tahun_ajar = $idTahunAjar AND bulan = '$bulanLalu' AND id_sub_kategori = $idSubKategoriLap AND s.id_kelas = 2
+                                            GROUP BY uraian
+                                        UNION ALL
+                                            SELECT 
+                                                MAX(tanggal) AS tanggal,
+                                                s.id_kelas AS uraian,
+                                                SUM(jumlah) AS pemasukan,
+                                                0 AS pengeluaran,
+                                                (SELECT 
+                                                `keterangan`
+                                                FROM 
+                                                `transaksi_masuk_siswa` JOIN siswa s ON tms.id_siswa = s.id_siswa
+                                                WHERE 
+                                                `id_kelas` = 1
+                                                AND `id_sub_kategori` = $idSubKategoriLap
+                                                ORDER BY tanggal DESC limit 1) AS keterangan
+                                            FROM transaksi_masuk_siswa tms
+                                            JOIN 
+                                                siswa s ON tms.id_siswa = s.id_siswa
+                                            WHERE id_tahun_ajar = $idTahunAjar AND bulan = '$bulanLalu' AND id_sub_kategori = $idSubKategoriLap AND s.id_kelas = 3
+                                            GROUP BY uraian
+                                        UNION ALL
+                                            SELECT 
+                                                MAX(tanggal) AS tanggal,
+                                                s.id_kelas AS uraian,
+                                                SUM(jumlah) AS pemasukan,
+                                                0 AS pengeluaran,
+                                                (SELECT 
+                                                `keterangan`
+                                                FROM 
+                                                `transaksi_masuk_siswa` JOIN siswa s ON tms.id_siswa = s.id_siswa
+                                                WHERE 
+                                                `id_kelas` = 1
+                                                AND `id_sub_kategori` = $idSubKategoriLap
+                                                ORDER BY tanggal DESC limit 1) AS keterangan
+                                            FROM transaksi_masuk_siswa tms
+                                            JOIN 
+                                                siswa s ON tms.id_siswa = s.id_siswa
+                                            WHERE id_tahun_ajar = $idTahunAjar AND bulan = '$bulanLalu' AND id_sub_kategori = $idSubKategoriLap AND s.id_kelas = 4
+                                            GROUP BY uraian
+                                        UNION ALL
+                                            SELECT 
+                                                MAX(tanggal) AS tanggal,
+                                                s.id_kelas AS uraian,
+                                                SUM(jumlah) AS pemasukan,
+                                                0 AS pengeluaran,
+                                                (SELECT 
+                                                `keterangan`
+                                                FROM 
+                                                `transaksi_masuk_siswa` JOIN siswa s ON tms.id_siswa = s.id_siswa
+                                                WHERE 
+                                                `id_kelas` = 1
+                                                AND `id_sub_kategori` = $idSubKategoriLap
+                                                ORDER BY tanggal DESC limit 1) AS keterangan
+                                            FROM transaksi_masuk_siswa tms
+                                            JOIN 
+                                                siswa s ON tms.id_siswa = s.id_siswa
+                                            WHERE id_tahun_ajar = $idTahunAjar AND bulan = '$bulanLalu' AND id_sub_kategori = $idSubKategoriLap AND s.id_kelas = 5
+                                            GROUP BY uraian
+                                        UNION ALL
+                                            SELECT 
+                                                MAX(tanggal) AS tanggal,
+                                                s.id_kelas AS uraian,
+                                                SUM(jumlah) AS pemasukan,
+                                                0 AS pengeluaran,
+                                                (SELECT 
+                                                `keterangan`
+                                                FROM 
+                                                `transaksi_masuk_siswa` JOIN siswa s ON tms.id_siswa = s.id_siswa
+                                                WHERE 
+                                                `id_kelas` = 1
+                                                AND `id_sub_kategori` = $idSubKategoriLap
+                                                ORDER BY tanggal DESC limit 1) AS keterangan
+                                            FROM transaksi_masuk_siswa tms
+                                            JOIN 
+                                                siswa s ON tms.id_siswa = s.id_siswa
+                                            WHERE id_tahun_ajar = $idTahunAjar AND bulan = '$bulanLalu' AND id_sub_kategori = $idSubKategoriLap AND s.id_kelas = 6
+                                            GROUP BY uraian
+                                        UNION ALL
+                                            SELECT
+                                            tanggal,
+                                            uraian,
+                                            0 as pemasukan, jumlah as pengeluaran,
+                                            keterangan
+                                            FROM transaksi_keluar_siswa tks
+                                            WHERE id_tahun_ajar = $idTahunAjar AND bulan = '$bulanLalu' AND id_sub_kategori = $idSubKategoriLap
+                                            GROUP BY uraian
+                                        ORDER BY tanggal;";
 
                                         $dataTransaksiSiswa = mysqli_query($conn, $queryTransaksiSiswa);
-                                        // menghitung saldo bulan lalu
-                                        $queryDebet = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_siswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalAkhir2'");
-                                        $queryKredit = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_siswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalAkhir2'");
-                                        $queryDebetBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_debet FROM transaksi_masuk_siswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu' AND id_tahun_ajar = '$idTahunAjar'");
-                                        $queryKreditBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_kredit FROM transaksi_keluar_siswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulanLalu' AND id_tahun_ajar = '$idTahunAjar'");
-
+                                        // menghitung saldo
                                         $totalDebet = 0;
                                         $totalKredit = 0;
                                         $DebetBulanLalu = 0;
+                                        $totalKredit = 0;
+
+                                        $queryDebet = mysqli_query($conn, "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_siswa WHERE id_sub_kategori = '$idSubKategoriLap' AND tanggal <= '$tanggalAkhir2'");
+                                        $queryKredit = mysqli_query($conn, "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_siswa WHERE id_sub_kategori = '$idSubKategoriLap' AND tanggal <= '$tanggalAkhir2'");
+                                        $queryDebetBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_debet FROM transaksi_masuk_siswa WHERE id_sub_kategori = '$idSubKategoriLap' AND bulan ='$bulanLalu' AND id_tahun_ajar = '$idTahunAjar'");
+                                        $queryKreditBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_kredit FROM transaksi_keluar_siswa WHERE id_sub_kategori = '$idSubKategoriLap' AND bulan ='$bulanLalu' AND id_tahun_ajar = '$idTahunAjar'");                                        
 
                                         if ($rowDebet = mysqli_fetch_assoc($queryDebet)) {
                                             $totalDebet = $rowDebet['total_masuk'];
@@ -313,21 +395,18 @@ require 'config.php';
                                         $totalKeluar = 0;
                                         
                                         while($data=mysqli_fetch_array($dataTransaksiSiswa)){
-                                            $idTransaksiMasukSiswa = $data['id_tms'];
                                             $tanggal =  $data['tanggal'];
                                             $tanggalMasuk = date("Y-m-d", strtotime($tanggal));
                                             $tanggalTampil = date("d-m-Y", strtotime($tanggal));
-                                            $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));
-                                            $idKategori = $data['id_kategori']; 
-                                            $kategori = $data['kategori'];                                          
+                                            $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));                                       
                                             $uraian = $data['uraian'];
-                                            $jumlahMasuk = $data['jumlah_masuk'];
-                                            $jumlahKeluar = $data['jumlah_keluar'];                                        
-                                            $keterangan = $data['keterangan'];                                      
+                                            $pemasukan = $data['pemasukan'];
+                                            $pengeluaran = $data['pengeluaran'];
+                                            $keterangan = $data['keterangan'];
 
                                             // Menghitung saldo
-                                            $queryMasuk = "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_siswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalBayar'";
-                                            $queryKeluar = "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_siswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalBayar'";
+                                            $queryMasuk = "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_siswa WHERE id_sub_kategori = '$idSubKategoriLap' AND tanggal <= '$tanggalBayar'";
+                                            $queryKeluar = "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_siswa WHERE id_sub_kategori = '$idSubKategoriLap' AND tanggal <= '$tanggalBayar'";
 
                                             $masuk = mysqli_query($conn, $queryMasuk);
                                             $keluar = mysqli_query($conn, $queryKeluar);                                           
@@ -340,15 +419,21 @@ require 'config.php';
                                                 $totalKeluar = $rowKeluar['total_keluar'];
                                             }
 
-                                            $saldo = $totalMasuk - $totalKeluar;                                           
+                                            $saldo = $totalMasuk - $totalKeluar;                                          
                                             
                                             ?>
                                             
                                             <tr>
                                                 <td style="width: 10%"><?=$tanggalTampil;?></td>
-                                                <td style="width: 30%"><?=$uraian;?></td>
-                                                <td style="width: 10%"><?php echo ($jumlahMasuk == 0) ? '' : "Rp " . number_format($jumlahMasuk, 0, ',', '.');?></td>
-                                                <td style="width: 10%"><?php echo ($jumlahKeluar == 0) ? '' : "Rp " . number_format($jumlahKeluar, 0, ',', '.');?></td>
+                                                <td style="width: 30%"><?php
+                                                if ($uraian == '1' || $uraian == '2' ||$uraian == '3' ||$uraian == '4' ||$uraian == '5' ||$uraian == '6') {
+                                                    echo "Iuran kelas " . $uraian;
+                                                } else {
+                                                    echo $uraian;
+                                                };
+                                                ?></td>
+                                                <td style="width: 10%"><?php echo ($pemasukan == 0) ? '' : "Rp " . number_format($pemasukan, 0, ',', '.');?></td>
+                                                <td style="width: 10%"><?php echo ($pengeluaran == 0) ? '' : "Rp " . number_format($pengeluaran, 0, ',', '.');?></td>
                                                 <td style="width: 10%"><?php echo ($saldo == 0) ? '' : "Rp " . number_format($saldo, 0, ',', '.');?></td>
                                                 <td style="width: 20%"><?=$keterangan;?></tds>
                                             </tr>  
@@ -358,9 +443,9 @@ require 'config.php';
                                     </tbody>
                                         <tr>
                                             <td colspan="2" style="text-align: center;">Total</td>
-                                            <td style="width: 10%"><?= "Rp "  . number_format($totalMasuk, 0, ',', '.') ;?></td>
-                                            <td style="width: 10%"><?= "Rp " . number_format($totalKeluar, 0, ',', '.') ;?></td>
-                                            <td style="width: 10%"><?= "Rp " . number_format($saldo, 0, ',', '.') ;?></td>
+                                            <td style="width: 10%"><strong><?= "Rp "  . number_format($totalMasuk, 0, ',', '.') ;?></strong></td>
+                                            <td style="width: 10%"><strong><?= "Rp " . number_format($totalKeluar, 0, ',', '.') ;?></strong></td>
+                                            <td style="width: 10%"><strong><?= "Rp " . number_format($saldo, 0, ',', '.') ;?></strong></td>
                                             <td style="width: 20%"></td>
                                         </tr>
                                 </table><br><br>
@@ -393,7 +478,8 @@ require 'config.php';
                             <input type="hidden" name="idTahunAjar" value="<?= $idTahunAjar; ?>">
                             <input type="hidden" name="tahunAjar" value="<?= $tahunAjarLap; ?>">
                             <input type="hidden" name="bulan" value="<?=$bulanLalu; ?>">
-                            <input type="hidden" name="idKategori" value="<?=$idKategoriLap; ?>">
+                            <input type="hidden" name="idSubKategori" value="<?=$idSubKategoriLap; ?>">
+                            <input type="hidden" name="namaSubKategori" value="<?=$namaSubKategori; ?>">
                             <input type="hidden" name="queryTransaksiSiswa" value="<?=$queryTransaksiSiswa; ?>">
                             <input type="hidden" name="saldoBulanLalu" value="<?=$saldoBulanLalu; ?>">
                             <button type="submit" class="btn btn-primary" name="btnCetakLaporanSiswa" id="btnCetakLaporanSiswa">Cetak</button>  
