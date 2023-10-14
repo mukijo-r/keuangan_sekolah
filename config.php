@@ -15,6 +15,7 @@ $idTahunAjarDefault = $dataTahunAjar['id_tahun_ajar'];
 $tahunAjarLap = $tahun_ajar;
 
 $idKategoriLap = 2;
+$idSubKategoriLap = 5;
 $bulanLalu = date('F', strtotime('last month'));
  
 
