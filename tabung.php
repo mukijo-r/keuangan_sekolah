@@ -78,7 +78,7 @@ require 'config.php';
                                     LEFT JOIN siswa s ON tm.id_siswa = s.id_siswa
                                     LEFT JOIN guru g ON tm.id_guru = g.id_guru
                                     LEFT JOIN kelas k ON s.id_kelas = k.id_kelas
-                                    ORDER BY tm.id_tb_masuk DESC");
+                                    ORDER BY tm.tanggal DESC");
 
                                     $totalEntries = mysqli_num_rows($dataTabungan);
                                     $i = $totalEntries;
@@ -88,7 +88,7 @@ require 'config.php';
                                     
                                     while($data=mysqli_fetch_array($dataTabungan)){
                                         $tanggal =  $data['tanggal'];
-                                        $tanggalTampil = date("Y-m-d", strtotime($tanggal));
+                                        $tanggalTampil = date("d-m-Y", strtotime($tanggal));
                                         $tanggalTabung = date("Y-m-d H:i", strtotime($tanggal));
                                         $idTbMasuk = $data['id_tb_masuk'];
                                         $bulan = $data['bulan'];
@@ -283,7 +283,7 @@ require 'config.php';
                     <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
                     <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
                 </div>
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label for="bulan">Bulan :</label><br>
                     <select class="form-select" name="bulan" aria-label="Bulan">
                         <option selected>Pilih bulan</option>
@@ -300,7 +300,7 @@ require 'config.php';
                         <option value="November">November</option>
                         <option value="Desember">Desember</option>
                         </select>
-                </div>
+                </div> -->
                     <div class="mb-3">
                         <label for="kelas">Kelas :</label>
                         <select class="form-select" name="kelas" id="kelas" aria-label="Kelas">
