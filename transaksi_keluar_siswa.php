@@ -92,7 +92,7 @@ date_default_timezone_set('Asia/Jakarta');
                                     LEFT JOIN guru g ON tks.id_guru = g.id_guru
                                     LEFT JOIN kategori kat ON tks.id_kategori = kat.id_kategori
                                     LEFT JOIN sub_kategori_siswa subkat ON tks.id_sub_kategori = subkat.id_sub_kategori
-                                    ORDER BY tks.id_tks DESC
+                                    ORDER BY tks.tanggal DESC
                                     ;");
 
                                     $totalEntries = mysqli_num_rows($dataTransaksiSiswa);

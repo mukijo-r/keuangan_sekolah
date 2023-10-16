@@ -82,7 +82,7 @@ date_default_timezone_set('Asia/Jakarta');
                                     LEFT JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar                                   
                                     LEFT JOIN guru g ON tkn.id_guru = g.id_guru
                                     LEFT JOIN kategori kat ON tkn.id_kategori = kat.id_kategori                                    
-                                    ORDER BY tkn.id_tkn DESC;
+                                    ORDER BY tkn.tanggal DESC;
                                     ;");
 
                                     $totalEntries = mysqli_num_rows($dataTransaksiUmum);
@@ -91,7 +91,7 @@ date_default_timezone_set('Asia/Jakarta');
                                     while($data=mysqli_fetch_array($dataTransaksiUmum)){
                                         $idTransaksiKeluarUmum = $data['id_tkn'];                                         
                                         $tanggal =  $data['tanggal'];
-                                        $tanggalTampil = date("Y-m-d", strtotime($tanggal));
+                                        $tanggalTampil = date("d-m-Y", strtotime($tanggal));
                                         $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));                                         
                                         $tahunAjar = $data['tahun_ajar'];
                                         $idKategori = $data['id_kategori'];                                                                 
