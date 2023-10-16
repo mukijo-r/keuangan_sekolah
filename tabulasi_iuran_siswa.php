@@ -163,18 +163,18 @@ require 'config.php';
                                                 <tr>
                                                     <td><?=$no;?></td>
                                                     <td><?=$namaSiswa;?></td>
-                                                    <td><span style="font-weight: <?= $juli != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($juli);?></td>
-                                                    <td><span style="font-weight: <?= $agustus != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($agustus);?></td>
-                                                    <td><span style="font-weight: <?= $september != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($september);?></td>
-                                                    <td><span style="font-weight: <?= $oktober != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($oktober);?></td>
-                                                    <td><span style="font-weight: <?= $november != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($november);?></td>
-                                                    <td><span style="font-weight: <?= $desember != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($desember);?></td>
-                                                    <td><span style="font-weight: <?= $januari != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($januari);?></td>
-                                                    <td><span style="font-weight: <?= $februari != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($februari);?></td>
-                                                    <td><span style="font-weight: <?= $maret != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($maret);?></td>
-                                                    <td><span style="font-weight: <?= $april != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($april);?></td>
-                                                    <td><span style="font-weight: <?= $mei != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($mei);?></td>
-                                                    <td><span style="font-weight: <?= $juni != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($juni);?></td>
+                                                    <td style="background-color: <?= $juli != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $juli != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($juli);?></td>
+                                                    <td style="background-color: <?= $agustus != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $agustus != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($agustus);?></td>
+                                                    <td style="background-color: <?= $september != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $september != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($september);?></td>
+                                                    <td style="background-color: <?= $oktober != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $oktober != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($oktober);?></td>
+                                                    <td style="background-color: <?= $november != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $november != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($november);?></td>
+                                                    <td style="background-color: <?= $desember != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $desember != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($desember);?></td>
+                                                    <td style="background-color: <?= $januari != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $januari != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($januari);?></td>
+                                                    <td style="background-color: <?= $februari != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $februari != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($februari);?></td>
+                                                    <td style="background-color: <?= $maret != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $maret != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($maret);?></td>
+                                                    <td style="background-color: <?= $april != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $april != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($april);?></td>
+                                                    <td style="background-color: <?= $mei != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $mei != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($mei);?></td>
+                                                    <td style="background-color: <?= $juni != 0 ? 'LightGreen' : 'transparent' ?>"><span style="font-weight: <?= $juni != 0 ? 'bold' : 'normal' ?>">Rp. <?= number_format($juni);?></td>
                                                     </td>
                                                 </tr>
                                                 
