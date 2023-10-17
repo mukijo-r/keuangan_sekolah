@@ -111,7 +111,7 @@
                 $password = password_hash($password1, PASSWORD_BCRYPT);
             
             // Coba jalankan query insert
-            $addSiswa = mysqli_query($conn, "INSERT INTO `users`(`username`, `password`) VALUES ('$username', '$password')");
+            $addUser = mysqli_query($conn, "INSERT INTO `users`(`username`, `password`) VALUES ('$username', '$password')");
 
             $checkUserQuery = "SELECT * FROM `users` WHERE `username` = '$username'";
             $checkUserResult = mysqli_query($conn, $checkUserQuery);
