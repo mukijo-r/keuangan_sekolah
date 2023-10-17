@@ -3,26 +3,30 @@ include 'function.php';
 require 'config.php';
 
 //cek login
-if(isset($_POST['login'])){
+if (isset($_POST['login'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $cekdb = mysqli_query($conn, "SELECT * FROM users WHERE username='$username' and password='$password'");
-    $count = mysqli_num_rows($cekdb);
+    // Dapatkan kata sandi terenkripsi dari database
+    $result = mysqli_query($conn, "SELECT * FROM users WHERE username='$username'");
+    if ($row = mysqli_fetch_assoc($result)) {
+        $hashedPassword = $row['password'];
 
-    if($count>0){
-        $_SESSION['log'] = 'True';
-        header('location:index.php');
+        // Periksa apakah kata sandi yang dimasukkan sesuai dengan yang terenkripsi
+        if (password_verify($password, $hashedPassword)) {
+            // Kata sandi cocok, beri izin login
+            $_SESSION['log'] = 'True';
+            header('location:index.php');
+        } else {
+            // Kata sandi tidak cocok, arahkan kembali ke halaman login
+            header('location:login.php');
+        }
     } else {
+        // Tidak ada akun dengan username tersebut
         header('location:login.php');
     }
 }
 
-if(!isset($_SESSION['log'])){
-
-} else {
-    header('location:index.php');
-}
 ?>
 
 <!DOCTYPE html>

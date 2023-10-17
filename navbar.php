@@ -22,7 +22,7 @@
                 }
             }
         </style>
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -51,3 +51,93 @@
                 </li>
             </ul>
     </nav>
+
+    <!-- Modal Register-->
+    <div class="modal fade" id="modalRegister">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Tambah Akun</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <!-- Modal body -->      
+            <form method="post">
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="username">Username :</label>   
+                    <input type="text" name="username" placeholder="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password">Password :</label>
+                    <input type="password" name="password" id="password" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword">Konfirmasi Password :</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" class="form-control">
+                    <div id="passwordError" class="text-danger"></div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success" name="tambahUser">Tambah</button> 
+            </div>
+            <br> 
+        </form>   
+        </div>
+    </div>
+    </div>
+
+    <script>
+        document.getElementById("confirmPassword").addEventListener("input", function() {
+            const password = document.getElementById("password").value;
+            const confirmPassword = this.value;
+            const passwordError = document.getElementById("passwordError");
+
+            if (password !== confirmPassword) {
+                passwordError.textContent = "Password harus sama";
+            } else {
+                passwordError.textContent = ""; // Kosongkan pesan kesalahan jika password cocok
+            }
+        });
+
+        <?php
+        if (isset($_POST['tambahUser'])) {
+            $username = $_POST['username'];
+            $password1 = $_POST['password'];
+            $password2 = $_POST['confirmPassword'];
+            if ($password1 == $password2) {
+                $password = password_hash($password1, PASSWORD_BCRYPT);
+            
+            // Coba jalankan query insert
+            $addSiswa = mysqli_query($conn, "INSERT INTO `users`(`username`, `password`) VALUES ('$username', '$password')");
+
+            $checkUserQuery = "SELECT * FROM `users` WHERE `username` = '$username'";
+            $checkUserResult = mysqli_query($conn, $checkUserQuery);
+
+            if (mysqli_num_rows($checkUserResult) > 0) {
+                // Akun berhasil ditambahkan
+                echo "Swal.fire({
+                    title: 'Sukses!',
+                    text: 'Akun berhasil ditambahkan.',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });";
+            }
+        } else {
+            // Gagal menambahkan akun
+            echo "Swal.fire({
+                title: 'Gagal!',
+                text: 'Tambah akun gagal.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });";
+        }
+        }
+        ?>
+    </script>
