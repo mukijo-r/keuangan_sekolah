@@ -3,6 +3,20 @@ require 'function.php';
 require 'cek.php';
 require 'config.php';
 
+//session_start();
+
+if (isset($_SESSION['user'])) {
+    $username = $_SESSION['user'];
+} else {
+    // Pengguna tidak masuk. Lakukan sesuatu, seperti mengarahkan mereka kembali ke halaman login.
+    header('location: login.php');
+}
+
+// Tambahkan pemeriksaan tambahan di sini, misalnya untuk nama pengguna sebelumnya
+if (isset($_SESSION['previous_user'])) {
+    $previousUsername = $_SESSION['previous_user'];
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -45,11 +59,11 @@ require 'config.php';
                     <br>
                     <figure class="bg-light p-4"
                             style="border-left: .35rem solid #fcdb5e; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; opacity: 0.85;">
-                        <blockquote class="blockquote pb-2">
-                            <i><h1>
-                                Selamat datang, Anda berada di tahun ajaran <u><?=$tahun_ajar;?></u>
-                            </h1></i>
-                        </blockquote>
+                            <blockquote class="blockquote pb-2">
+                                <i><h1>
+                                    Selamat datang <?= isset($previousUsername) ? $previousUsername : $username; ?>, Anda berada di tahun ajaran <u><?=$tahun_ajar;?></u>
+                                </h1></i>
+                            </blockquote>
                     </figure>
 
                     </div>

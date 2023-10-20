@@ -280,7 +280,6 @@
         }
     }
 
-
     // Tambah Guru
     if(isset($_POST['tambahGuru'])){
         $nip = $_POST['nip'];
@@ -317,7 +316,6 @@
             exit;
         }
     }
-
 
     //Edit Guru
     if(isset($_POST['editGuru'])){
@@ -2913,7 +2911,59 @@
         }
     }
 
-    
+    // Tambah User
+    if (isset($_POST['tambahUser'])) {
+        $username = $_POST['username'];
+        $password1 = $_POST['password'];
+        $password2 = $_POST['confirmPassword'];
+        if ($password1 == $password2) {
+            $password = password_hash($password1, PASSWORD_BCRYPT);
+        
+        // Coba jalankan query insert
+        $addUser = mysqli_query($conn, "INSERT INTO `users`(`username`, `password`) VALUES ('$username', '$password')");
+
+        $checkUserQuery = "SELECT * FROM `users` WHERE `username` = '$username'";
+        $checkUserResult = mysqli_query($conn, $checkUserQuery);
+
+        // Setelah berhasil menambahkan akun baru
+        if (mysqli_num_rows($checkUserResult) == 1) {
+
+            if (isset($_SESSION['previous_user'])) {
+                $_SESSION['user'] = $_SESSION['previous_user'];
+            }
+
+            $sweetAlert = "Swal.fire({
+                title: 'Sukses!',
+                text: 'Akun berhasil ditambahkan.',
+                icon: 'success',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });";
+
+        } else {
+            // Gagal menambahkan akun
+            $sweetAlert = "Swal.fire({
+                title: 'Gagal!',
+                text: 'Tambah akun gagal.',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });";
+        }
+    } else {
+        $sweetAlert = "Swal.fire({
+            title: 'Gagal!',
+            text: 'Password tidak sama. Tambah akun gagal.',
+            icon: 'error',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+        });";
+    }
+}
+
 
 
 ?>

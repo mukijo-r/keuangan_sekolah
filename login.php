@@ -15,7 +15,9 @@ if (isset($_POST['login'])) {
         // Periksa apakah kata sandi yang dimasukkan sesuai dengan yang terenkripsi
         if (password_verify($password, $hashedPassword)) {
             // Kata sandi cocok, beri izin login
+            $_SESSION['user'] = $username; // Simpan nama user dalam sesi
             $_SESSION['log'] = 'True';
+            $_SESSION['previous_user'] = $username;            
             header('location:index.php');
         } else {
             // Kata sandi tidak cocok, arahkan kembali ke halaman login
