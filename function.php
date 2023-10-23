@@ -54,7 +54,6 @@
         }
     }
 
-
     // Edit Siswa
     if(isset($_POST['editSiswa'])){
         $nisn = $_POST['nisn'];
@@ -127,7 +126,6 @@
             exit;
         }
     }
-
 
     // Hapus Siswa
     if(isset($_POST['hapusSiswa'])){
@@ -2917,53 +2915,125 @@
         $password1 = $_POST['password'];
         $password2 = $_POST['confirmPassword'];
         if ($password1 == $password2) {
-            $password = password_hash($password1, PASSWORD_BCRYPT);
-        
-        // Coba jalankan query insert
-        $addUser = mysqli_query($conn, "INSERT INTO `users`(`username`, `password`) VALUES ('$username', '$password')");
+                $password = password_hash($password1, PASSWORD_BCRYPT);
+            
+            // Coba jalankan query insert
+            $addUser = mysqli_query($conn, "INSERT INTO `users`(`username`, `password`) VALUES ('$username', '$password')");
 
-        $checkUserQuery = "SELECT * FROM `users` WHERE `username` = '$username'";
-        $checkUserResult = mysqli_query($conn, $checkUserQuery);
+            $checkUserQuery = "SELECT * FROM `users` WHERE `username` = '$username'";
+            $checkUserResult = mysqli_query($conn, $checkUserQuery);
 
-        // Setelah berhasil menambahkan akun baru
-        if (mysqli_num_rows($checkUserResult) == 1) {
+            // Setelah berhasil menambahkan akun baru
+            if (mysqli_num_rows($checkUserResult) == 1) {
 
-            if (isset($_SESSION['previous_user'])) {
-                $_SESSION['user'] = $_SESSION['previous_user'];
+                if (isset($_SESSION['previous_user'])) {
+                    $_SESSION['user'] = $_SESSION['previous_user'];
+                }
+
+                $sweetAlert = "Swal.fire({
+                    title: 'Sukses!',
+                    text: 'Akun berhasil ditambahkan.',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });";
+
+            } else {
+                // Gagal menambahkan akun
+                $sweetAlert = "Swal.fire({
+                    title: 'Gagal!',
+                    text: 'Tambah akun gagal.',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });";
             }
-
-            $sweetAlert = "Swal.fire({
-                title: 'Sukses!',
-                text: 'Akun berhasil ditambahkan.',
-                icon: 'success',
-                timer: 2000,
-                timerProgressBar: true,
-                showConfirmButton: false
-            });";
-
         } else {
-            // Gagal menambahkan akun
             $sweetAlert = "Swal.fire({
                 title: 'Gagal!',
-                text: 'Tambah akun gagal.',
+                text: 'Password tidak sama. Tambah akun gagal.',
                 icon: 'error',
                 timer: 2000,
                 timerProgressBar: true,
                 showConfirmButton: false
             });";
         }
-    } else {
-        $sweetAlert = "Swal.fire({
-            title: 'Gagal!',
-            text: 'Password tidak sama. Tambah akun gagal.',
-            icon: 'error',
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false
-        });";
     }
-}
 
+    // Ganti Password User
+    if (isset($_POST['gantiPassword'])) {
+        $username = $_POST['username'];
+        $passwordLama = $_POST['passwordLama'];
+        $password1 = $_POST['passwordBaru'];
+        $password2 = $_POST['confirmPasswordBaru'];
 
+        //Cek user lama 
+        $checkPasswordQuery = "SELECT `password` FROM `users` WHERE `username` = '$username'";
+        $checkPasswordResult = mysqli_query($conn, $checkPasswordQuery);
+        $dataPassword = mysqli_fetch_assoc($checkPasswordResult);
+        $password = $dataPassword['password'];
+
+        if (password_verify($passwordLama, $password)) {
+            //Cek password input sama
+            if ($password1 == $password2) {
+                    $password = password_hash($password1, PASSWORD_BCRYPT);
+                
+                // Coba jalankan query update
+                $queryUpdateUser = "UPDATE `users` 
+                SET `password`='$password'
+                WHERE
+                `username`='$username'
+                ";
+                $UpdateUser = mysqli_query($conn, $queryUpdateUser);
+
+                $checkUserQuery = "SELECT * FROM `users` WHERE `username` = '$username' AND `password`='$password'";
+                $checkUserResult = mysqli_query($conn, $checkUserQuery);
+
+                // Setelah berhasil mengubah password
+                if (mysqli_num_rows($checkUserResult) == 1) {
+
+                    $sweetAlert = "Swal.fire({
+                        title: 'Sukses!',
+                        text: 'Password berhasil diubah.',
+                        icon: 'success',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });";
+
+                } else {
+                    // Gagal menambahkan akun
+                    $sweetAlert = "Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Ubah password gagal.',
+                        icon: 'error',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });";
+                }
+            } else {
+                $sweetAlert = "Swal.fire({
+                    title: 'Gagal!',
+                    text: 'Password tidak sama. Ubah password gagal.',
+                    icon: 'error',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });";
+            }
+        } else {
+            $sweetAlert = "Swal.fire({
+                title: 'Gagal!',
+                text: 'Password lama salah. $passwordLamaEncrypted',
+                icon: 'error',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });";
+        }
+    }
 
 ?>

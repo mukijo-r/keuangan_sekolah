@@ -35,9 +35,9 @@ $previousUsername = $_SESSION['previous_user'];
                         <div class="row justify-content-center">
                             <div class="col-lg-7">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Ganti Password untuk user <?=$username;?></h3></div>
+                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Ganti Password untuk akun <?=$username;?></h3></div>
                                     <div class="card-body">
-                                        <form method="post" action="register.php">
+                                        <form method="post" action="ganti_password.php">
                                         <div class="modal-body">
                                             <div class="mb-3">
                                                 <label for="passwordLama">Password lama :</label>   
@@ -55,7 +55,8 @@ $previousUsername = $_SESSION['previous_user'];
                                         </div>
 
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-success" name="tambahUser">Tambah</button> 
+                                            <input type="hidden" name="username" value="<?=$username;?>"> 
+                                            <button type="submit" class="btn btn-success" name="gantiPassword">Ubah</button> 
                                         </div>
                                         <br> 
                                         </form>
@@ -80,10 +81,10 @@ $previousUsername = $_SESSION['previous_user'];
 </html>
 
 <script>
-    document.getElementById("confirmPassword").addEventListener("input", function() {
-        const password = document.getElementById("passwordBaru").value;
-        const confirmPassword = this.value;
-        const passwordError = document.getElementById("passwordError");
+    document.getElementById("confirmPasswordBaru").addEventListener("input", function() {
+        const passwordBaru = document.getElementById("passwordBaru").value;
+        const confirmPasswordBaru = this.value;
+        const passwordBaruError = document.getElementById("passwordBaruError");
 
         if (passwordBaru !== confirmPasswordBaru) {
             passwordBaruError.textContent = "Password harus sama";
@@ -94,7 +95,7 @@ $previousUsername = $_SESSION['previous_user'];
 </script>
 
 <script>
-    <?= $sweetAlert ?>
+<?= $sweetAlert; ?>
 </script>
 
     
