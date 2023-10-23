@@ -50,6 +50,7 @@ if (isset($_SESSION['previous_user'])) {
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
     <body class="sb-nav-fixed">
         <?php include 'navbar.php'; ?>;
@@ -68,7 +69,7 @@ if (isset($_SESSION['previous_user'])) {
                             </blockquote>
                     </figure>
                     </div>
-                    <div id="clock"></div>
+                    <div id="clock"></div><br>
                     <div class="container-fluid px-4" >                        
                         <figure class="bg-light p-4"
                             style="border-left: .35rem solid #fcdb5e; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; opacity: 0.85;">
@@ -142,6 +143,57 @@ if (isset($_SESSION['previous_user'])) {
                             </div>
                         </figure>
                     </div>
+                    <div class="container-fluid px-4" > 
+                        <figure class="bg-light p-4"
+                            style="border-left: .35rem solid #fcdb5e; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; opacity: 0.85;">
+                        <div class="row">
+                            <?php 
+                                $queryDebet = "SELECT
+                                'Cashflow' AS kategori,           
+                                SUM(jumlah)/1000 AS debet FROM transaksi_masuk_cashflow WHERE bulan = 'September' AND id_tahun_ajar = 21
+                                UNION ALL
+                                SELECT
+                                    k.nama_kategori AS kategori,
+                                    SUM(debet)/1000 AS debet
+                                FROM kategori k
+                                LEFT JOIN (
+                                    SELECT tm.id_kategori, SUM(tm.jumlah) AS debet
+                                    FROM transaksi_masuk_siswa tm
+                                    JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
+                                    WHERE ta.id_tahun_ajar = 21 AND tm.bulan = 'September'
+                                    GROUP BY tm.id_kategori
+                                    UNION ALL
+                                    SELECT tn.id_kategori, SUM(tn.jumlah) AS debet
+                                    FROM transaksi_masuk_nonsiswa tn
+                                    JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
+                                    WHERE ta.id_tahun_ajar = 21 AND tn.bulan = 'September'
+                                    GROUP BY tn.id_kategori
+                                    UNION ALL
+                                    SELECT tbm.id_kategori, SUM(tbm.jumlah) AS debet
+                                    FROM tabung_masuk tbm
+                                    JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
+                                    WHERE ta.id_tahun_ajar = 21 AND tbm.bulan = 'September'
+                                    GROUP BY tbm.id_kategori
+                                ) AS debet
+                                ON k.id_kategori = debet.id_kategori
+                                WHERE k.id_kategori <> 1
+                                GROUP BY k.id_kategori, k.nama_kategori;";
+                            $debet = mysqli_query($conn, $queryDebet);
+
+                            $data = array();
+                            while ($rowDebet = mysqli_fetch_assoc($debet)) {
+                                $data[] = $rowDebet;
+                            }
+                            $jsonData = json_encode($data);                           
+
+
+                            ?>
+                            <div class="col-xl-6 col-md-6">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
                 </main>
             </div>
         </div>
@@ -161,7 +213,7 @@ if (isset($_SESSION['previous_user'])) {
             var time = now.toLocaleTimeString();
 
             var clockElement = document.getElementById('clock');
-            clockElement.innerHTML = formattedDate + time;
+            clockElement.innerHTML = formattedDate + ' ' + time;
             }
 
             // Memanggil fungsi updateClock setiap detik
@@ -259,6 +311,45 @@ if (isset($_SESSION['previous_user'])) {
                 toggleSaldoDetails();
             });
         </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            var data = <?php echo json_encode($data); ?>;
+            var labels = data.map(item => item.kategori); 
+            var values = data.map(item => item.debet); 
+
+            var ctx = document.getElementById('barChart').getContext('2d');
+
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Debet Bulan ini (dalam ribuan)',
+                        data: values,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: [{
+                            beginAtZero: true,
+                            ticks: {
+                                function(value, index, values) {
+                                    return value / 1000 + 'k';
+                                }
+                            }
+                        }]
+                    }
+                }
+            });
+        });
+
+
+        </script>
+
 
 
     </body>
