@@ -38,9 +38,11 @@ if (isset($_SESSION['previous_user'])) {
             }
 
             #clock {
-            font-size: 8vmin; /* Ukuran font dalam 20% dari lebar atau tinggi viewport (tergantung yang lebih kecil) */
+            font-size: 5vmin; 
             text-align: right;
-            margin-top: 25%; /* Untuk menggeser elemen ke tengah halaman (opsional) */
+            margin-top: 0.5%;
+            margin-right: 2%;
+            color: white;
         }
 
 
@@ -65,9 +67,81 @@ if (isset($_SESSION['previous_user'])) {
                                 </h1></i>
                             </blockquote>
                     </figure>
-
                     </div>
                     <div id="clock"></div>
+                    <div class="container-fluid px-4" >                        
+                        <figure class="bg-light p-4"
+                            style="border-left: .35rem solid #fcdb5e; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; opacity: 0.85;">
+                            <div class="row">                                
+                                <div class="col-xl-3 col-md-6">
+                                    <?php 
+                                    $queryPemasukan = "SELECT SUM(total) AS grand_total
+                                    FROM (
+                                        SELECT SUM(jumlah) AS total FROM transaksi_masuk_siswa
+                                        UNION ALL
+                                        SELECT SUM(jumlah) FROM transaksi_masuk_nonsiswa
+                                        UNION ALL
+                                        SELECT SUM(jumlah) FROM transaksi_masuk_cashflow
+                                    ) AS subquery;";
+
+                                    $pemasukan = mysqli_query($conn, $queryPemasukan);
+                                    $rowPemasukan = mysqli_fetch_assoc($pemasukan);
+                                    $pemasukan = $rowPemasukan['grand_total'];                                    
+                                    ?>
+                                    <div class="card bg-success text-white mb-4">
+                                        <div class="card-body">Total Pemasukan</div>
+                                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                                <a class="small text-white stretched-link" href="#">View Details</a>
+                                                <div class="collapse" id="pemasukanDetails">
+                                                <h2 id="pemasukanValue">Rp. <?=$pemasukan;?></h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6">
+                                    <?php 
+                                    $queryPengeluaran = "SELECT SUM(total) AS grand_total
+                                    FROM (
+                                        SELECT SUM(jumlah) AS total FROM transaksi_keluar_siswa
+                                        UNION ALL
+                                        SELECT SUM(jumlah) FROM transaksi_keluar_nonsiswa
+                                        UNION ALL
+                                        SELECT SUM(jumlah) FROM transaksi_keluar_cashflow
+                                    ) AS subquery;";
+
+                                    $pengeluaran = mysqli_query($conn, $queryPengeluaran);
+                                    $rowPengeluaran = mysqli_fetch_assoc($pengeluaran);
+                                    $pengeluaran = $rowPengeluaran['grand_total'];
+                                    
+                                    ?>
+                                    <div class="card bg-warning text-white mb-4">
+                                        <div class="card-body">Total Pengeluaran</div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                            <a class="small text-white stretched-link" href="#" data-toggle="collapse" data-target="#pengeluaranDetails">View Details</a>
+                                            <div class="collapse" id="pengeluaranDetails">
+                                                <h2 id="pengeluaranValue">Rp. <?=$pengeluaran;?></h2>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>                                
+                                <div class="col-xl-3 col-md-6">
+                                    <?php 
+                                    $saldo = $pemasukan - $pengeluaran;
+                                    ?>
+                                    <div class="card bg-info text-white mb-4">
+                                        <div class="card-body">Saldo</div>
+                                        <div class="card-footer d-flex align-items-center justify-content-between">
+                                            <a class="small text-white stretched-link" href="#" data-toggle="collapse" data-target="#saldoDetails">View Details</a>
+                                            <div class="collapse" id="saldoDetails">
+                                                <h2 id="saldoValue">Rp. <?=$saldo;?></h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </figure>
+                    </div>
                 </main>
             </div>
         </div>
@@ -87,7 +161,7 @@ if (isset($_SESSION['previous_user'])) {
             var time = now.toLocaleTimeString();
 
             var clockElement = document.getElementById('clock');
-            clockElement.innerHTML = formattedDate + '<br>' + time;
+            clockElement.innerHTML = formattedDate + time;
             }
 
             // Memanggil fungsi updateClock setiap detik
@@ -96,6 +170,97 @@ if (isset($_SESSION['previous_user'])) {
             // Memanggil updateClock pada saat halaman pertama kali dimuat
             updateClock();
         </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const pemasukanValue = document.getElementById("pemasukanValue");
+                const pemasukanDetails = document.getElementById("pemasukanDetails");
+                const totalPemasukan = document.getElementById("totalPemasukan");
+
+                const viewDetailsLink = document.querySelector(".card-footer a");
+
+                function toggleDetails() {
+                    if (pemasukanDetails.classList.contains("show")) {
+                        pemasukanDetails.classList.remove("show");
+                        pemasukanValue.innerText = "Rp. <?=$pemasukan;?>";
+                        viewDetailsLink.innerText = "View Details";
+                    } else {
+                        pemasukanDetails.classList.add("show");
+                        pemasukanValue.innerText = "Rp. " + new Intl.NumberFormat('id-ID').format(<?=$pemasukan;?>);
+                        viewDetailsLink.innerText = "Hide Details";
+                    }
+                }
+
+                viewDetailsLink.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    toggleDetails();
+                });
+
+                // Set default state
+                toggleDetails();
+            });            
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const pengeluaranValue = document.getElementById("pengeluaranValue");
+                const pengeluaranDetails = document.getElementById("pengeluaranDetails");
+                const totalPengeluaran = document.getElementById("totalPengeluaran");
+
+                const viewDetailsLinkPengeluaran = document.querySelector(".card-footer a[data-target='#pengeluaranDetails']");
+
+                function togglePengeluaranDetails() {
+                    if (pengeluaranDetails.classList.contains("show")) {
+                        pengeluaranDetails.classList.remove("show");
+                        pengeluaranValue.innerText = "Rp. <?=$pengeluaran;?>";
+                        viewDetailsLinkPengeluaran.innerText = "View Details";
+                    } else {
+                        pengeluaranDetails.classList.add("show");
+                        pengeluaranValue.innerText = "Rp. " + new Intl.NumberFormat('id-ID').format(<?=$pengeluaran;?>);
+                        viewDetailsLinkPengeluaran.innerText = "Hide Details";
+                    }
+                }
+
+                viewDetailsLinkPengeluaran.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    togglePengeluaranDetails();
+                });
+
+                // Set default state
+                togglePengeluaranDetails();
+            });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const saldoValue = document.getElementById("saldoValue");
+                const saldoDetails = document.getElementById("saldoDetails");
+                const totalSaldo = document.getElementById("totalSaldo");
+
+                const viewDetailsLinkSaldo = document.querySelector(".card-footer a[data-target='#saldoDetails']");
+
+                function toggleSaldoDetails() {
+                    if (saldoDetails.classList.contains("show")) {
+                        saldoDetails.classList.remove("show");
+                        saldoValue.innerText = "Rp. <?=$saldo;?>";
+                        viewDetailsLinkSaldo.innerText = "View Details";
+                    } else {
+                        saldoDetails.classList.add("show");
+                        saldoValue.innerText = "Rp. " + new Intl.NumberFormat('id-ID').format(<?=$saldo;?>);
+                        viewDetailsLinkSaldo.innerText = "Hide Details";
+                    }
+                }
+
+                viewDetailsLinkSaldo.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    toggleSaldoDetails();
+                });
+
+                // Set default state
+                toggleSaldoDetails();
+            });
+        </script>
+
+
     </body>
 </html>
 
