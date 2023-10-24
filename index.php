@@ -283,7 +283,7 @@ if (isset($_SESSION['previous_user'])) {
                             <div class="col-xl-6 col-md-5">
                                 <canvas id="barChartKredit"></canvas>
                             </div>
-                        </div>
+                        </div><br><br>
                         <div class="row" style="text-align: center; border:none">
                             <div class="col-xl-6 col-md-5">
                                 <canvas id="barChartSaldo"></canvas>
@@ -295,8 +295,93 @@ if (isset($_SESSION['previous_user'])) {
                             style="border-left: .35rem solid #fcdb5e; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; opacity: 0.85;">
                         <div class="row">
                             <?php 
-                            
+                            $queryDebetBulanan = "SELECT bulan AS bulanDebet, SUM(jumlah) AS totalDebet
+                            FROM (
+                                SELECT bulan, jumlah FROM transaksi_masuk_siswa WHERE id_tahun_ajar = 21
+                                UNION ALL
+                                SELECT bulan, jumlah FROM transaksi_masuk_nonsiswa WHERE id_tahun_ajar = 21
+                                UNION ALL
+                                SELECT bulan, jumlah FROM tabung_masuk WHERE id_tahun_ajar = 21
+                                UNION ALL
+                                SELECT bulan, jumlah FROM transaksi_masuk_cashflow WHERE id_tahun_ajar = 21 
+                            ) AS combined_data
+                            GROUP BY bulanDebet
+                            ORDER BY FIELD(bulanDebet, 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni');";
 
+                            $debetBulanan = mysqli_query($conn, $queryDebetBulanan);
+
+                            $dataDebetBulanan = array();
+                            while ($rowDebetBulanan = mysqli_fetch_assoc($debetBulanan)) {
+                                $dataDebetBulanan[] = $rowDebetBulanan;
+                            }
+
+                            $queryKreditBulanan = "SELECT bulan AS bulanKredit, SUM(jumlah) AS totalKredit
+                            FROM (
+                                SELECT bulan, jumlah FROM transaksi_keluar_siswa WHERE id_tahun_ajar = 21
+                                UNION ALL
+                                SELECT bulan, jumlah FROM transaksi_keluar_nonsiswa WHERE id_tahun_ajar = 21
+                                UNION ALL
+                                SELECT bulan, jumlah FROM tabung_ambil WHERE id_tahun_ajar = 21
+                                UNION ALL
+                                SELECT bulan, jumlah FROM transaksi_keluar_cashflow WHERE id_tahun_ajar = 21                                
+                            ) AS combined_data
+                            GROUP BY bulanKredit
+                            ORDER BY FIELD(bulanKredit, 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni');";
+
+                            $kreditBulanan = mysqli_query($conn, $queryKreditBulanan);
+
+                            $dataKreditBulanan = array();
+                            while ($rowKreditBulanan = mysqli_fetch_assoc($kreditBulanan)) {
+                                $dataKreditBulanan[] = $rowKreditBulanan;
+                            }
+
+                            $querySaldoBulanan = "SELECT
+                                bulan AS bulanSaldo,
+                                SUM(jumlah_masuk) - SUM(jumlah_keluar) AS totalSaldo
+                            FROM (
+                                SELECT bulan, SUM(jumlah) AS jumlah_masuk, 0 AS jumlah_keluar
+                                FROM transaksi_masuk_siswa
+                                GROUP BY bulan
+                                UNION ALL
+                                SELECT bulan, SUM(jumlah) AS jumlah_masuk, 0 AS jumlah_keluar
+                                FROM transaksi_masuk_nonsiswa
+                                GROUP BY bulan
+                                UNION ALL
+                                SELECT bulan, SUM(jumlah) AS jumlah_masuk, 0 AS jumlah_keluar
+                                FROM transaksi_masuk_cashflow
+                                GROUP BY bulan
+                                UNION ALL
+                                SELECT bulan, SUM(jumlah) AS jumlah_masuk, 0 AS jumlah_keluar
+                                FROM tabung_masuk
+                                GROUP BY bulan
+                            
+                                UNION ALL
+                            
+                                SELECT bulan, 0 AS jumlah_masuk, SUM(jumlah) AS jumlah_keluar
+                                FROM transaksi_keluar_siswa
+                                GROUP BY bulan
+                                UNION ALL
+                                SELECT bulan, 0 AS jumlah_masuk, SUM(jumlah) AS jumlah_keluar
+                                FROM transaksi_keluar_nonsiswa
+                                GROUP BY bulan
+                                UNION ALL
+                                SELECT bulan, 0 AS jumlah_masuk, SUM(jumlah) AS jumlah_keluar
+                                FROM transaksi_keluar_cashflow
+                                GROUP BY bulan
+                                UNION ALL
+                                SELECT bulan, 0 AS jumlah_masuk, SUM(jumlah) AS jumlah_keluar
+                                FROM tabung_ambil
+                                GROUP BY bulan
+                            ) AS combined_data
+                            GROUP BY bulanSaldo
+                            ORDER BY FIELD(bulanSaldo, 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni');";
+
+                            $saldoBulanan = mysqli_query($conn, $querySaldoBulanan);
+
+                            $dataSaldoBulanan = array();
+                            while ($rowSaldoBulanan = mysqli_fetch_assoc($saldoBulanan)) {
+                                $dataSaldoBulanan[] = $rowSaldoBulanan;
+                            }                                
 
 
                             ?>
@@ -306,6 +391,11 @@ if (isset($_SESSION['previous_user'])) {
                             <div class="col-xl-6 col-md-5">
                                 <canvas id="barChartKreditBulanan"></canvas>
                             </div>
+                        </div><br><br>
+                        <div class="row" style="text-align: center; border:none">
+                            <div class="col-xl-6 col-md-5">
+                                <canvas id="barChartSaldoBulanan"></canvas>
+                            </div>                        
                         </div>
                     </div>
 
@@ -441,7 +531,7 @@ if (isset($_SESSION['previous_user'])) {
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Debet bulan ini',
+                            label: 'Pemasukan bulan ini',
                             data: values,
                             backgroundColor: 'rgba(25, 135, 84, 1)',
                             borderColor: 'rgba(25, 135, 84, 1)',
@@ -496,10 +586,10 @@ if (isset($_SESSION['previous_user'])) {
                     data: {
                         labels: labelsKredit,
                         datasets: [{
-                            label: 'Kredit bulan ini',
+                            label: 'Pengeluaran bulan ini',
                             data: valuesKredit,
-                            backgroundColor: 'rgba(255,204,0, 1)', // Warna latar belakang batang kredit
-                            borderColor: 'rgba(255,204,0, 1)', // Warna tepi batang kredit
+                            backgroundColor: 'rgba(255, 204, 0, 1)', // Warna latar belakang batang kredit
+                            borderColor: 'rgba(255, 204, 0, 1)', // Warna tepi batang kredit
                             borderWidth: 1
                         }]
                     },
@@ -542,6 +632,132 @@ if (isset($_SESSION['previous_user'])) {
                             data: valuesSaldo,
                             backgroundColor: 'rgba(91, 192, 222, 1)', // Warna latar belakang batang kredit
                             borderColor: 'rgba(91, 192, 222, 1)', // Warna tepi batang kredit
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return value / 1000 + 'k';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <!-- script grafik debet bulanan -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var dataDebetBulanan = <?php echo json_encode($dataDebetBulanan); ?>;
+                var labelsDebetBulanan = dataDebetBulanan.map(item => item.bulanDebet);
+                var valuesDebetBulanan = dataDebetBulanan.map(item => item.totalDebet);
+
+                var ctxDebetBulanan = document.getElementById('barChartDebetBulanan').getContext('2d');
+
+                var chartDebetBulanan = new Chart(ctxDebetBulanan, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsDebetBulanan,
+                        datasets: [{
+                            label: 'Total Pemasukan per bulan',
+                            data: valuesDebetBulanan,
+                            backgroundColor: 'rgba(25, 135, 84, 1)',
+                            borderColor: 'rgba(25, 135, 84, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return value / 1000 + 'k';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <!-- script grafik debet bulanan -->
+         <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var dataKreditBulanan = <?php echo json_encode($dataKreditBulanan); ?>;
+                var labelsKreditBulanan = dataKreditBulanan.map(item => item.bulanKredit);
+                var valuesKreditBulanan = dataKreditBulanan.map(item => item.totalKredit);
+
+                var ctxKreditBulanan = document.getElementById('barChartKreditBulanan').getContext('2d');
+
+                var chartKreditBulanan = new Chart(ctxKreditBulanan, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsKreditBulanan,
+                        datasets: [{
+                            label: 'Total Pengeluaran per bulan',
+                            data: valuesKreditBulanan,
+                            backgroundColor: 'rgba(255, 204, 0, 1)',
+                            borderColor: 'rgba(255, 204, 0, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return value / 1000 + 'k';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <!-- script grafik saldo bulanan -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var dataSaldoBulanan = <?php echo json_encode($dataSaldoBulanan); ?>;
+                var labelsSaldoBulanan = dataSaldoBulanan.map(item => item.bulanSaldo);
+                var valuesSaldoBulanan = dataSaldoBulanan.map(item => item.totalSaldo);
+
+                var ctxSaldoBulanan = document.getElementById('barChartSaldoBulanan').getContext('2d');
+
+                var chartSaldoBulanan = new Chart(ctxSaldoBulanan, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsSaldoBulanan,
+                        datasets: [{
+                            label: 'Saldo per bulan',
+                            data: valuesSaldoBulanan,
+                            backgroundColor: 'rgba(91, 192, 222, 1)',
+                            borderColor: 'rgba(91, 192, 222, 1)',
                             borderWidth: 1
                         }]
                     },
