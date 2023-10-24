@@ -130,14 +130,14 @@ if (isset($_SESSION['previous_user'])) {
                                 </div>                                
                                 <div class="col-xl-3 col-md-6">
                                     <?php 
-                                    $saldo = $pemasukan - $pengeluaran;
+                                    $saldoTotal = $pemasukan - $pengeluaran;
                                     ?>
                                     <div class="card bg-info text-white mb-4">
                                         <div class="card-body">Saldo</div>
                                         <div class="card-footer d-flex align-items-center justify-content-between">
                                             <a class="small text-white stretched-link" href="#" data-toggle="collapse" data-target="#saldoDetails">View Details</a>
                                             <div class="collapse" id="saldoDetails">
-                                                <h2 id="saldoValue">Rp. <?=$saldo;?></h2>
+                                                <h2 id="saldoValue">Rp. <?=$saldoTotal;?></h2>
                                             </div>
                                         </div>
                                     </div>
@@ -224,9 +224,57 @@ if (isset($_SESSION['previous_user'])) {
                                 $dataKredit[] = $rowKredit;
                             }
 
-                            $current_time = date('Y-m-d H:i:s');
-                            
+                            $querySaldo = "SELECT
+                                    'Cashflow' AS kategoriSaldo,
+                                    (COALESCE(total_masuk, 0) - COALESCE(total_keluar, 0)) AS saldo
+                                FROM (
+                                    SELECT
+                                        SUM(jumlah) AS total_masuk
+                                    FROM transaksi_masuk_cashflow
+                                    WHERE tanggal <= NOW()
+                                ) AS masuk,
+                                (
+                                    SELECT
+                                        SUM(jumlah) AS total_keluar
+                                    FROM transaksi_keluar_cashflow
+                                    WHERE tanggal <= NOW()
+                                ) AS keluar
+                                
+                                UNION ALL
+                                
+                                SELECT k.nama_kategori AS kategoriSaldo,
+                                    COALESCE(total_masuk, 0) - COALESCE(total_keluar, 0) AS saldo
+                                FROM kategori k
+                                LEFT JOIN (
+                                    SELECT id_kategori, SUM(jumlah) AS total_masuk
+                                    FROM (
+                                        SELECT id_kategori, jumlah FROM transaksi_masuk_siswa WHERE tanggal <= NOW()
+                                        UNION ALL
+                                        SELECT id_kategori, jumlah FROM transaksi_masuk_nonsiswa WHERE tanggal <= NOW()
+                                        UNION ALL
+                                        SELECT id_kategori, jumlah FROM tabung_masuk WHERE tanggal <= NOW()
+                                    ) AS masuk
+                                    GROUP BY id_kategori
+                                ) masuk ON k.id_kategori = masuk.id_kategori
+                                LEFT JOIN (
+                                    SELECT id_kategori, SUM(jumlah) AS total_keluar
+                                    FROM (
+                                        SELECT id_kategori, jumlah FROM transaksi_keluar_siswa WHERE tanggal <= NOW()
+                                        UNION ALL
+                                        SELECT id_kategori, jumlah FROM transaksi_keluar_nonsiswa WHERE tanggal <= NOW()
+                                        UNION ALL
+                                        SELECT id_kategori, jumlah FROM tabung_ambil WHERE tanggal <= NOW()
+                                    ) AS keluar
+                                    GROUP BY id_kategori
+                                ) keluar ON k.id_kategori = keluar.id_kategori
+                                WHERE k.id_kategori <> 1;";   
+                                
+                                $saldo = mysqli_query($conn, $querySaldo);
 
+                                $dataSaldo = array();
+                                while ($rowSaldo = mysqli_fetch_assoc($saldo)) {
+                                    $dataSaldo[] = $rowSaldo;
+                                }
 
                             ?>
                             <div class="col-xl-6 col-md-5">
@@ -234,6 +282,29 @@ if (isset($_SESSION['previous_user'])) {
                             </div>
                             <div class="col-xl-6 col-md-5">
                                 <canvas id="barChartKredit"></canvas>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align: center; border:none">
+                            <div class="col-xl-6 col-md-5">
+                                <canvas id="barChartSaldo"></canvas>
+                            </div>                        
+                        </div>
+                    </div>
+                    <div class="container-fluid px-4" > 
+                        <figure class="bg-light p-4"
+                            style="border-left: .35rem solid #fcdb5e; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; opacity: 0.85;">
+                        <div class="row">
+                            <?php 
+                            
+
+
+
+                            ?>
+                            <div class="col-xl-6 col-md-5">
+                                <canvas id="barChartDebetBulanan"></canvas>
+                            </div>
+                            <div class="col-xl-6 col-md-5">
+                                <canvas id="barChartKreditBulanan"></canvas>
                             </div>
                         </div>
                     </div>
@@ -244,24 +315,26 @@ if (isset($_SESSION['previous_user'])) {
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
 
-        
+        <!-- script untuk jam -->
         <script>
-        function updateClock() {
-            var now = new Date();
-            var options = { year: 'numeric', month: 'long', day: 'numeric' };
-            var formattedDate = now.toLocaleDateString(undefined, options);
-            var time = now.toLocaleTimeString();
+            function updateClock() {
+                var now = new Date();
+                var options = { year: 'numeric', month: 'long', day: 'numeric' };
+                var formattedDate = now.toLocaleDateString(undefined, options);
+                var time = now.toLocaleTimeString();
 
-            var clockElement = document.getElementById('clock');
-            clockElement.innerHTML = formattedDate + ' ' + time;
-            }
+                var clockElement = document.getElementById('clock');
+                clockElement.innerHTML = formattedDate + ' ' + time;
+                }
 
-            // Memanggil fungsi updateClock setiap detik
-            setInterval(updateClock, 1000);
+                // Memanggil fungsi updateClock setiap detik
+                setInterval(updateClock, 1000);
 
-            // Memanggil updateClock pada saat halaman pertama kali dimuat
-            updateClock();
+                // Memanggil updateClock pada saat halaman pertama kali dimuat
+                updateClock();
         </script>
+
+        <!-- script card pemasukan -->
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const pemasukanValue = document.getElementById("pemasukanValue");
@@ -292,6 +365,7 @@ if (isset($_SESSION['previous_user'])) {
             });            
         </script>
 
+        <!-- script card pengeluaran -->
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const pengeluaranValue = document.getElementById("pengeluaranValue");
@@ -322,6 +396,7 @@ if (isset($_SESSION['previous_user'])) {
             });
         </script>
 
+        <!-- script card saldo -->
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const saldoValue = document.getElementById("saldoValue");
@@ -333,11 +408,11 @@ if (isset($_SESSION['previous_user'])) {
                 function toggleSaldoDetails() {
                     if (saldoDetails.classList.contains("show")) {
                         saldoDetails.classList.remove("show");
-                        saldoValue.innerText = "Rp. <?=$saldo;?>";
+                        saldoValue.innerText = "Rp. <?=$saldoTotal;?>";
                         viewDetailsLinkSaldo.innerText = "View Details";
                     } else {
                         saldoDetails.classList.add("show");
-                        saldoValue.innerText = "Rp. " + new Intl.NumberFormat('id-ID').format(<?=$saldo;?>);
+                        saldoValue.innerText = "Rp. " + new Intl.NumberFormat('id-ID').format(<?=$saldoTotal;?>);
                         viewDetailsLinkSaldo.innerText = "Hide Details";
                     }
                 }
@@ -352,6 +427,7 @@ if (isset($_SESSION['previous_user'])) {
             });
         </script>
 
+        <!-- script grafik pemasukan -->
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var dataDebet = <?php echo json_encode($dataDebet); ?>;
@@ -406,6 +482,7 @@ if (isset($_SESSION['previous_user'])) {
             });
         </script>
 
+        <!-- script grafik pengeluaran -->
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var dataKredit = <?php echo json_encode($dataKredit); ?>;
@@ -423,6 +500,48 @@ if (isset($_SESSION['previous_user'])) {
                             data: valuesKredit,
                             backgroundColor: 'rgba(255,204,0, 1)', // Warna latar belakang batang kredit
                             borderColor: 'rgba(255,204,0, 1)', // Warna tepi batang kredit
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return value / 1000 + 'k';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <!-- script grafik saldo -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var dataSaldo = <?php echo json_encode($dataSaldo); ?>;
+                var labelsSaldo = dataSaldo.map(item => item.kategoriSaldo);
+                var valuesSaldo = dataSaldo.map(item => item.saldo);
+
+                var ctxSaldo = document.getElementById('barChartSaldo').getContext('2d');
+
+                var chartSaldo = new Chart(ctxSaldo, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsSaldo,
+                        datasets: [{
+                            label: 'Saldo bulan ini',
+                            data: valuesSaldo,
+                            backgroundColor: 'rgba(91, 192, 222, 1)', // Warna latar belakang batang kredit
+                            borderColor: 'rgba(91, 192, 222, 1)', // Warna tepi batang kredit
                             borderWidth: 1
                         }]
                     },
