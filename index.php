@@ -42,7 +42,7 @@ if (isset($_SESSION['previous_user'])) {
             text-align: right;
             margin-top: 0.5%;
             margin-right: 2%;
-            color: white;
+            color: Blue;
         }
 
 
@@ -66,8 +66,7 @@ if (isset($_SESSION['previous_user'])) {
                             <blockquote class="blockquote pb-2">
                                 <i><h1>
                                     Selamat datang <?= isset($previousUsername) ? $previousUsername : $username; ?>, Anda berada di tahun ajaran <u><?=$tahun_ajar;?></u>
-                                </h1></i>
-                                <h2><?=$bulanIni;?></h2>
+                                </h1></i>                                
                             </blockquote>
                     </figure>
                     </div>
@@ -85,6 +84,8 @@ if (isset($_SESSION['previous_user'])) {
                                         SELECT SUM(jumlah) FROM transaksi_masuk_nonsiswa
                                         UNION ALL
                                         SELECT SUM(jumlah) FROM transaksi_masuk_cashflow
+                                        UNION ALL
+                                        SELECT SUM(jumlah) FROM tabung_masuk
                                     ) AS subquery;";
 
                                     $pemasukan = mysqli_query($conn, $queryPemasukan);
@@ -94,7 +95,7 @@ if (isset($_SESSION['previous_user'])) {
                                     <div class="card bg-success text-white mb-4">
                                         <div class="card-body">Total Pemasukan</div>
                                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                                <a class="small text-white stretched-link" href="#">View Details</a>
+                                                <a class="small text-white stretched-link" href="#">Tampilkan</a>
                                                 <div class="collapse" id="pemasukanDetails">
                                                 <h2 id="pemasukanValue">Rp. <?=$pemasukan;?></h2>
                                             </div>
@@ -110,6 +111,8 @@ if (isset($_SESSION['previous_user'])) {
                                         SELECT SUM(jumlah) FROM transaksi_keluar_nonsiswa
                                         UNION ALL
                                         SELECT SUM(jumlah) FROM transaksi_keluar_cashflow
+                                        UNION ALL
+                                        SELECT SUM(jumlah) FROM tabung_ambil
                                     ) AS subquery;";
 
                                     $pengeluaran = mysqli_query($conn, $queryPengeluaran);
@@ -120,7 +123,7 @@ if (isset($_SESSION['previous_user'])) {
                                     <div class="card bg-warning text-white mb-4">
                                         <div class="card-body">Total Pengeluaran</div>
                                         <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-white stretched-link" href="#" data-toggle="collapse" data-target="#pengeluaranDetails">View Details</a>
+                                            <a class="small text-white stretched-link" href="#" data-toggle="collapse" data-target="#pengeluaranDetails">Tampilkan</a>
                                             <div class="collapse" id="pengeluaranDetails">
                                                 <h2 id="pengeluaranValue">Rp. <?=$pengeluaran;?></h2>
                                             </div>
@@ -135,7 +138,7 @@ if (isset($_SESSION['previous_user'])) {
                                     <div class="card bg-info text-white mb-4">
                                         <div class="card-body">Saldo</div>
                                         <div class="card-footer d-flex align-items-center justify-content-between">
-                                            <a class="small text-white stretched-link" href="#" data-toggle="collapse" data-target="#saldoDetails">View Details</a>
+                                            <a class="small text-white stretched-link" href="#" data-toggle="collapse" data-target="#saldoDetails">Tampilkan</a>
                                             <div class="collapse" id="saldoDetails">
                                                 <h2 id="saldoValue">Rp. <?=$saldoTotal;?></h2>
                                             </div>
@@ -168,7 +171,7 @@ if (isset($_SESSION['previous_user'])) {
                                     SELECT tn.id_kategori, SUM(tn.jumlah) AS debet
                                     FROM transaksi_masuk_nonsiswa tn
                                     JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
-                                    WHERE ta.id_tahun_ajar = 21 AND tn.bulan = '$bulanIni'
+                                    WHERE ta.id_tahun_ajar = $idTahunAjarDefault AND tn.bulan = '$bulanIni'
                                     GROUP BY tn.id_kategori
                                     UNION ALL
                                     SELECT tbm.id_kategori, SUM(tbm.jumlah) AS debet
@@ -297,13 +300,13 @@ if (isset($_SESSION['previous_user'])) {
                             <?php 
                             $queryDebetBulanan = "SELECT bulan AS bulanDebet, SUM(jumlah) AS totalDebet
                             FROM (
-                                SELECT bulan, jumlah FROM transaksi_masuk_siswa WHERE id_tahun_ajar = 21
+                                SELECT bulan, jumlah FROM transaksi_masuk_siswa WHERE id_tahun_ajar = $idTahunAjarDefault
                                 UNION ALL
-                                SELECT bulan, jumlah FROM transaksi_masuk_nonsiswa WHERE id_tahun_ajar = 21
+                                SELECT bulan, jumlah FROM transaksi_masuk_nonsiswa WHERE id_tahun_ajar = $idTahunAjarDefault
                                 UNION ALL
-                                SELECT bulan, jumlah FROM tabung_masuk WHERE id_tahun_ajar = 21
+                                SELECT bulan, jumlah FROM tabung_masuk WHERE id_tahun_ajar = $idTahunAjarDefault
                                 UNION ALL
-                                SELECT bulan, jumlah FROM transaksi_masuk_cashflow WHERE id_tahun_ajar = 21 
+                                SELECT bulan, jumlah FROM transaksi_masuk_cashflow WHERE id_tahun_ajar = $idTahunAjarDefault 
                             ) AS combined_data
                             GROUP BY bulanDebet
                             ORDER BY FIELD(bulanDebet, 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni');";
@@ -317,13 +320,13 @@ if (isset($_SESSION['previous_user'])) {
 
                             $queryKreditBulanan = "SELECT bulan AS bulanKredit, SUM(jumlah) AS totalKredit
                             FROM (
-                                SELECT bulan, jumlah FROM transaksi_keluar_siswa WHERE id_tahun_ajar = 21
+                                SELECT bulan, jumlah FROM transaksi_keluar_siswa WHERE id_tahun_ajar = $idTahunAjarDefault
                                 UNION ALL
-                                SELECT bulan, jumlah FROM transaksi_keluar_nonsiswa WHERE id_tahun_ajar = 21
+                                SELECT bulan, jumlah FROM transaksi_keluar_nonsiswa WHERE id_tahun_ajar = $idTahunAjarDefault
                                 UNION ALL
-                                SELECT bulan, jumlah FROM tabung_ambil WHERE id_tahun_ajar = 21
+                                SELECT bulan, jumlah FROM tabung_ambil WHERE id_tahun_ajar = $idTahunAjarDefault
                                 UNION ALL
-                                SELECT bulan, jumlah FROM transaksi_keluar_cashflow WHERE id_tahun_ajar = 21                                
+                                SELECT bulan, jumlah FROM transaksi_keluar_cashflow WHERE id_tahun_ajar = $idTahunAjarDefault                                
                             ) AS combined_data
                             GROUP BY bulanKredit
                             ORDER BY FIELD(bulanKredit, 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni');";
@@ -437,11 +440,11 @@ if (isset($_SESSION['previous_user'])) {
                     if (pemasukanDetails.classList.contains("show")) {
                         pemasukanDetails.classList.remove("show");
                         pemasukanValue.innerText = "Rp. <?=$pemasukan;?>";
-                        viewDetailsLink.innerText = "View Details";
+                        viewDetailsLink.innerText = "Tampilkan";
                     } else {
                         pemasukanDetails.classList.add("show");
                         pemasukanValue.innerText = "Rp. " + new Intl.NumberFormat('id-ID').format(<?=$pemasukan;?>);
-                        viewDetailsLink.innerText = "Hide Details";
+                        viewDetailsLink.innerText = "Sembunyikan";
                     }
                 }
 
@@ -468,11 +471,11 @@ if (isset($_SESSION['previous_user'])) {
                     if (pengeluaranDetails.classList.contains("show")) {
                         pengeluaranDetails.classList.remove("show");
                         pengeluaranValue.innerText = "Rp. <?=$pengeluaran;?>";
-                        viewDetailsLinkPengeluaran.innerText = "View Details";
+                        viewDetailsLinkPengeluaran.innerText = "Tampilkan";
                     } else {
                         pengeluaranDetails.classList.add("show");
                         pengeluaranValue.innerText = "Rp. " + new Intl.NumberFormat('id-ID').format(<?=$pengeluaran;?>);
-                        viewDetailsLinkPengeluaran.innerText = "Hide Details";
+                        viewDetailsLinkPengeluaran.innerText = "Sembunyikan";
                     }
                 }
 
@@ -499,11 +502,11 @@ if (isset($_SESSION['previous_user'])) {
                     if (saldoDetails.classList.contains("show")) {
                         saldoDetails.classList.remove("show");
                         saldoValue.innerText = "Rp. <?=$saldoTotal;?>";
-                        viewDetailsLinkSaldo.innerText = "View Details";
+                        viewDetailsLinkSaldo.innerText = "Tampilkan";
                     } else {
                         saldoDetails.classList.add("show");
                         saldoValue.innerText = "Rp. " + new Intl.NumberFormat('id-ID').format(<?=$saldoTotal;?>);
-                        viewDetailsLinkSaldo.innerText = "Hide Details";
+                        viewDetailsLinkSaldo.innerText = "Sembunyikan";
                     }
                 }
 
