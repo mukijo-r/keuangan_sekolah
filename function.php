@@ -436,19 +436,49 @@
         header('location:siswa.php');
         exit;
     }
-    catch (Exception $e) {
-    // Tangani exception di sini
-    $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
-    $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
-    header('location:siswa.php');
-    exit;
-    }
+        catch (Exception $e) {
+        // Tangani exception di sini
+        $_SESSION['flash_message'] = 'Terjadi kesalahan: ' . $e->getMessage();
+        $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
+        header('location:siswa.php');
+        exit;
+        }
     }
 
     // Tabungan Masuk
     if(isset($_POST['tambahTransTabung'])){
         $tanggal = $_POST['tanggal'];
         $tanggalTabung = date("Y-m-d H:i", strtotime($tanggal));
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
@@ -483,7 +513,6 @@
         $nominal = $_POST['nominal'];
         $guru = $_POST['guru'];
         $keterangan = $_POST['keterangan'];
-        $bulan = $_POST['bulan'];;
 
         try {
             $queryInsertTabung = "INSERT INTO tabung_masuk (tanggal, id_tahun_ajar, id_kategori, bulan, id_siswa, jumlah, id_guru, keterangan) VALUES ('$tanggalTabung', '$idTahunAjar', '8', '$bulan','$idSiswa','$nominal','$guru','$keterangan')";
