@@ -47,10 +47,11 @@ if (isset($_SESSION['previous_user'])) {
 
 
         </style>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
     </head>
     <body class="sb-nav-fixed">
         <?php include 'navbar.php'; ?>;
@@ -66,6 +67,7 @@ if (isset($_SESSION['previous_user'])) {
                                 <i><h1>
                                     Selamat datang <?= isset($previousUsername) ? $previousUsername : $username; ?>, Anda berada di tahun ajaran <u><?=$tahun_ajar;?></u>
                                 </h1></i>
+                                <h2><?=$bulanIni;?></h2>
                             </blockquote>
                     </figure>
                     </div>
@@ -149,30 +151,30 @@ if (isset($_SESSION['previous_user'])) {
                         <div class="row">
                             <?php 
                                 $queryDebet = "SELECT
-                                'Cashflow' AS kategori,           
-                                SUM(jumlah)/1000 AS debet FROM transaksi_masuk_cashflow WHERE bulan = 'September' AND id_tahun_ajar = 21
+                                'Cashflow' AS kategoriDebet,           
+                                SUM(jumlah) AS debet FROM transaksi_masuk_cashflow WHERE bulan = '$bulanIni' AND id_tahun_ajar = $idTahunAjarDefault
                                 UNION ALL
                                 SELECT
-                                    k.nama_kategori AS kategori,
-                                    SUM(debet)/1000 AS debet
+                                    k.nama_kategori AS kategoriDebet,
+                                    SUM(debet) AS debet
                                 FROM kategori k
                                 LEFT JOIN (
                                     SELECT tm.id_kategori, SUM(tm.jumlah) AS debet
                                     FROM transaksi_masuk_siswa tm
                                     JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
-                                    WHERE ta.id_tahun_ajar = 21 AND tm.bulan = 'September'
+                                    WHERE ta.id_tahun_ajar = $idTahunAjarDefault AND tm.bulan = '$bulanIni'
                                     GROUP BY tm.id_kategori
                                     UNION ALL
                                     SELECT tn.id_kategori, SUM(tn.jumlah) AS debet
                                     FROM transaksi_masuk_nonsiswa tn
                                     JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
-                                    WHERE ta.id_tahun_ajar = 21 AND tn.bulan = 'September'
+                                    WHERE ta.id_tahun_ajar = 21 AND tn.bulan = '$bulanIni'
                                     GROUP BY tn.id_kategori
                                     UNION ALL
                                     SELECT tbm.id_kategori, SUM(tbm.jumlah) AS debet
                                     FROM tabung_masuk tbm
                                     JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
-                                    WHERE ta.id_tahun_ajar = 21 AND tbm.bulan = 'September'
+                                    WHERE ta.id_tahun_ajar = $idTahunAjarDefault AND tbm.bulan = '$bulanIni'
                                     GROUP BY tbm.id_kategori
                                 ) AS debet
                                 ON k.id_kategori = debet.id_kategori
@@ -180,16 +182,58 @@ if (isset($_SESSION['previous_user'])) {
                                 GROUP BY k.id_kategori, k.nama_kategori;";
                             $debet = mysqli_query($conn, $queryDebet);
 
-                            $data = array();
+                            $dataDebet = array();
                             while ($rowDebet = mysqli_fetch_assoc($debet)) {
-                                $data[] = $rowDebet;
+                                $dataDebet[] = $rowDebet;
                             }
-                            $jsonData = json_encode($data);                           
+                            
+                            $queryKredit = "SELECT
+                                'Cashflow' AS kategoriKredit,           
+                                SUM(jumlah) AS kredit FROM transaksi_keluar_cashflow WHERE bulan = '$bulanIni' AND id_tahun_ajar = $idTahunAjarDefault
+                                UNION ALL
+                                SELECT
+                                    k.nama_kategori AS kategoriKredit,
+                                    SUM(kredit) AS kredit
+                                FROM kategori k
+                                LEFT JOIN (
+                                    SELECT tks.id_kategori, SUM(tks.jumlah) AS kredit
+                                    FROM transaksi_keluar_siswa tks
+                                    JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
+                                    WHERE ta.id_tahun_ajar = $idTahunAjarDefault AND tks.bulan = '$bulanIni'
+                                    GROUP BY tks.id_kategori
+                                    UNION ALL
+                                    SELECT tkn.id_kategori, SUM(tkn.jumlah) AS kredit
+                                    FROM transaksi_keluar_nonsiswa tkn
+                                    JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
+                                    WHERE ta.id_tahun_ajar = $idTahunAjarDefault AND tkn.bulan = '$bulanIni'
+                                    GROUP BY tkn.id_kategori
+                                    UNION ALL
+                                    SELECT tbk.id_kategori, SUM(tbk.jumlah) AS kredit
+                                    FROM tabung_ambil tbk
+                                    JOIN tahun_ajar ta ON tbk.id_tahun_ajar = ta.id_tahun_ajar
+                                    WHERE ta.id_tahun_ajar = $idTahunAjarDefault AND tbk.bulan = '$bulanIni'
+                                    GROUP BY tbk.id_kategori
+                                ) AS kredit
+                                ON k.id_kategori = kredit.id_kategori
+                                WHERE k.id_kategori <> 1
+                                GROUP BY k.id_kategori, k.nama_kategori;";
+                            $kredit = mysqli_query($conn, $queryKredit);
+
+                            $dataKredit = array();
+                            while ($rowKredit = mysqli_fetch_assoc($kredit)) {
+                                $dataKredit[] = $rowKredit;
+                            }
+
+                            $current_time = date('Y-m-d H:i:s');
+                            
 
 
                             ?>
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-6 col-md-5">
                                 <canvas id="barChart"></canvas>
+                            </div>
+                            <div class="col-xl-6 col-md-5">
+                                <canvas id="barChartKredit"></canvas>
                             </div>
                         </div>
                     </div>
@@ -199,12 +243,8 @@ if (isset($_SESSION['previous_user'])) {
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="js/datatables-simple-demo.js"></script>
-        <script async defer src="https://dailyverses.net/get/verse.js?language=niv"></script>
+
+        
         <script>
         function updateClock() {
             var now = new Date();
@@ -314,42 +354,98 @@ if (isset($_SESSION['previous_user'])) {
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-            var data = <?php echo json_encode($data); ?>;
-            var labels = data.map(item => item.kategori); 
-            var values = data.map(item => item.debet); 
+                var dataDebet = <?php echo json_encode($dataDebet); ?>;
+                var labels = dataDebet.map(item => item.kategoriDebet); 
+                var values = dataDebet.map(item => item.debet); 
+                //console.log(values);
+                var ctx = document.getElementById('barChart').getContext('2d');
 
-            var ctx = document.getElementById('barChart').getContext('2d');
-
-            var chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Debet Bulan ini (dalam ribuan)',
-                        data: values,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: [{
-                            beginAtZero: true,
-                            ticks: {
-                                function(value, index, values) {
-                                    return value / 1000 + 'k';
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Debet bulan ini',
+                            data: values,
+                            backgroundColor: 'rgba(25, 135, 84, 1)',
+                            borderColor: 'rgba(25, 135, 84, 1)',
+                            borderWidth: 1                        
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return value / 1000 + 'k';
+                                        //console.log(value);
+                                    }
                                 }
                             }
-                        }]
+                        },
+                        plugins: {
+                            legend: {
+                                display: true
+                            },
+                            datalabels: { 
+                                anchor: 'end',
+                                align: 'top',
+                                offset: 4,
+                                color: 'rgba(75, 192, 192, 1)',
+                                font: { weight: 'bold' },
+                                formatter: function(value) {
+                                    return (value / 1000).toFixed(2) + 'k';
+                                },
+                                display: true,
+                                data: values                                
+                            }
+                        }
                     }
-                }
+                });
             });
-        });
-
-
         </script>
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var dataKredit = <?php echo json_encode($dataKredit); ?>;
+                var labelsKredit = dataKredit.map(item => item.kategoriKredit);
+                var valuesKredit = dataKredit.map(item => item.kredit);
+
+                var ctxKredit = document.getElementById('barChartKredit').getContext('2d');
+
+                var chartKredit = new Chart(ctxKredit, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsKredit,
+                        datasets: [{
+                            label: 'Kredit bulan ini',
+                            data: valuesKredit,
+                            backgroundColor: 'rgba(255,204,0, 1)', // Warna latar belakang batang kredit
+                            borderColor: 'rgba(255,204,0, 1)', // Warna tepi batang kredit
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return value / 1000 + 'k';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
 
 
     </body>
