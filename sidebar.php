@@ -24,8 +24,6 @@ require 'sidebar_function.php';
             .logo {
                 border-radius: 100%; /* Membuat border melingkar dengan radius 50% dari lebar atau tinggi kontainer */
                 overflow: hidden; /* Menghilangkan bagian gambar yang mungkin melampaui border */
-
- /* Mengatur konten vertikal ke tengah */
             }
 
             /* Style untuk gambar di dalam kontainer */

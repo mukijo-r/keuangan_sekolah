@@ -247,15 +247,15 @@ date_default_timezone_set('Asia/Jakarta');
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="bulanIniEdit">Bulan ini :</label>                     
-                                                                <input type="text" name="bulanIniEdit" id="bulanIniEdit" value="<?=$bulanIni;?>" class="form-control" readonly>
+                                                                <input type="text" name="bulanIniEdit" id="bulanIniEdit" value="<?=$bulanIni;?>" class="form-control">
                                                             </div><div class="mb-3">
                                                                 <label for="tunggakanEdit">Tunggakan :</label>                     
                                                                 <input type="text" name="tunggakanEdit" id="tunggakanEdit" value="<?=$tunggakan;?>" class="form-control" readonly>
                                                             </div>
-                                                            <div class="mb-3">
+                                                            <!-- <div class="mb-3">
                                                                 <label for="jumlahEdit">jumlah Pembayaran :</label>                        
                                                                 <input type="number" name="jumlahEdit" id="jumlahEdit" value="<?=$nominal;?>" class="form-control">
-                                                            </div>
+                                                            </div> -->
                                                             <div class="mb-3">   
                                                                 <label for="guruEdit">Penerima :</label>                     
                                                                 <select name="guruEdit" class="form-select" id="guruEdit" value="<?=$namaGuru;?>" aria-label="Guru">>
@@ -587,6 +587,11 @@ date_default_timezone_set('Asia/Jakarta');
             xhr.send();
         });
 
+        // Tambahkan event listener ketika nilai "siswa" berubah
+        siswaDropdown.addEventListener('change', function() {
+            updateNominalValue();
+        });
+
         // Tambahkan event listener ketika nilai "kategori" berubah
         kategoriDropdown.addEventListener('change', function() {
             updateNominalValue();
@@ -614,6 +619,11 @@ date_default_timezone_set('Asia/Jakarta');
             };
             xhr.send();
         }
+
+        // Tambahkan event listener ketika nilai "siswa" berubah
+        siswaDropdownEdit.addEventListener('change', function() {
+            updateNominalValueEdit();
+        });
 
         // Tambahkan event listener ketika nilai "kategori" berubah
         kategoriDropdownEdit.addEventListener('change', function() {
