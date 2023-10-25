@@ -1190,7 +1190,7 @@
     if(isset($_POST['editTransSiswa'])){
         $idTransaksiMasukSiswa = $_POST['id_tms_masuk'];
         $tanggal = $_POST['tanggal'];
-        $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
+        $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));
         
 
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
@@ -1246,7 +1246,7 @@
         $penetapan = $_POST['nominalEdit'];
         $bulanIni = $_POST['bulanIniEdit'];
         $tunggakan = $_POST['tunggakanEdit'];
-        $jumlah = $_POST['jumlahEdit'];
+        $jumlah = $bulanIni + $tunggakan;
         $guru = $_POST['guruEdit'];
         // Menggunakan query untuk mendapatkan id_guru berdasarkan nama_guru yang dipilih
         $queryGetGuru = mysqli_query($conn, "SELECT id_guru FROM guru WHERE nama_lengkap = '$guru'");
