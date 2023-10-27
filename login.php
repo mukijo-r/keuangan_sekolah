@@ -61,14 +61,14 @@ if (isset($_POST['login'])) {
                         <div class="col-md-3">
                         </div>
                         <div class="col-md-6">
-                            <figure class="bg-light p-4" style="opacity: 0.65;">
+                            <figure class="bg-light p-4" style="opacity: 0.55;">
                                 <blockquote class="blockquote pb-2">
-                                    <h1>
-                                        SISTEM MANAJEMEN KEUANGAN
-                                    </h1>
-                                    <h1>
-                                        SEKOLAH DASAR KATOLIK BHAKTI ROGOJAMPI
-                                    </h1>
+                                    <h2>
+                                        SISTEM INFORMASI MANAJEMEN KEUANGAN
+                                    </h2>
+                                    <h2>
+                                        SD KATOLIK BHAKTI ROGOJAMPI
+                                    </h2>
                                 </blockquote>
                             </figure>
                         </div>
@@ -95,9 +95,9 @@ if (isset($_POST['login'])) {
                                                 <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
                                                 <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
                                             </div>
-                                            <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                            <div class="d-flex justify-content-center mt-4 mb-0">
                                                 <a class="small" href="#.html"></a>
-                                                <button class="btn btn-primary" name="login">Login</button>
+                                                <button class="btn btn-primary mx-auto" name="login">Login</button>
                                             </div>
                                         </form>
                                     </div>
