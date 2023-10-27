@@ -220,7 +220,6 @@ $finalJumlahSpp = 0;
 for ($kelas = 1; $kelas <= 6; $kelas++) {
 
 $queryTotal = "SELECT
-SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.penetapan ELSE 0 END) AS penetapan_spp_kelas,
 SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.bulan_ini ELSE 0 END) AS bulan_ini_spp_kelas,
 SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.tunggakan ELSE 0 END) AS tunggakan_spp_kelas,
 SUM(CASE WHEN s.id_kelas = $kelas AND subkat.nama_sub_kategori = 'SPP' THEN tms.jumlah ELSE 0 END) AS total_spp_kelas
@@ -238,10 +237,20 @@ WHERE
 $resultTotal = mysqli_query($conn, $queryTotal);
 
 $rowKelas=mysqli_fetch_array($resultTotal);
-$penetapanSppKelas =  $rowKelas['penetapan_spp_kelas'];
 $bulanIniSppKelas =  $rowKelas['bulan_ini_spp_kelas'];
 $tunggakanSppKelas =  $rowKelas['tunggakan_spp_kelas'];
 $totalSppKelas = $rowKelas['total_spp_kelas'];
+
+$queryPenetapanKelas = "SELECT SUM(p.nominal) AS total_nominal
+    FROM penetapan p
+    JOIN siswa s ON p.id_siswa = s.id_siswa
+    WHERE
+    p.id_sub_kategori = 5 AND
+    s.id_kelas = $kelas;";
+
+    $resultPenetapanSppKelas = mysqli_query($conn, $queryPenetapanKelas);                    
+    $rowPenetapanSppKelas = mysqli_fetch_array($resultPenetapanSppKelas);
+    $penetapanSppKelas = $rowPenetapanSppKelas['total_nominal'];
 
 $html .= '<tr>';
 $html .= '<td> Kelas ' . $kelas . '</td>';
