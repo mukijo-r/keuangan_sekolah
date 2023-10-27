@@ -207,7 +207,7 @@ require 'sidebar_function.php';
                 <form method="post">
                 <div class="modal-body">
                     <h5>Tentang Aplikasi</h5>
-                    <p>Sistem pengelolaan keuangan untuk SD Katolik Bhakti Rogojampi. </p>
+                    <p>Sistem Informasi Manajemen Keuangan SDK Bhakti Rogojampi.</p>
                     <h5>Fitur</h5>
                     <ul>
                         <li>Mengelola data siswa, guru, dan alumni,</li>
