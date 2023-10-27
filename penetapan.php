@@ -53,100 +53,122 @@ require 'config.php';
                             </div>
                         </div>                    
                         <br>
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                Daftar Penetapan
-                            </div>
-                            <div class="card-body">                                
-                                <?php 
-                                    $dataPenetapan = mysqli_query($conn, "SELECT 
-                                    penetapan.*,
-                                    s.nama AS nama_siswa,
-                                    sks.id_kategori,
-                                    sks.nama_sub_kategori,
-                                    k.nama_kategori
-                                    FROM 
-                                        penetapan
-                                    LEFT JOIN 
-                                        siswa s ON penetapan.id_siswa = s.id_siswa
-                                    LEFT JOIN 
-                                        sub_kategori_siswa sks ON penetapan.id_sub_kategori = sks.id_sub_kategori
-                                    LEFT JOIN
-                                        kategori k ON sks.id_kategori = k.id_kategori
-                                    GROUP BY 
-                                        s.nama, sks.id_sub_kategori
-                                    ORDER BY
-                                        s.nama
-                                    "); 
-                                        
+                        <?php 
+                            for ($kelas = 1; $kelas <= 6; $kelas++) {
+                                echo '<div class="card mb-4">
+                                    <div class="card-header">
+                                        <i class="fas fa-table me-1"></i>
+                                        Daftar Penetapan kelas ' . $kelas . '
+                                    </div>
+                                    <div class="card-body">';                               
+
+                                $dataPenetapan = mysqli_query($conn, "SELECT 
+                                penetapan.*,
+                                s.nama AS nama_siswa,
+                                sks.id_kategori,
+                                sks.nama_sub_kategori,
+                                k.nama_kategori
+                                FROM 
+                                    penetapan
+                                LEFT JOIN 
+                                    siswa s ON penetapan.id_siswa = s.id_siswa 
+                                LEFT JOIN 
+                                    sub_kategori_siswa sks ON penetapan.id_sub_kategori = sks.id_sub_kategori
+                                LEFT JOIN
+                                    kategori k ON sks.id_kategori = k.id_kategori
+                                WHERE s.status = 'aktif' AND
+                                s.id_kelas = $kelas
+                                GROUP BY 
+                                    s.nama, sks.id_sub_kategori
+                                ORDER BY
+                                    s.nama
+                                "); 
+
                                 if ($dataPenetapan->num_rows > 0) {    
-                                ?>
 
-                                <table id="datatablesSimple" class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Nama Siswa</th>                                
-                                <?php
+                                    echo '<table id="datatablesSimple1" class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Siswa</th>';                                
 
-                                // Mengambil sub kategori unik dan membuat kolom HTML
-                                $sub_kategori = array();
-                                while ($row = $dataPenetapan->fetch_assoc()) {
-                                    $sub_kategori[$row["id_sub_kategori"]] = $row["nama_sub_kategori"];
-                                }
-
-                                foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
-                                    echo "<th>" . $nama_sub_kategori . "</th>";                                            
-                                }                                
-
-                                echo "</tr></thead><tbody>";
-
-                                $current_nama_siswa = "";
-                                $nomor_baris = 1;
-                                foreach ($dataPenetapan as $row) {
-                                    if ($row["nama_siswa"] !== $current_nama_siswa) {
-                                        if (!empty($current_data)) {                                            
-                                            echo "<tr>";
-                                            echo "<td>" . $nomor_baris++ . "</td>";
-                                            echo "<td>" . $current_nama_siswa . "</td>";
-                                            foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
-                                                if (isset($current_data[$id_sub_kategori])) {
-                                                    echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
-                                                } else {
-                                                    echo "<td></td>"; // Jika tidak ada data untuk sub kategori ini
-                                                }
-                                            }
-                                            echo "</tr>";
-                                        }
-                                        $current_nama_siswa = $row["nama_siswa"];
-                                        $current_data = array();
+                                    // Mengambil sub kategori unik dan membuat kolom HTML
+                                    $sub_kategori = array();
+                                    while ($row = $dataPenetapan->fetch_assoc()) {
+                                        $sub_kategori[$row["id_sub_kategori"]] = $row["nama_sub_kategori"];
                                     }
-                                    $current_data[$row["id_sub_kategori"]] = $row["nominal"];
-                                }
 
-                                // Menampilkan data untuk siswa terakhir
-                                if (!empty($current_data)) {
-                                    echo "<tr><td>" . $nomor_baris++ . "</td><td>" . $current_nama_siswa . "</td>";
                                     foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
-                                        if (isset($current_data[$id_sub_kategori])) {
-                                            echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
-                                        } else {
-                                            echo "<td>0</td>"; // Jika tidak ada data untuk sub kategori ini
-                                        }
-                                    }
-                                    ?>
-                                    </tr>                                   
-                                <?php
-                                }                                        
-                                echo "</tbody></table>";
-                            } else {
-                                echo "Tidak ada data ditemukan";
-                            }
-                            ?>                                
-                            </div>
+                                        echo "<th>" . $nama_sub_kategori . "</th>";                                            
+                                    }                                
 
-                        </div>
+                                    echo "</tr></thead><tbody>";
+
+                                    $nomor_baris = 1;
+                                    $current_nama_siswa = "";
+                                    $current_data = array();
+                                    $first_iteration = true;
+
+                                    foreach ($dataPenetapan as $row) {
+                                        if ($row["nama_siswa"] !== $current_nama_siswa) {
+                                            if (!$first_iteration) {                                            
+                                                echo "<tr>";
+                                                echo "<td>" . $nomor_baris++ . "</td>";
+                                                echo "<td>" . $current_nama_siswa . "</td>";
+                                                foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
+                                                    if (isset($current_data[$id_sub_kategori])) {
+                                                        echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
+                                                    } else {
+                                                        echo "<td></td>"; // Jika tidak ada data untuk sub kategori ini
+                                                    }
+                                                }
+                                                echo "</tr>";
+                                            }
+                                            $current_nama_siswa = $row["nama_siswa"];
+                                            $current_data = array();
+                                            $first_iteration = false;
+                                        }
+                                        $current_data[$row["id_sub_kategori"]] = $row["nominal"];
+                                    }
+
+                                    // Menampilkan data untuk siswa terakhir
+                                    if (!$first_iteration) {
+                                        echo "<tr><td>" . $nomor_baris++ . "</td><td>" . $current_nama_siswa . "</td>";
+                                        foreach ($sub_kategori as $id_sub_kategori => $nama_sub_kategori) {
+                                            if (isset($current_data[$id_sub_kategori])) {
+                                                echo "<td>" . $current_data[$id_sub_kategori] . "</td>";
+                                            } else {
+                                                echo "<td></td>"; // Jika tidak ada data untuk sub kategori ini
+                                            }
+                                        }
+                                        ?>
+                                        </tr>                                   
+                                    <?php
+                                    }                                        
+                                    echo "</tbody></table>";
+
+                                    $queryPenetapanSpp = "SELECT SUM(nominal) as total_spp 
+                                    FROM penetapan 
+                                    LEFT JOIN 
+                                    siswa s ON penetapan.id_siswa = s.id_siswa 
+                                    LEFT JOIN 
+                                    sub_kategori_siswa sks ON penetapan.id_sub_kategori = sks.id_sub_kategori
+                                    WHERE s.status = 'aktif' AND
+                                    sks.id_sub_kategori = 5 AND
+                                    s.id_kelas = $kelas;";
+
+                                    $dataPenetapanSpp = mysqli_query($conn, $queryPenetapanSpp);
+                                    $rowData = mysqli_fetch_assoc($dataPenetapanSpp);
+                                    $penetapanSpp = $rowData['total_spp'];
+
+                                    echo 'Total Penetapan SPP kelas ' . $kelas . ' : Rp '  . number_format($penetapanSpp, 0, ',', '.');
+
+                                } else {
+                                    echo "Tidak ada data ditemukan";
+                                }                                                          
+                                echo '</div></div>';
+                            } 
+                        ?> 
                     </div>
                 </main>
             </div>
