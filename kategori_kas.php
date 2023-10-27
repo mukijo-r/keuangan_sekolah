@@ -25,7 +25,7 @@ require 'config.php';
                     <div class="container-fluid px-4">
                         <h2 class="mt-4">Daftar Kategori Kas</h2>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">KONSOLIDASI / KAtegori Kas</li>                            
+                            <li class="breadcrumb-item active">KONSOLIDASI / Kategori Kas</li>                            
                         </ol>                       
                         
                         <br>
