@@ -335,7 +335,7 @@ date_default_timezone_set('Asia/Jakarta');
                                 </select>
                         </div>               -->
                         <div class="mb-3">
-                            <label for="jumlah">Jumlah Pemasukan :</label>                        
+                            <label for="jumlah">Jumlah :</label>                        
                             <input type="number" name="jumlah" id="jumlah" class="form-control">
                         </div>
                         <div class="mb-3">   
