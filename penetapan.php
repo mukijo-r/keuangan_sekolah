@@ -147,21 +147,38 @@ require 'config.php';
                                     }                                        
                                     echo "</tbody></table>";
 
-                                    $queryPenetapanSpp = "SELECT SUM(nominal) as total_spp 
-                                    FROM penetapan 
-                                    LEFT JOIN 
-                                    siswa s ON penetapan.id_siswa = s.id_siswa 
-                                    LEFT JOIN 
-                                    sub_kategori_siswa sks ON penetapan.id_sub_kategori = sks.id_sub_kategori
-                                    WHERE s.status = 'aktif' AND
-                                    sks.id_sub_kategori = 5 AND
-                                    s.id_kelas = $kelas;";
+                                    $queryPenetapanSpp = "SELECT
+                                    SUM(CASE WHEN sks.id_sub_kategori = 5 THEN nominal ELSE 0 END) AS total_spp,
+                                    SUM(CASE WHEN sks.id_sub_kategori = 6 THEN nominal ELSE 0 END) AS total_pramuka,
+                                    SUM(CASE WHEN sks.id_sub_kategori = 7 THEN nominal ELSE 0 END) AS total_kegiatan,
+                                    SUM(CASE WHEN sks.id_sub_kategori = 8 THEN nominal ELSE 0 END) AS total_komputer,
+                                    SUM(CASE WHEN sks.id_sub_kategori = 9 THEN nominal ELSE 0 END) AS total_pts,
+                                    SUM(CASE WHEN sks.id_sub_kategori = 10 THEN nominal ELSE 0 END) AS total_pas
+                                    FROM penetapan
+                                    LEFT JOIN siswa s ON penetapan.id_siswa = s.id_siswa
+                                    LEFT JOIN sub_kategori_siswa sks ON penetapan.id_sub_kategori = sks.id_sub_kategori
+                                    WHERE s.status = 'aktif' AND s.id_kelas = $kelas;";
 
                                     $dataPenetapanSpp = mysqli_query($conn, $queryPenetapanSpp);
                                     $rowData = mysqli_fetch_assoc($dataPenetapanSpp);
                                     $penetapanSpp = $rowData['total_spp'];
+                                    $penetapanPramuka = $rowData['total_pramuka'];
+                                    $penetapanKegiatan = $rowData['total_kegiatan'];
+                                    $penetapanKomputer = $rowData['total_komputer'];
+                                    $penetapanPts = $rowData['total_pts'];
+                                    $penetapanPas = $rowData['total_pas'];
 
                                     echo 'Total Penetapan SPP kelas ' . $kelas . ' : Rp '  . number_format($penetapanSpp, 0, ',', '.');
+                                    echo '<br>';
+                                    echo 'Total Penetapan Pramuka kelas ' . $kelas . ' : Rp '  . number_format($penetapanPramuka, 0, ',', '.');
+                                    echo '<br>';
+                                    echo 'Total Penetapan Kegiatan kelas ' . $kelas . ' : Rp '  . number_format($penetapanKegiatan, 0, ',', '.');
+                                    echo '<br>';
+                                    echo 'Total Penetapan Komputer kelas ' . $kelas . ' : Rp '  . number_format($penetapanKomputer, 0, ',', '.');
+                                    echo '<br>';
+                                    echo 'Total Penetapan PTS kelas ' . $kelas . ' : Rp '  . number_format($penetapanPts, 0, ',', '.');
+                                    echo '<br>';
+                                    echo 'Total Penetapan PAS kelas ' . $kelas . ' : Rp '  . number_format($penetapanPas, 0, ',', '.');
 
                                 } else {
                                     echo "Tidak ada data ditemukan";
