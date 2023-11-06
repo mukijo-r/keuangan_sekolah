@@ -123,6 +123,7 @@ require 'config.php';
                             echo '<tr>';
                             echo '<th>No.</th>';
                             echo '<th>Nama</th>';
+                            echo '<th>NIPD</th>';
                             echo '<th>NISN</th>';
                             echo '<th>Kelas</th>';
                             echo '<th>Jenis Kelamin</th>';
@@ -143,6 +144,7 @@ require 'config.php';
                             while ($data = mysqli_fetch_array($result)) {
                                 // Ambil data siswa untuk setiap kelas
                                 $namaSiswa = $data['nama'];
+                                $nipd = $data['nis'];
                                 $nisn = $data['nisn'];
                                 $kelas = $data['id_kelas'];
                                 $jk = $data['jk'];
@@ -163,6 +165,7 @@ require 'config.php';
                                 echo '<tr>';
                                 echo '<td>' . $i++ . '</td>';
                                 echo '<td>' . $namaSiswa . '</td>';
+                                echo '<td>' . $nipd . '</td>';
                                 echo '<td>' . $nisn . '</td>';
                                 echo '<td>' . $kelas . '</td>';
                                 echo '<td>'; 
@@ -198,6 +201,9 @@ require 'config.php';
                                             
                                             <form method="post">
                                             <div class="modal-body">
+                                                <label for="nipd">NIPD :</label>  
+                                                <input type="text" name="nipd" value="<?=$nipd;?>" class="form-control">
+                                                <br>
                                                 <label for="nisn">NISN :</label>  
                                                 <input type="text" name="nisn" value="<?=$nisn;?>" class="form-control">
                                                 <br>
@@ -240,7 +246,7 @@ require 'config.php';
                                                 </select>
                                                 <br>
                                                 <label for="alamat">Alamat :</label><br> 
-                                                <textarea name="alamat" rows="3" cols="55"><?=$alamat;?></textarea>
+                                                <textarea name="alamat" rows="3" cols="45"><?=$alamat;?></textarea>
                                                 <br><br>
                                                 <label for="status">Status :</label> 
                                                 <select class="form-select" name="status" aria-label="Agama">
@@ -331,6 +337,8 @@ require 'config.php';
             <!-- Modal body -->      
                 <form method="post">
                 <div class="modal-body">
+                    <input type="text" name="nipd" placeholder="NIPD" class="form-control">
+                    <br>
                     <input type="text" name="nisn" placeholder="NISN" class="form-control">
                     <br>
                     <input type="text" name="namaSiswa" placeholder="Nama Siswa" class="form-control" required>
@@ -409,6 +417,7 @@ require 'config.php';
                                 <th>Nama</th>
                                 <th>Kelas</th>                                                       
                                 <th>Jenis Kelamin</th>
+                                <th>NIPD</th>
                                 <th>NISN</th> 
                                 <th>Tampat Lahir</th>
                                 <th>Tanggal Lahir</th>

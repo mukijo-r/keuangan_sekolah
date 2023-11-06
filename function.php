@@ -12,6 +12,7 @@
 
     // Tambah Siswa
     if(isset($_POST['tambahSiswa'])){
+        $nipd = $_POST['nipd'];
         $nisn = $_POST['nisn'];
         $namaSiswa = $_POST['namaSiswa'];
         $kelas = $_POST['kelas'];
@@ -26,7 +27,10 @@
 
         try {
             // Coba jalankan query insert
-            $addSiswa = mysqli_query($conn, "INSERT INTO siswa (nisn, nama, id_kelas, jk, tempat_lahir, tanggal_lahir, agama, alamat, `status`) VALUES ('$nisn', '$namaSiswa', $kelas, '$jk', '$kotaLahir', '$tanggalLahir', '$agama', '$alamat', 'aktif')");
+            $addSiswa = mysqli_query($conn, "INSERT INTO siswa 
+            (nis,nisn, nama, id_kelas, jk, tempat_lahir, tanggal_lahir, agama, alamat, `status`) 
+            VALUES 
+            ('$nipd','$nisn', '$namaSiswa', $kelas, '$jk', '$kotaLahir', '$tanggalLahir', '$agama', '$alamat', 'aktif')");
 
             if (!$addSiswa) {
                 throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
@@ -56,6 +60,7 @@
 
     // Edit Siswa
     if(isset($_POST['editSiswa'])){
+        $nipd = $_POST['nipd'];
         $nisn = $_POST['nisn'];
         $namaSiswa = $_POST['namaSiswa'];
         $kelas = $_POST['kelas'];
@@ -76,6 +81,7 @@
             // Coba jalankan query update
             $editSiswa = mysqli_query($conn, "UPDATE siswa 
             SET 
+            nis='$nipd',
             nisn='$nisn', 
             nama='$namaSiswa', 
             id_kelas='$kelas', 
@@ -96,6 +102,7 @@
             $queryUpdate = "SELECT * FROM siswa 
             WHERE 
             id_siswa = '$ids' AND
+            nis='$nipd' AND
             nisn='$nisn' AND
             nama='$namaSiswa' AND 
             id_kelas='$kelas' AND
@@ -411,15 +418,16 @@
             $namaSiswa = $data[0];
             $idKelas = $data[1];
             $jk = $data[2];
-            $nisn = $data[3];
-            $tempatLahir = $data[4];
-            $tanggalLahir = $data[5];
-            $agama = $data[6];
-            $alamat = $data[7];
-            $status = $data[8];
+            $nis = $data[3];
+            $nisn = $data[4];
+            $tempatLahir = $data[5];
+            $tanggalLahir = $data[6];
+            $agama = $data[7];
+            $alamat = $data[8];
+            $status = $data[9];
 
             // Lakukan operasi INSERT ke tabel "siswa" dalam database
-            $sql = "INSERT INTO siswa (nama, id_kelas, jk, nisn, tempat_lahir, tanggal_lahir, agama, alamat, `status`) VALUES ('$namaSiswa', '$idKelas', '$jk', '$nisn', '$tempatLahir', '$tanggalLahir', '$agama', '$alamat', '$status')";
+            $sql = "INSERT INTO siswa (nama, id_kelas, jk, nis, nisn, tempat_lahir, tanggal_lahir, agama, alamat, `status`) VALUES ('$namaSiswa', '$idKelas', '$jk', '$nis', '$nisn', '$tempatLahir', '$tanggalLahir', '$agama', '$alamat', '$status')";
             
             // // Eksekusi query INSERT
             if (!mysqli_query($conn, $sql)) {
