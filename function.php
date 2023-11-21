@@ -8,6 +8,14 @@
     session_start();
     //Koneksi ke database
 
+    if (isset($_SESSION['user'])) {
+        $username = $_SESSION['user'];
+        }
+
+    if (isset($_SESSION['previous_user'])) {
+        $previousUsername = $_SESSION['previous_user'];
+    }
+
     $conn = mysqli_connect("localhost:3306","root","","sdk");
 
     // Tambah Siswa
