@@ -427,7 +427,7 @@
             $idKelas = $data[1];
             $jk = $data[2];
             $nis = $data[3];
-            $nisn = $data[4];
+            $nisn = strval($data[4]);
             $tempatLahir = $data[5];
             $tanggalLahir = $data[6];
             $agama = $data[7];
