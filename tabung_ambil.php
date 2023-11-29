@@ -65,7 +65,6 @@ require 'config.php';
                                             <th>Guru Pencatat</th>
                                             <th>Saldo</th>
                                             <th>Keterangan</th>
-                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -86,6 +85,7 @@ require 'config.php';
                                         ta.id_tb_ambil,
                                         ta.tanggal,
                                         ta.id_siswa,
+                                        ta.pencatat,
                                         ta.keterangan,
                                         s.nama AS nama_siswa,
                                         ta.jumlah
