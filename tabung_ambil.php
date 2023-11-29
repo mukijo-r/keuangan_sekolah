@@ -88,14 +88,11 @@ require 'config.php';
                                         ta.id_siswa,
                                         ta.keterangan,
                                         s.nama AS nama_siswa,
-                                        ta.jumlah,
-                                        g.nama_lengkap AS nama_guru
+                                        ta.jumlah
                                     FROM
                                         tabung_ambil ta
                                     JOIN
                                         siswa s ON ta.id_siswa = s.id_siswa
-                                    JOIN
-                                        guru g ON ta.id_guru = g.id_guru
                                     WHERE
                                         ta.id_tahun_ajar = $idTahunAjar
                                     ORDER BY ta.tanggal DESC
@@ -112,7 +109,7 @@ require 'config.php';
                                         $idSiswa = $data['id_siswa'];
                                         $namaSiswa = $data['nama_siswa'];
                                         $jumlah = $data['jumlah'];
-                                        $namaGuru = $data['nama_guru'];
+                                        $namaGuru = $data['pencatat'];
                                         $keterangan = $data['keterangan'];
 
                                         // Menghitung saldo

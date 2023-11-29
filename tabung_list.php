@@ -209,18 +209,6 @@ require 'config.php';
                                                             <br>
                                                             <label for="jumlahAmbil">Jumlah Tabungan yang akan diambil :</label>
                                                             <input type="text" name="jumlahAmbil" value="<?=$saldoTabunganSiswa;?>" class="form-control">
-                                                            <br>
-                                                            <label for="guru">Guru Pencatat :</label>                     
-                                                            <select name="guru" class="form-select" id="guru" aria-label="Guru">>
-                                                            <option selected disabled>Guru Pencatat</option>
-                                                                <?php
-                                                                // Ambil data guru dari tabel guru
-                                                                $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
-                                                                while ($guru = mysqli_fetch_assoc($queryGuru)) {
-                                                                    echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
-                                                                }
-                                                                ?>
-                                                            </select>
                                                             <br>                                                             
                                                         </div>
                                                         <div class="text-center">

@@ -73,12 +73,11 @@ require 'config.php';
                                     </thead>
                                     <tbody>
                                     <?php 
-                                    $dataTabungan = mysqli_query($conn, "SELECT tm.*, s.nama AS nama_siswa, g.nama_lengkap AS nama_guru, k.nama_kelas AS kelas
+                                    $dataTabungan = mysqli_query($conn, "SELECT tm.*, s.nama AS nama_siswa, k.nama_kelas AS kelas
                                     FROM tabung_masuk tm
                                     LEFT JOIN siswa s ON tm.id_siswa = s.id_siswa
-                                    LEFT JOIN guru g ON tm.id_guru = g.id_guru
                                     LEFT JOIN kelas k ON s.id_kelas = k.id_kelas
-                                    ORDER BY tm.tanggal DESC");
+                                    ORDER BY tm.id_tb_masuk DESC");
 
                                     $totalEntries = mysqli_num_rows($dataTabungan);
                                     $i = $totalEntries;
@@ -95,7 +94,7 @@ require 'config.php';
                                         $namaSiswa = $data['nama_siswa'];
                                         $kelas = $data['kelas'];
                                         $nominal = $data['jumlah'];
-                                        $namaGuru = $data['nama_guru'];
+                                        $namaGuru = $data['pencatat'];
                                         $keterangan = $data['keterangan'];
                                         $idSiswa = $data['id_siswa'];
 
@@ -151,18 +150,9 @@ require 'config.php';
                                                 <!-- Modal Body -->
                                                 <form method="post">
                                                     <div class="modal-body">
-                                                    <div class="mb-3">
-                                                            <label for="bulan">Bulan :</label>
-                                                            <select class="form-select" name="bulan" id="bulanEdit" aria-label="Bulan">
-                                                                <option selected><?=$bulan;?></option>
-                                                                <?php
-                                                                // Ambil data bulan dari tabel tabung_masuk
-                                                                $queryBulan = mysqli_query($conn, "SELECT bulan FROM tabung_masuk");
-                                                                while ($bulan = mysqli_fetch_assoc($queryBulan)) {
-                                                                    echo '<option value="' . $bulan['bulan'] . '">' . $bulan['bulan'] . '</option>';
-                                                                }
-                                                                ?>
-                                                            </select>
+                                                        <div class="mb-3">
+                                                            <label for="tanggal">Tanggal :</label>       
+                                                            <input type="datetime-local" name="tanggal" value="<?=$tanggalBayar; ?>" class="form-control">
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="kelas">Kelas :</label>
@@ -188,19 +178,7 @@ require 'config.php';
                                                             <label for="nominal">Nominal :</label>                        
                                                             <input type="number" name="nominal" value="<?=$nominal;?>" class="form-control">
                                                         </div>
-                                                        <div class="mb-3">   
-                                                            <label for="guru">Penerima :</label>                     
-                                                            <select name="guru" class="form-select" id="guruEdit" aria-label="Guru">>
-                                                            <option selected><?=$namaGuru;?></option>
-                                                                <?php
-                                                                // Ambil data guru dari tabel guru
-                                                                $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
-                                                                while ($guru = mysqli_fetch_assoc($queryGuru)) {
-                                                                    echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
-                                                                }
-                                                                ?>
-                                                            </select>
-                                                        </div>
+
                                                         <div class="mb-3">
                                                         <label for="keterangan">Keterangan :</label>   
                                                             <textarea name="keterangan" class="form-control" id="keterangan" rows="2"><?=$keterangan;?></textarea>
@@ -324,19 +302,6 @@ require 'config.php';
                     <div class="mb-3">
                         <label for="nominal">Nominal :</label>                        
                         <input type="number" name="nominal" class="form-control">
-                    </div>
-                    <div class="mb-3">   
-                        <label for="guru">Penerima :</label>                     
-                        <select name="guru" class="form-select" id="guru" aria-label="Guru">>
-                        <option selected disabled>Guru Penerima</option>
-                            <?php
-                            // Ambil data guru dari tabel guru
-                            $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
-                            while ($guru = mysqli_fetch_assoc($queryGuru)) {
-                                echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
-                            }
-                            ?>
-                        </select>
                     </div>
                     <div class="mb-3">
                     <label for="keterangan">Keterangan :</label>   

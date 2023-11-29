@@ -527,11 +527,10 @@
 
         $idSiswa = $_POST['id_siswa'];
         $nominal = $_POST['nominal'];
-        $guru = $_POST['guru'];
         $keterangan = $_POST['keterangan'];
 
         try {
-            $queryInsertTabung = "INSERT INTO tabung_masuk (tanggal, id_tahun_ajar, id_kategori, bulan, id_siswa, jumlah, id_guru, keterangan) VALUES ('$tanggalTabung', '$idTahunAjar', '8', '$bulan','$idSiswa','$nominal','$guru','$keterangan')";
+            $queryInsertTabung = "INSERT INTO tabung_masuk (tanggal, id_tahun_ajar, id_kategori, bulan, id_siswa, jumlah, pencatat, keterangan) VALUES ('$tanggalTabung', '$idTahunAjar', '8', '$bulan','$idSiswa','$nominal','$username','$keterangan')";
                 
             $tabung = mysqli_query($conn, $queryInsertTabung);
 
@@ -597,28 +596,13 @@
         }
 
         $nominal = $_POST['nominal'];
-        $guru = $_POST['guru'];
-        // Menggunakan query untuk mendapatkan id_guru berdasarkan nama_guru yang dipilih
-        $queryGetGuru = mysqli_query($conn, "SELECT id_guru FROM guru WHERE nama_lengkap = '$guru'");
-
-        if ($queryGetGuru && mysqli_num_rows($queryGetGuru) > 0) {
-            $guruData = mysqli_fetch_assoc($queryGetGuru);
-            $idGuru = $guruData['id_guru'];
-        } else {
-            // siswa tidak ditemukan, tangani kesalahan di sini
-            $_SESSION['flash_message'] = 'Guru tidak ditemukan.';
-            $_SESSION['flash_message_class'] = 'alert-danger'; // Gagal
-            header('location: tabung.php');
-            exit;
-        }
-
         $keterangan = $_POST['keterangan'];
         $tanggal = date("Y-m-d", strtotime($tanggal));
         $tanggalTabung = date("Y-m-d H:i", strtotime($tanggal));
         $idTbMasuk = $_POST['id_tb_masuk'];
 
         try {
-            $queryUpdatetTabung = "UPDATE tabung_masuk SET bulan='$bulan', id_siswa='$idSiswa', jumlah='$nominal', id_guru='$idGuru', keterangan='$keterangan' WHERE id_tb_masuk='$idTbMasuk'";
+            $queryUpdatetTabung = "UPDATE tabung_masuk SET bulan='$bulan', id_siswa='$idSiswa', jumlah='$nominal', pencatat='$username', keterangan='$keterangan' WHERE id_tb_masuk='$idTbMasuk'";
             $updateTabung = mysqli_query($conn, $queryUpdatetTabung);
 
             if (!$updateTabung) {
@@ -688,7 +672,6 @@
         $tanggalAmbil = date("Y-m-d H:i", strtotime($tanggal));
         $idSiswa = $_POST['ids'];
         $ambilTab = $_POST['jumlahAmbil'];
-        $idGuru = $_POST['guru'];
         $keterangan = $_POST['keterangan'];
         
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
@@ -708,8 +691,8 @@
         try {
             // Coba jalankan query
             $queryambilTabungan = "INSERT INTO tabung_ambil
-            (`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_siswa`, `jumlah`, `id_guru`, `keterangan`) 
-            VALUES ('$tanggalAmbil','$idTahunAjar', '8','$idSiswa','$ambilTab','$idGuru','$keterangan')";
+            (`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_siswa`, `jumlah`, `pencatat`, `keterangan`) 
+            VALUES ('$tanggalAmbil','$idTahunAjar', '8','$idSiswa','$ambilTab','$username','$keterangan')";
             
             $ambilTabungan = mysqli_query($conn, $queryambilTabungan);
 
