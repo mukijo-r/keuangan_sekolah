@@ -76,14 +76,12 @@ date_default_timezone_set('Asia/Jakarta');
                                     $dataCashflowMasuk = mysqli_query($conn, "SELECT
                                     tmc.*,
                                     ta.tahun_ajar AS tahun_ajar,
-                                    g.nama_lengkap AS nama_guru,
                                     skc.id_group_cashflow AS id_group,
                                     skc.nama_sub_kategori AS sub_kategori,
                                     gc.groop AS groop,
                                     gc.jenis AS jenis
                                     FROM transaksi_masuk_cashflow tmc
                                     LEFT JOIN tahun_ajar ta ON tmc.id_tahun_ajar = ta.id_tahun_ajar
-                                    LEFT JOIN guru g ON tmc.id_guru = g.id_guru
                                     LEFT JOIN sub_kategori_cashflow skc ON tmc.id_subkategori_cashflow = skc.id_subkategori_cashflow
                                     LEFT JOIN group_cashflow gc ON skc.id_group_cashflow = gc.id_group_cashflow
                                     ORDER BY tmc.tanggal DESC
@@ -104,8 +102,7 @@ date_default_timezone_set('Asia/Jakarta');
                                         $subCashflow = $data['sub_kategori'];
                                         $bulan = $data['bulan'];                                        
                                         $jumlah = $data['jumlah'];
-                                        $idGuru = $data['id_guru'];
-                                        $guru = $data['nama_guru'];
+                                        $pencatat = $data['pencatat'];
                                         $keterangan = $data['keterangan'];                                      
 
                                         // Menghitung saldo
@@ -135,7 +132,7 @@ date_default_timezone_set('Asia/Jakarta');
                                             <td><?=$bulan;?></td>                                            
                                             <td><?="Rp " . number_format($jumlah, 0, ',', '.');?></td>
                                             <td><?="Rp " . number_format($saldo, 0, ',', '.');?></td>
-                                            <td><?=$guru;?></td>
+                                            <td><?=$pencatat;?></td>
                                             <td><?=$keterangan;?></td>
                                             <td>
                                                 <button type="button" class="btn btn-warning" name="tblEdit" data-bs-toggle="modal" data-bs-target="#modalEditCashflowMasuk<?=$idCashflowMasuk;?>">Edit</button>        
@@ -200,20 +197,7 @@ date_default_timezone_set('Asia/Jakarta');
                                                             <div class="mb-3">
                                                                 <label for="jumlah">Jumlah Pemasukan :</label>                        
                                                                 <input type="number" name="jumlah" id="jumlah" value="<?=$jumlah;?>" class="form-control">
-                                                            </div>
-                                                            <div class="mb-3">   
-                                                                <label for="guru">Pencatat :</label>                     
-                                                                <select name="guru" class="form-select" id="guru" aria-label="Guru">>
-                                                                <option value="<?=$idGuru;?>"><?=$guru;?></option>
-                                                                    <?php
-                                                                    // Ambil data guru dari tabel guru
-                                                                    $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
-                                                                    while ($guru = mysqli_fetch_assoc($queryGuru)) {
-                                                                        echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
-                                                                    }
-                                                                    ?>
-                                                                </select>
-                                                            </div>
+                                                            </div>                                                            
                                                             <div class="mb-3">
                                                             <label for="keterangan">Keterangan :</label>   
                                                                 <textarea name="keterangan" class="form-control" id="keterangan" rows="2"><?=$keterangan;?></textarea>
@@ -337,20 +321,7 @@ date_default_timezone_set('Asia/Jakarta');
                         <div class="mb-3">
                             <label for="jumlah">Jumlah Pemasukan :</label>                        
                             <input type="number" name="jumlah" id="jumlah" class="form-control">
-                        </div>
-                        <div class="mb-3">   
-                            <label for="guru">Pencatat :</label>                     
-                            <select name="guru" class="form-select" id="guru" aria-label="Guru">>
-                            <option selected disabled>Guru Pencatat</option>
-                                <?php
-                                // Ambil data guru dari tabel guru
-                                $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
-                                while ($guru = mysqli_fetch_assoc($queryGuru)) {
-                                    echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
+                        </div>                        
                         <div class="mb-3">
                         <label for="keterangan">Keterangan :</label>   
                             <textarea name="keterangan" class="form-control" id="keterangan" rows="2"></textarea>

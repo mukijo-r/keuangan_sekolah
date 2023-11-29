@@ -76,14 +76,12 @@ date_default_timezone_set('Asia/Jakarta');
                                     $dataCashflowKeluar = mysqli_query($conn, "SELECT
                                     tkc.*,
                                     ta.tahun_ajar AS tahun_ajar,
-                                    g.nama_lengkap AS nama_guru,
                                     skc.id_group_cashflow AS id_group,
                                     skc.nama_sub_kategori AS sub_kategori,
                                     gc.groop AS groop,
                                     gc.jenis AS jenis
                                     FROM transaksi_keluar_cashflow tkc
                                     LEFT JOIN tahun_ajar ta ON tkc.id_tahun_ajar = ta.id_tahun_ajar
-                                    LEFT JOIN guru g ON tkc.id_guru = g.id_guru
                                     LEFT JOIN sub_kategori_cashflow skc ON tkc.id_subkategori_cashflow = skc.id_subkategori_cashflow
                                     LEFT JOIN group_cashflow gc ON skc.id_group_cashflow = gc.id_group_cashflow
                                     ORDER BY tkc.tanggal DESC;
@@ -104,8 +102,7 @@ date_default_timezone_set('Asia/Jakarta');
                                         $subCashflow = $data['sub_kategori'];
                                         $bulan = $data['bulan'];                                        
                                         $jumlah = $data['jumlah'];
-                                        $idGuru = $data['id_guru'];
-                                        $guru = $data['nama_guru'];
+                                        $guru = $data['pencatat'];
                                         $keterangan = $data['keterangan'];                                      
 
                                         // Menghitung saldo
@@ -179,7 +176,7 @@ date_default_timezone_set('Asia/Jakarta');
                                                                         <!-- Opsi siswa akan diisi secara dinamis menggunakan JavaScript --> 
                                                                     </select>
                                                             </div>
-                                                            <div class="mb-3">
+                                                            <!-- <div class="mb-3">
                                                                 <label for="bulan">Periode/Bulan :</label><br>
                                                                 <select class="form-select" name="bulan" aria-label="Bulan">
                                                                     <option selected><?=$bulan;?></option>
@@ -196,24 +193,11 @@ date_default_timezone_set('Asia/Jakarta');
                                                                     <option value="November">November</option>
                                                                     <option value="Desember">Desember</option>
                                                                     </select>
-                                                            </div>              
+                                                            </div>               -->
                                                             <div class="mb-3">
                                                                 <label for="jumlah">Jumlah Pemasukan :</label>                        
                                                                 <input type="number" name="jumlah" id="jumlah" value="<?=$jumlah;?>" class="form-control">
-                                                            </div>
-                                                            <div class="mb-3">   
-                                                                <label for="guru">Pencatat :</label>                     
-                                                                <select name="guru" class="form-select" id="guru" aria-label="Guru">>
-                                                                <option value="<?=$idGuru;?>"><?=$guru;?></option>
-                                                                    <?php
-                                                                    // Ambil data guru dari tabel guru
-                                                                    $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
-                                                                    while ($guru = mysqli_fetch_assoc($queryGuru)) {
-                                                                        echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
-                                                                    }
-                                                                    ?>
-                                                                </select>
-                                                            </div>
+                                                            </div>                                                            
                                                             <div class="mb-3">
                                                             <label for="keterangan">Keterangan :</label>   
                                                                 <textarea name="keterangan" class="form-control" id="keterangan" rows="2"><?=$keterangan;?></textarea>
@@ -337,19 +321,6 @@ date_default_timezone_set('Asia/Jakarta');
                         <div class="mb-3">
                             <label for="jumlah">Jumlah :</label>                        
                             <input type="number" name="jumlah" id="jumlah" class="form-control">
-                        </div>
-                        <div class="mb-3">   
-                            <label for="guru">Pencatat :</label>                     
-                            <select name="guru" class="form-select" id="guru" aria-label="Guru">>
-                            <option selected disabled>Guru Pencatat</option>
-                                <?php
-                                // Ambil data guru dari tabel guru
-                                $queryGuru = mysqli_query($conn, "SELECT id_guru, nama_lengkap FROM guru");
-                                while ($guru = mysqli_fetch_assoc($queryGuru)) {
-                                    echo '<option value="' . $guru['id_guru'] . '">' . $guru['nama_lengkap'] . '</option>';
-                                }
-                                ?>
-                            </select>
                         </div>
                         <div class="mb-3">
                         <label for="keterangan">Keterangan :</label>   
