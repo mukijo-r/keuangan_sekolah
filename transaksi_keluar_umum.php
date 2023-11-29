@@ -149,7 +149,7 @@ date_default_timezone_set('Asia/Jakarta');
                                                         <div class="modal-body">
                                                             <div class="mb-3">
                                                                 <label for="tanggal">Tanggal :</label>       
-                                                                <input type="date" name="tanggal" value="<?=$tanggalBayar;?>" class="form-control">
+                                                                <input type="datetime-local" name="tanggal" value="<?=$tanggalBayar?>" class="form-control">
                                                             </div> 
                                                             <div class="mb-3">
                                                                 <label for="kategori">Sumber Kas :</label>
