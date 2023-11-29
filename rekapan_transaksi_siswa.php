@@ -55,9 +55,9 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
             <div id="layoutSidenav_content" class="layoutSidenav_content">
                 <main >
                     <div class="container-fluid px-4">
-                        <h3 class="mt-4">Laporan Keuangan Kas Siswa</h3>
+                        <h3 class="mt-4">Rekapan Keuangan Kas Siswa</h3>
                         <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Transaksi Siswa / Laporan</li>
+                            <li class="breadcrumb-item active">Transaksi Siswa / Rekapan</li>
                             <?php
                             $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahunAjarLap'");
                             $rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar);
