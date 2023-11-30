@@ -14,9 +14,14 @@
 
     if (isset($_SESSION['previous_user'])) {
         $previousUsername = $_SESSION['previous_user'];
-    }
+    }   
 
     $conn = mysqli_connect("localhost:3306","root","","sdk");
+
+    $queryUser = mysqli_query($conn, "SELECT nama_lengkap FROM users WHERE username = '$username'");
+    while ($user = mysqli_fetch_assoc($queryUser)) {
+        $namaUser = $user['nama_lengkap'];
+    }  
 
     // Tambah Siswa
     if(isset($_POST['tambahSiswa'])){
@@ -530,7 +535,7 @@
         $keterangan = $_POST['keterangan'];
 
         try {
-            $queryInsertTabung = "INSERT INTO tabung_masuk (tanggal, id_tahun_ajar, id_kategori, bulan, id_siswa, jumlah, pencatat, keterangan) VALUES ('$tanggalTabung', '$idTahunAjar', '8', '$bulan','$idSiswa','$nominal','$username','$keterangan')";
+            $queryInsertTabung = "INSERT INTO tabung_masuk (tanggal, id_tahun_ajar, id_kategori, bulan, id_siswa, jumlah, pencatat, keterangan) VALUES ('$tanggalTabung', '$idTahunAjar', '8', '$bulan','$idSiswa','$nominal','$namaUser','$keterangan')";
                 
             $tabung = mysqli_query($conn, $queryInsertTabung);
 
@@ -602,7 +607,7 @@
         $idTbMasuk = $_POST['id_tb_masuk'];
 
         try {
-            $queryUpdatetTabung = "UPDATE tabung_masuk SET bulan='$bulan', id_siswa='$idSiswa', jumlah='$nominal', pencatat='$username', keterangan='$keterangan' WHERE id_tb_masuk='$idTbMasuk'";
+            $queryUpdatetTabung = "UPDATE tabung_masuk SET bulan='$bulan', id_siswa='$idSiswa', jumlah='$nominal', pencatat='$namaUser', keterangan='$keterangan' WHERE id_tb_masuk='$idTbMasuk'";
             $updateTabung = mysqli_query($conn, $queryUpdatetTabung);
 
             if (!$updateTabung) {
@@ -692,7 +697,7 @@
             // Coba jalankan query
             $queryambilTabungan = "INSERT INTO tabung_ambil
             (`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_siswa`, `jumlah`, `pencatat`, `keterangan`) 
-            VALUES ('$tanggalAmbil','$idTahunAjar', '8','$idSiswa','$ambilTab','$username','$keterangan')";
+            VALUES ('$tanggalAmbil','$idTahunAjar', '8','$idSiswa','$ambilTab','$namaUser','$keterangan')";
             
             $ambilTabungan = mysqli_query($conn, $queryambilTabungan);
 
@@ -1041,7 +1046,7 @@
         try {
             $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `penetapan`, `bulan_ini`, `tunggakan`,`jumlah`, `pencatat`, `keterangan`) 
             VALUES 
-            ('$tanggalBayar','$idTahunAjar','$idSiswa','$id_kategori','$idSubKategori','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$username','$keterangan')";
+            ('$tanggalBayar','$idTahunAjar','$idSiswa','$id_kategori','$idSubKategori','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$namaUser','$keterangan')";
                 
             $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
 
@@ -1153,7 +1158,7 @@
 
                     $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `penetapan`, `bulan_ini`, `tunggakan`, `jumlah`, `pencatat`, `keterangan`) 
                     VALUES 
-                    ('$tanggalBayar','$idTahunAjar','$idSiswa','$idKategori','$idSubKategori','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$username','$keterangan')";
+                    ('$tanggalBayar','$idTahunAjar','$idSiswa','$idKategori','$idSubKategori','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$namaUser','$keterangan')";
             
                     $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
                 }
@@ -1261,7 +1266,7 @@
             `bulan_ini`='$bulanIni',
             `tunggakan`='$tunggakan', 
             `jumlah`='$jumlah', 
-            `pencatat`='$username', 
+            `pencatat`='$namaUser', 
             `keterangan`='$keterangan'
             WHERE 
             `id_tms`= '$idTransaksiMasukSiswa'";      
@@ -1285,7 +1290,7 @@
             `bulan_ini`='$bulanIni' AND 
             `tunggakan`='$tunggakan' AND  
             `jumlah`='$jumlah' AND 
-            `pencatat`='$username' AND 
+            `pencatat`='$namaUser' AND 
             `keterangan`='$keterangan'";
 
             $result = mysqli_query($conn, $queryCek);
@@ -1412,7 +1417,7 @@
         try {
             $queryInsertTransSiswa = "INSERT INTO 
             `transaksi_keluar_siswa`(`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_sub_kategori`, `bulan`, `uraian`, `jumlah`, `pencatat`, `keterangan`) 
-            VALUES ('$tanggalBayar','$idTahunAjar','$id_kategori','$idSubKategori','$bulan','$uraian','$jumlah','$username','$keterangan')";
+            VALUES ('$tanggalBayar','$idTahunAjar','$id_kategori','$idSubKategori','$bulan','$uraian','$jumlah','$namaUser','$keterangan')";
                 
             $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
 
@@ -1430,7 +1435,7 @@
             AND `bulan` = '$bulan'
             AND `uraian` = '$uraian'
             AND `jumlah` = '$jumlah'
-            AND `pencatat` = '$username'
+            AND `pencatat` = '$namaUser'
             AND `keterangan` = '$keterangan'");
 
             if ($result && mysqli_num_rows($result) === 1) {
@@ -1493,7 +1498,7 @@
             `bulan`='$bulan',
             `uraian`='$uraian',
             `jumlah`='$jumlah',
-            `pencatat`='$username',
+            `pencatat`='$namaUser',
             `keterangan`='$keterangan' 
             WHERE
             `id_tks`='$idTransaksiKeluarSiswa'
@@ -1515,7 +1520,7 @@
             AND `bulan` = '$bulan' 
             AND `uraian` = '$uraian' 
             AND `jumlah` = '$jumlah' 
-            AND `pencatat` = '$username' 
+            AND `pencatat` = '$namaUser' 
             AND `keterangan` = '$keterangan'";
 
             $result = mysqli_query($conn, $queryCek);
@@ -1637,7 +1642,7 @@
         try {
             $queryInsertTransUmum = "INSERT INTO 
             `transaksi_masuk_nonsiswa`(`tanggal`, `id_tahun_ajar`, `id_kategori`, `bulan`, `uraian`, `jumlah`, `pencatat`, `keterangan`) 
-            VALUES ('$tanggalBayar','$idTahunAjar','$idKategori','$bulan','$uraian','$jumlah','$username','$keterangan')";
+            VALUES ('$tanggalBayar','$idTahunAjar','$idKategori','$bulan','$uraian','$jumlah','$namaUser','$keterangan')";
                 
             $insertTransUmum = mysqli_query($conn, $queryInsertTransUmum);
 
@@ -1654,7 +1659,7 @@
             AND `bulan` = '$bulan'
             AND `uraian` = '$uraian'
             AND `jumlah` = '$jumlah'
-            AND `pencatat` = '$username'
+            AND `pencatat` = '$namaUser'
             AND `keterangan` = '$keterangan'";
 
             $result = mysqli_query($conn, $queryCek);
@@ -1712,7 +1717,7 @@
             `bulan`= '$bulan',
             `uraian`= '$uraian',
             `jumlah`= '$jumlah',
-            `pencatat`= '$username',
+            `pencatat`= '$namaUser',
             `keterangan`= '$keterangan'
             WHERE
             id_tmn = '$idTransaksiMasukUmum'";            
@@ -1732,7 +1737,7 @@
             AND `bulan` = '$bulan'
             AND `uraian` = '$uraian'
             AND `jumlah` = '$jumlah'
-            AND `pencatat` = '$username'
+            AND `pencatat` = '$namaUser'
             AND `keterangan` = '$keterangan'";
 
             $result = mysqli_query($conn, $queryCek);
@@ -1854,7 +1859,7 @@
         try {
             $queryInsertTransUmum = "INSERT INTO 
             `transaksi_keluar_nonsiswa`(`tanggal`, `id_tahun_ajar`, `id_kategori`, `bulan`, `uraian`, `jumlah`, `pencatat`, `keterangan`) 
-            VALUES ('$tanggalBayar','$idTahunAjar','$idKategori','$bulan','$uraian','$jumlah','$username','$keterangan')";
+            VALUES ('$tanggalBayar','$idTahunAjar','$idKategori','$bulan','$uraian','$jumlah','$namaUser','$keterangan')";
                 
             $insertTransUmum = mysqli_query($conn, $queryInsertTransUmum);
 
@@ -1871,7 +1876,7 @@
             AND `bulan` = '$bulan'
             AND `uraian` = '$uraian'
             AND `jumlah` = '$jumlah'
-            AND `pencatat` = '$username'
+            AND `pencatat` = '$namaUser'
             AND `keterangan` = '$keterangan'";
 
             $result = mysqli_query($conn, $queryCek);
@@ -1929,7 +1934,7 @@
             `bulan`= '$bulan',
             `uraian`= '$uraian',
             `jumlah`= '$jumlah',
-            `pencatat`= '$username',
+            `pencatat`= '$namaUser',
             `keterangan`= '$keterangan'
             WHERE
             id_tkn = '$idTransaksiKeluarUmum'";            
@@ -1949,7 +1954,7 @@
             AND `bulan` = '$bulan'
             AND `uraian` = '$uraian'
             AND `jumlah` = '$jumlah'
-            AND `pencatat` = '$username'
+            AND `pencatat` = '$namaUser'
             AND `keterangan` = '$keterangan'";
 
             $result = mysqli_query($conn, $queryCek);
@@ -2332,7 +2337,7 @@
         try {
             $queryInsertMasukCashflow = "INSERT INTO 
             `transaksi_masuk_cashflow`(`tanggal`, `id_tahun_ajar`, `id_group_cashflow`, `id_subkategori_cashflow`, `bulan`, `jumlah`, `pencatat`, `keterangan`) 
-            VALUES ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$subKategori','$bulan','$jumlah','$username','$keterangan')";
+            VALUES ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$subKategori','$bulan','$jumlah','$namaUser','$keterangan')";
             
             $insertMasukCashflow = mysqli_query($conn, $queryInsertMasukCashflow);
 
@@ -2349,7 +2354,7 @@
             `id_subkategori_cashflow`='$subKategori' AND
             `bulan`='$bulan' AND
             `jumlah`='$jumlah' AND
-            `pencatat`='$username' AND
+            `pencatat`='$namaUser' AND
             `keterangan`='$keterangan'
              ";
             
@@ -2400,7 +2405,7 @@
             `id_subkategori_cashflow`='$idSubKategori',
             `bulan`='$bulan',
             `jumlah`='$jumlah',
-            `pencatat`='$username',
+            `pencatat`='$namaUser',
             `keterangan`='$keterangan' 
             WHERE
             id_tmc='$idCashflowMasuk'
@@ -2421,7 +2426,7 @@
             `id_subkategori_cashflow`='$idSubKategori' AND
             `bulan`='$bulan' AND
             `jumlah`='$jumlah' AND
-            `pencatat`='$username' AND
+            `pencatat`='$namaUser' AND
             `keterangan`='$keterangan'
                 ";
             
@@ -2532,7 +2537,7 @@
         try {
             $queryInsertKeluarCashflow = "INSERT INTO 
             `transaksi_keluar_cashflow`(`tanggal`, `id_tahun_ajar`, `id_group_cashflow`, `id_subkategori_cashflow`, `bulan`, `jumlah`, `pencatat`, `keterangan`) 
-            VALUES ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$subKategori','$bulan','$jumlah','$username','$keterangan')";
+            VALUES ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$subKategori','$bulan','$jumlah','$namaUser','$keterangan')";
             
             $insertKeluarCashflow = mysqli_query($conn, $queryInsertKeluarCashflow);
 
@@ -2549,7 +2554,7 @@
             `id_subkategori_cashflow`='$subKategori' AND
             `bulan`='$bulan' AND
             `jumlah`='$jumlah' AND
-            `pencatat`='$username' AND
+            `pencatat`='$namaUser' AND
             `keterangan`='$keterangan'
                 ";
             
@@ -2601,7 +2606,7 @@
             `id_subkategori_cashflow`='$idSubKategori',
             `bulan`='$bulan',
             `jumlah`='$jumlah',
-            `pencatat`='$username',
+            `pencatat`='$namaUser',
             `keterangan`='$keterangan' 
             WHERE
             id_tkc='$idCashflowKeluar'
@@ -2622,7 +2627,7 @@
             `id_subkategori_cashflow`='$idSubKategori' AND
             `bulan`='$bulan' AND
             `jumlah`='$jumlah' AND
-            `pencatat`='$username' AND
+            `pencatat`='$namaUser' AND
             `keterangan`='$keterangan'
                 ";
             
@@ -2811,7 +2816,7 @@
             `transaksi_keluar_cashflow`
             (`tanggal`, `id_tahun_ajar`, `id_group_cashflow`, `id_subkategori_cashflow`, `bulan`, `jumlah`, `pencatat`, `keterangan`) 
             VALUES 
-            ('$tanggal','$idTahunAjar',6,23,'$bulan','$jumlahKeluar','$username','Dari transaksi keluar siswa')"); 
+            ('$tanggal','$idTahunAjar',6,23,'$bulan','$jumlahKeluar','$namaUser','Dari transaksi keluar siswa')"); 
 
         } elseif ($opsi == 9){
             $idSubKategoriCf = 7;
@@ -2844,7 +2849,7 @@
             `transaksi_masuk_cashflow`
             (`tanggal`, `id_tahun_ajar`, `id_group_cashflow`, `id_subkategori_cashflow`, `bulan`, `jumlah`, `pencatat`, `keterangan`) 
             VALUES 
-            ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$idSubKategoriCf','$bulan','$jumlahTarik','$username','Dari transaksi keluar siswa')";
+            ('$tanggal','$idTahunAjar','$idGroupCashflow' ,'$idSubKategoriCf','$bulan','$jumlahTarik','$namaUser','Dari transaksi keluar siswa')";
             
             $insertMasukCashflow = mysqli_query($conn, $queryInsertMasukCashflow);
 
@@ -2852,7 +2857,7 @@
             `transaksi_keluar_siswa`
             (`tanggal`, `id_tahun_ajar`, `id_kategori`, `id_sub_kategori`, `bulan`, `uraian`, `jumlah`, `pencatat`, `keterangan`) 
             VALUES 
-            ('$tanggal','$idTahunAjar','$idKategoriTks','$idSubKategoriTks','$bulan','$uraian','$jumlahTarik','$username','Ke CF');";
+            ('$tanggal','$idTahunAjar','$idKategoriTks','$idSubKategoriTks','$bulan','$uraian','$jumlahTarik','$namaUser','Ke CF');";
 
             $insertKeluarSiswa = mysqli_query($conn, $queryKeluarSiswa);
 
@@ -2870,7 +2875,7 @@
             `id_subkategori_cashflow`='$idSubKategoriCf' AND
             `bulan`='$bulan' AND
             `jumlah`='$jumlahTarik' AND
-            `pencatat`='$username' AND
+            `pencatat`='$namaUser' AND
             `keterangan`='$keterangan'
              ";
             
@@ -2885,7 +2890,7 @@
             `bulan`='$bulan' AND
             `uraian`='$uraian' AND
             `jumlah`='$jumlahTarik' AND
-            `pencatat`='$username' AND
+            `pencatat`='$namaUser' AND
             `keterangan`= 'Ke CF, jangan diedit'
              ";
             
