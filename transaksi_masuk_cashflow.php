@@ -84,7 +84,7 @@ date_default_timezone_set('Asia/Jakarta');
                                     LEFT JOIN tahun_ajar ta ON tmc.id_tahun_ajar = ta.id_tahun_ajar
                                     LEFT JOIN sub_kategori_cashflow skc ON tmc.id_subkategori_cashflow = skc.id_subkategori_cashflow
                                     LEFT JOIN group_cashflow gc ON skc.id_group_cashflow = gc.id_group_cashflow
-                                    ORDER BY tmc.tanggal DESC
+                                    ORDER BY tmc.id_tmc DESC
                                     ;");
 
                                     $totalEntries = mysqli_num_rows($dataCashflowMasuk);

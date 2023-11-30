@@ -84,7 +84,7 @@ date_default_timezone_set('Asia/Jakarta');
                                     LEFT JOIN tahun_ajar ta ON tkc.id_tahun_ajar = ta.id_tahun_ajar
                                     LEFT JOIN sub_kategori_cashflow skc ON tkc.id_subkategori_cashflow = skc.id_subkategori_cashflow
                                     LEFT JOIN group_cashflow gc ON skc.id_group_cashflow = gc.id_group_cashflow
-                                    ORDER BY tkc.tanggal DESC;
+                                    ORDER BY tkc.id_tkc DESC;
                                     ;");
 
                                     $totalEntries = mysqli_num_rows($dataCashflowKeluar);
@@ -277,7 +277,7 @@ date_default_timezone_set('Asia/Jakarta');
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="tanggal">Tanggal :</label>       
-                            <?php $tanggalSaatIni = date('Y-m-d\TH:i', time());?>
+                            <?php $tanggalSaatIni = date('Y-m-d\TH:i:s', time());?>
                         <input type="datetime-local" name="tanggal" value="<?=$tanggalSaatIni;?>" class="form-control">
                         </div> 
                         <div class="mb-3">
