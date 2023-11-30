@@ -157,7 +157,7 @@ date_default_timezone_set('Asia/Jakarta');
                                                                     <option value="<?=$idKategori;?>"><?=$kategori;?></option>
                                                                     <?php
                                                                     // Ambil data kelas dari tabel kelas
-                                                                    $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum'");
+                                                                    $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum' AND id_kategori<>1");
                                                                     while ($kategori = mysqli_fetch_assoc($queryKategori)) {
                                                                         echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
                                                                     }
