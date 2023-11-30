@@ -14,21 +14,6 @@ require 'config.php';
         <meta name="author" content="" />
         <title>Halaman Konsolidasi</title>
         <style>
-            @media print {
-                .mt-4, .breadcrumb-item, .container-fluid, .px-4, .breadcrumb, .mb-4, .active, 
-                .px-1, .row-cols-auto, .input-group, .mb-3, .input-group-prepend, .input-group-text,
-                .custom-select, .btn, .btn-primary, .card, .mb-3, .h3, .ol, .li, .layoutSidenav, .layoutSidenav_content,
-                .form, .option,
-                 {
-                    display: none;
-                }
-                
-                body {
-                margin: 0 !important;
-                padding: 0 !important;
-                }
-            }
-
             .teks-kecil {
                 font-size: 0.8em;
             }
@@ -362,7 +347,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tm.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                         UNION ALL
                                         SELECT
                                             tn.id_kategori,
@@ -371,7 +356,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tn.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                         UNION ALL
                                         SELECT
                                             tbm.id_kategori,
@@ -380,7 +365,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tbm.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                     ) AS masuk
                                 ON k.id_kategori = masuk.id_kategori
                                 LEFT JOIN
@@ -392,7 +377,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tks.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                         UNION ALL
                                         SELECT
                                             tkn.id_kategori,
@@ -401,7 +386,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tkn.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                         UNION ALL
                                         SELECT
                                             tba.id_kategori,
@@ -410,7 +395,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tba.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                     ) AS keluar
                                 ON k.id_kategori = keluar.id_kategori
                                 WHERE
@@ -574,7 +559,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tm.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                         UNION ALL
                                         SELECT
                                             tn.id_kategori,
@@ -583,7 +568,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tn.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                         UNION ALL
                                         SELECT
                                             tbm.id_kategori,
@@ -592,7 +577,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tbm.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                     ) AS masuk
                                 ON k.id_kategori = masuk.id_kategori
                                 LEFT JOIN
@@ -604,7 +589,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tks.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                         UNION ALL
                                         SELECT
                                             tkn.id_kategori,
@@ -613,7 +598,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tkn.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                         UNION ALL
                                         SELECT
                                             tba.id_kategori,
@@ -622,7 +607,7 @@ require 'config.php';
                                         JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
                                         WHERE
                                             tba.id_kategori = $idKategori
-                                            AND tanggal <= '$tanggalAkhir'
+                                            AND tanggal <= '$tanggalAkhir2'
                                     ) AS keluar
                                 ON k.id_kategori = keluar.id_kategori
                                 WHERE
@@ -759,7 +744,7 @@ require 'config.php';
                                             FROM transaksi_masuk_siswa tm
                                             JOIN tahun_ajar ta ON tm.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '$tanggalAkhir'
+                                                tanggal <= '$tanggalAkhir2'
                                             GROUP BY tm.id_kategori
                                             UNION ALL
                                             SELECT
@@ -768,7 +753,7 @@ require 'config.php';
                                             FROM transaksi_masuk_nonsiswa tn
                                             JOIN tahun_ajar ta ON tn.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '$tanggalAkhir'
+                                                tanggal <= '$tanggalAkhir2'
                                             GROUP BY tn.id_kategori
                                             UNION ALL
                                             SELECT
@@ -777,7 +762,7 @@ require 'config.php';
                                             FROM tabung_masuk tbm
                                             JOIN tahun_ajar ta ON tbm.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '$tanggalAkhir'
+                                                tanggal <= '$tanggalAkhir2'
                                             GROUP BY tbm.id_kategori
                                         ) AS masuk
                                     ON k.id_kategori = masuk.id_kategori
@@ -789,7 +774,7 @@ require 'config.php';
                                             FROM transaksi_keluar_siswa tks
                                             JOIN tahun_ajar ta ON tks.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '$tanggalAkhir'
+                                                tanggal <= '$tanggalAkhir2'
                                             GROUP BY tks.id_kategori
                                             UNION ALL
                                             SELECT
@@ -798,7 +783,7 @@ require 'config.php';
                                             FROM transaksi_keluar_nonsiswa tkn
                                             JOIN tahun_ajar ta ON tkn.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '$tanggalAkhir'
+                                                tanggal <= '$tanggalAkhir2'
                                             GROUP BY tkn.id_kategori
                                             UNION ALL
                                             SELECT
@@ -807,7 +792,7 @@ require 'config.php';
                                             FROM tabung_ambil tba
                                             JOIN tahun_ajar ta ON tba.id_tahun_ajar = ta.id_tahun_ajar
                                             WHERE
-                                                tanggal <= '$tanggalAkhir'
+                                                tanggal <= '$tanggalAkhir2'
                                             GROUP BY tba.id_kategori
                                         ) AS keluar
                                     ON k.id_kategori = keluar.id_kategori
