@@ -213,9 +213,9 @@ require 'config.php';
                                                         </div>
                                                         <div class="text-center">
                                                             <input type="hidden" name="ids" value="<?=$ids;?>">
-                                                            <button type="submit" class="btn btn-warning" name="ambilTab">Ambil</button> 
+                                                            <button type="submit" class="btn btn-warning" name="ambilTab">Ambil</button><br><br> 
                                                         </div>
-                                                        <br> 
+                                                        <br><br> 
                                                         </form>        
                                                         </div>
                                                     </div>
