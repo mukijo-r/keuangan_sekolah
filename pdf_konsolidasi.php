@@ -92,6 +92,7 @@ Laporan Keuangan Konsolidasi
 Bulan $bulan
 Tahun Ajar $tahunAjar
 
+
 EOD;
 
 $pdf->SetFont('times', '', 10);
