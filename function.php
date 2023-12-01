@@ -10,7 +10,11 @@
 
     if (isset($_SESSION['user'])) {
         $username = $_SESSION['user'];
-        }
+        $queryUser = mysqli_query($conn, "SELECT nama_lengkap FROM users WHERE username = '$username'");
+        while ($user = mysqli_fetch_assoc($queryUser)) {
+            $namaUser = $user['nama_lengkap'];
+        } 
+    }
 
     if (isset($_SESSION['previous_user'])) {
         $previousUsername = $_SESSION['previous_user'];
@@ -18,10 +22,7 @@
 
     $conn = mysqli_connect("localhost:3306","root","","sdk");
 
-    $queryUser = mysqli_query($conn, "SELECT nama_lengkap FROM users WHERE username = '$username'");
-    while ($user = mysqli_fetch_assoc($queryUser)) {
-        $namaUser = $user['nama_lengkap'];
-    }  
+     
 
     // Tambah Siswa
     if(isset($_POST['tambahSiswa'])){
