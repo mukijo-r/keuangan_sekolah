@@ -22,15 +22,15 @@ require 'sidebar_function.php';
 
             /* Style untuk kontainer gambar dengan border melingkar */
             .logo {
-                border-radius: 50%; /* Membuat border melingkar dengan radius 50% dari lebar atau tinggi kontainer */
+                border-radius: 100%; /* Membuat border melingkar dengan radius 50% dari lebar atau tinggi kontainer */
                 overflow: hidden; /* Menghilangkan bagian gambar yang mungkin melampaui border */
             }
 
             /* Style untuk gambar di dalam kontainer */
             .logo img {
                 width: 40%;
-                height: 40%;
-                object-fit: cover; /* Mengatur bagaimana gambar mengisi kontainer */
+                height: 50%;
+                object-fit: fill;
             }
 
         </style>
@@ -46,7 +46,7 @@ require 'sidebar_function.php';
                         <div class="nav">
                             <div class="logo" style="text-align: center; margin-right: 10px;">
                                 <img src="assets/img/karmel-logo.png" width="50px" height="50px">
-                                <br><br><br><br>
+                                <br><br>
                                 <div style="text-align: center;">
                                     <h6>Tahun Ajar</h6>
                                     <a href=# data-bs-toggle="modal" data-bs-target="#modalTahunAjar">
