@@ -152,7 +152,7 @@ require 'config.php';
                                                     <div class="modal-body">
                                                         <div class="mb-3">
                                                             <label for="tanggal">Tanggal :</label>       
-                                                            <input type="datetime-local" name="tanggal" value="<?=$tanggalBayar; ?>" class="form-control">
+                                                            <input type="datetime-local" name="tanggal" value="<?=$tanggalTabung; ?>" class="form-control">
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="kelas">Kelas :</label>
