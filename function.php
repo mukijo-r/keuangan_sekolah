@@ -568,9 +568,7 @@
     }
 
     // Edit Tabungan Masuk
-    if(isset($_POST['editTransTabung'])){
-        $bulan = $_POST['bulan'];
-        
+    if(isset($_POST['editTransTabung'])){       
         $kelas = $_POST['kelas'];
         // Menggunakan query untuk mendapatkan id_kelas berdasarkan nama_kelas yang dipilih
         $queryGetKelas = mysqli_query($conn, "SELECT id_kelas FROM kelas WHERE nama_kelas = '$kelas'");
@@ -603,8 +601,39 @@
 
         $nominal = $_POST['nominal'];
         $keterangan = $_POST['keterangan'];
-        $tanggal = date("Y-m-d", strtotime($tanggal));
-        $tanggalTabung = date("Y-m-d H:i", strtotime($tanggal));
+        $tanggalEdit = $_POST['tanggal'];
+        $timestamp = strtotime($tanggalEdit);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
+
+
         $idTbMasuk = $_POST['id_tb_masuk'];
 
         try {
@@ -928,7 +957,7 @@
 
             if ($result && mysqli_num_rows($result) >= 1) {
                 // Data sudah masuk ke database, pesan flash message berhasil
-                $_SESSION['flash_message'] = 'Update kategori berhasil';
+                $_SESSION['flash_message'] = 'Update penetapan berhasil';
                 $_SESSION['flash_message_class'] = 'alert-success'; 
                 header('location:penetapan.php');
                 exit;
@@ -975,7 +1004,7 @@
 
             if ($result && mysqli_num_rows($result) === 0) {        
                 // Data sudah masuk ke database, Anda dapat mengatur pesan flash message berhasil
-                $_SESSION['flash_message'] = 'Hapus kategori berhasil';
+                $_SESSION['flash_message'] = 'Hapus penetapan berhasil';
                 $_SESSION['flash_message_class'] = 'alert-success'; // Berhasil
                 header('location:penetapan.php');
                 exit;
@@ -1907,6 +1936,37 @@
         $tanggal = $_POST['tanggal'];
         $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
 
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
+
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
 
@@ -1922,7 +1982,7 @@
         }        
         
         $idKategori = $_POST['kategori'];
-        $bulan = $_POST['bulan'];
+
         $uraian = $_POST['uraian'];
         $jumlah = $_POST['jumlah'];
         $keterangan = $_POST['keterangan'];    
@@ -2386,7 +2446,37 @@
         $tanggal = $_POST['tanggal'];
         $idGroupCashflow = $_POST['groopMasuk'];
         $idSubKategori = $_POST['subKategoriMasuk'];
-        $bulan = $_POST['bulan'];
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
+
         $jumlah = $_POST['jumlah'];
         $keterangan = $_POST['keterangan'];
 
@@ -2585,9 +2675,41 @@
         $idCashflowKeluar = $_POST['idTkc'];
         $tanggal = $_POST['tanggal'];
         $tanggalBayar = date("Y-m-d H:i:s", strtotime($tanggal));
+
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
+
         $idGroupCashflow = $_POST['groopEdit'];
         $idSubKategori = $_POST['subKategoriEdit'];
-        $bulan = $_POST['bulan'];
+
         $jumlah = $_POST['jumlah'];
         $keterangan = $_POST['keterangan'];
 
