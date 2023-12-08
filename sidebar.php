@@ -2,6 +2,11 @@
 include 'config.php';
 require 'sidebar_function.php';
 
+$queryUser = mysqli_query($conn, "SELECT `role` FROM users WHERE username = '$username'");
+    while ($dataRole = mysqli_fetch_assoc($queryUser)) {
+        $role = $dataRole['role'];
+    } 
+
 ?>
 
 <!DOCTYPE html>
@@ -143,7 +148,12 @@ require 'sidebar_function.php';
                         </div>                            
                     </div>
                     <div style="text-align: center;" class="sb-sidenav-footer">
-                        <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalTahunAjar">Ganti Tahun Ajar</button>
+                    <?php   
+                    if ($role == 'admin') {
+                        echo '<button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalTahunAjar">Ganti Tahun Ajar</button>';
+                    }
+                    ?>
+                        
                         
                     </div>
                 </nav>
