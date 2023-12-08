@@ -128,6 +128,17 @@ while($data=mysqli_fetch_array($dataTransaksiUmum)){
     // Menghitung saldo
     $queryMasuk = "SELECT SUM(jumlah) AS total_masuk FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalBayar'";
     $queryKeluar = "SELECT SUM(jumlah) AS total_keluar FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap' AND tanggal <= '$tanggalBayar'";
+    $queryDebetBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_debet FROM transaksi_masuk_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulan' AND id_tahun_ajar = '$idTahunAjar'");
+    $queryKreditBulanLalu = mysqli_query($conn, "SELECT SUM(jumlah) AS total_kredit FROM transaksi_keluar_nonsiswa WHERE id_kategori = '$idKategoriLap' AND bulan='$bulan' AND id_tahun_ajar = '$idTahunAjar'");
+
+    if ($rowDebetBulanLalu = mysqli_fetch_assoc($queryDebetBulanLalu)) {
+        $DebetBulanLalu = $rowDebetBulanLalu['total_debet'];
+    }
+
+    if ($rowKreditBulanLalu = mysqli_fetch_assoc($queryKreditBulanLalu)) {
+        $KreditBulanLalu = $rowKreditBulanLalu['total_kredit'];
+    }
+
 
     $masuk = mysqli_query($conn, $queryMasuk);
     $keluar = mysqli_query($conn, $queryKeluar);                                           
@@ -154,8 +165,8 @@ while($data=mysqli_fetch_array($dataTransaksiUmum)){
 
 $html .= '<tr>';
 $html .= '<td colspan="2" style="text-align: center;">Total</td>';
-$html .= '<td style="width: 14%"> ' . (($totalMasuk == 0) ? '' : "Rp " . number_format($totalMasuk, 0, ',', '.')) . '</td>';
-$html .= '<td style="width: 14%"> ' . (($totalKeluar == 0) ? '' : "Rp " . number_format($totalKeluar, 0, ',', '.')) . '</td>';
+$html .= '<td style="width: 14%"> ' . (($saldoBulanLalu + $DebetBulanLalu == 0) ? '' : "Rp " . number_format($saldoBulanLalu + $DebetBulanLalu, 0, ',', '.')) . '</td>';
+$html .= '<td style="width: 14%"> ' . (($KreditBulanLalu == 0) ? '' : "Rp " . number_format($KreditBulanLalu, 0, ',', '.')) . '</td>';
 $html .= '<td style="width: 14%"> ' . (($saldo == 0) ? '' : "Rp " . number_format($saldo, 0, ',', '.')) . '</td>';
 $html .= '<td style="width: 20%"></td></tr>';
 $html .= '</table><br><br><br>';

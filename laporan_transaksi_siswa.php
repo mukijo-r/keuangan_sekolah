@@ -443,8 +443,8 @@ require 'config.php';
                                     </tbody>
                                         <tr>
                                             <td colspan="2" style="text-align: center;">Total</td>
-                                            <td style="width: 10%"><strong><?= "Rp "  . number_format($totalMasuk, 0, ',', '.') ;?></strong></td>
-                                            <td style="width: 10%"><strong><?= "Rp " . number_format($totalKeluar, 0, ',', '.') ;?></strong></td>
+                                            <td style="width: 10%"><strong><?= "Rp "  . number_format($saldoBulanLalu+$DebetBulanLalu, 0, ',', '.') ;?></strong></td>
+                                            <td style="width: 10%"><strong><?= "Rp " . number_format($KreditBulanLalu, 0, ',', '.') ;?></strong></td>
                                             <td style="width: 10%"><strong><?= "Rp " . number_format($saldo, 0, ',', '.') ;?></strong></td>
                                             <td style="width: 20%"></td>
                                         </tr>
