@@ -69,5 +69,5 @@ if ($totalNominal > $jumlah) {
 
 
 // Mengembalikan data dalam format JSON tanpa tanda kutip ganda
-//echo json_encode($tunggakan);
+echo json_encode($tunggakan);
 ?>
