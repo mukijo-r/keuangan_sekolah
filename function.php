@@ -1493,6 +1493,37 @@
         $tanggal = $_POST['tanggal'];
         $tanggalBayar = date("Y-m-d H:i", strtotime($tanggal));
 
+        $timestamp = strtotime($tanggal);
+        $angkaBulan = date("m", $timestamp);
+
+        if ($angkaBulan == '01') {
+            $bulan = 'Januari';
+        } elseif ($angkaBulan == '02') {
+            $bulan = 'Februari';
+        } elseif ($angkaBulan == '03') {
+            $bulan = 'Maret';
+        } elseif ($angkaBulan == '04') {
+            $bulan = 'April';
+        } elseif ($angkaBulan == '05') {
+            $bulan = 'Mei';
+        } elseif ($angkaBulan == '06') {
+            $bulan = 'Juni';
+        } elseif ($angkaBulan == '07') {
+            $bulan = 'Juli';
+        } elseif ($angkaBulan == '08') {
+            $bulan = 'Agustus';
+        } elseif ($angkaBulan == '09') {
+            $bulan = 'September';
+        } elseif ($angkaBulan == '10') {
+            $bulan = 'Oktober';
+        } elseif ($angkaBulan == '11') {
+            $bulan = 'November';
+        } elseif ($angkaBulan == '12') {
+            $bulan = 'Desember';
+        } else {
+            $bulan = 'Bulan Tidak valid';
+        }
+
         // Menggunakan query untuk mendapatkan id_tahun_ajar berdasarkan tahun_ajar yang dipilih
         $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar = '$tahun_ajar'");
 
@@ -1513,7 +1544,7 @@
         $rowKategori = mysqli_fetch_assoc($queryGetKategori);
         $id_kategori = $rowKategori['id_kategori'];
 
-        $bulan = $_POST['bulan'];
+        
         $uraian = $_POST['uraian'];
         $jumlah = $_POST['jumlah'];
         $keterangan = $_POST['keterangan'];    
@@ -3041,14 +3072,17 @@
 
     // Tambah User
     if (isset($_POST['tambahUser'])) {
+        $nama = $_POST['nama'];
         $username = $_POST['username'];
         $password1 = $_POST['password'];
         $password2 = $_POST['confirmPassword'];
+        $role = $_POST['role'];
         if ($password1 == $password2) {
                 $password = password_hash($password1, PASSWORD_BCRYPT);
             
             // Coba jalankan query insert
-            $addUser = mysqli_query($conn, "INSERT INTO `users`(`username`, `password`) VALUES ('$username', '$password')");
+            $addUser = mysqli_query($conn, "INSERT INTO `users`(`username`, `password`, `nama_lengkap`, `role`) 
+            VALUES ('$username', '$password', '$nama', '$role')");
 
             $checkUserQuery = "SELECT * FROM `users` WHERE `username` = '$username'";
             $checkUserResult = mysqli_query($conn, $checkUserQuery);
