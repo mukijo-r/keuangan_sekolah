@@ -34,6 +34,10 @@ require 'config.php';
                                         <form method="post" action="register.php">
                                         <div class="modal-body">
                                             <div class="mb-3">
+                                                <label for="nama">Nama Lengkap :</label>   
+                                                <input type="text" name="nama" placeholder="Nama Lengkap" class="form-control" required>
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="username">Username :</label>   
                                                 <input type="text" name="username" placeholder="username" class="form-control" required>
                                             </div>
@@ -45,6 +49,14 @@ require 'config.php';
                                                 <label for="confirmPassword">Konfirmasi Password :</label>
                                                 <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" required>
                                                 <div id="passwordError" class="text-danger"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="role">Role :</label>
+                                                <select class="form-select" name="role" id="role" aria-label="Role">
+                                                    <option value="admin">Admin</option>
+                                                    <option value="guru">Guru</option>
+                                                    <option value="kepsek">Kepala Sekolah</option>
+                                                </select>
                                             </div>
                                         </div>
 
