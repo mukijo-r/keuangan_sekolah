@@ -885,19 +885,52 @@
             if ($siswa == '0') {
                 // Jika "Semua" dipilih, maka query insert akan diterapkan untuk semua siswa
                 $querySiswa = mysqli_query($conn, "SELECT id_siswa FROM siswa");
+            
+                // Flag untuk menandakan apakah ada kombinasi yang ditemukan
+                $combinationFound = false;
+            
                 while ($row = mysqli_fetch_assoc($querySiswa)) {
                     $id_siswa = $row['id_siswa'];
-                    $queryInsertPenetapan = "INSERT INTO `penetapan`(`id_siswa`, `id_sub_kategori`, `nominal`) 
-                    VALUES ('$id_siswa','$subKategori','$nominal')";
-                    // Eksekusi query di sini
-                    $penetapan = mysqli_query($conn, $queryInsertPenetapan);
+            
+                    // Query SELECT untuk memeriksa apakah data sudah ada dalam database
+                    $checkExistingQuery = "SELECT * FROM penetapan WHERE `id_siswa`='$id_siswa' AND `id_sub_kategori`='$subKategori'";
+                    $existingResult = mysqli_query($conn, $checkExistingQuery);
+            
+                    if ($existingResult && mysqli_num_rows($existingResult) > 0) {
+                        // Set flag dan hentikan loop jika ada kombinasi yang ditemukan
+                        $combinationFound = true;
+                        throw new Exception("Terdapat data tersebut dalam tabel penetapan");
+                        break;
+                    }
                 }
+            
+                // Cek flag sebelum melakukan proses insert
+                if (!$combinationFound) {
+                    // Reset kursor ke posisi awal
+                    mysqli_data_seek($querySiswa, 0);
+            
+                    while ($row = mysqli_fetch_assoc($querySiswa)) {
+                        $id_siswa = $row['id_siswa'];
+                        $queryInsertPenetapan = "INSERT INTO `penetapan`(`id_siswa`, `id_sub_kategori`, `nominal`) 
+                        VALUES ('$id_siswa','$subKategori','$nominal')";
+                        // Eksekusi query di sini
+                        $penetapan = mysqli_query($conn, $queryInsertPenetapan);
+                    }
+                } 
             } else {
                 // Jika siswa tertentu dipilih, maka query insert akan diterapkan hanya untuk siswa tersebut
+                $checkExistingQuery = "SELECT * FROM penetapan WHERE `id_siswa`='$siswa' AND `id_sub_kategori`='$subKategori'";
+                $existingResult = mysqli_query($conn, $checkExistingQuery);
+
+                if ($existingResult && mysqli_num_rows($existingResult) > 0) {
+                    // Data sudah ada, berikan pesan error
+                    throw new Exception("Data sudah ada dalam tabel penetapan");
+                } else {
                 $queryInsertPenetapan = "INSERT INTO `penetapan`(`id_siswa`, `id_sub_kategori`, `nominal`) 
                 VALUES ('$siswa','$subKategori','$nominal')";
                 // Eksekusi query di sini
                 $penetapan = mysqli_query($conn, $queryInsertPenetapan);
+                }
             }
             
             // Query SELECT untuk memeriksa apakah data sudah masuk ke database
