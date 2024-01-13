@@ -394,6 +394,7 @@ date_default_timezone_set('Asia/Jakarta');
                     <div class="mb-3">
                         <label for="bulanIni">Bulan ini :</label>                        
                         <input type="number" name="bulanIni" id="bulanIni" class="form-control">
+                        <span id="errorBulanIni" style="color: red;"></span>
                     </div><div class="mb-3">
                         <label for="tunggakan">Tunggakan :</label>                        
                         <input type="number" name="tunggakan" id="tunggakan" class="form-control">
@@ -502,7 +503,7 @@ date_default_timezone_set('Asia/Jakarta');
 
         // Tambahkan event listener ketika nilai "kelas" berubah pada Tambah Transaksi siswa
         kelasDropdown.addEventListener('change', function() {
-            var selectedKelas = kelasDropdown.value;            
+            var selectedKelas = kelasDropdown.value;        
 
             // Gunakan AJAX untuk mengambil data siswa berdasarkan kelas
             var xhr = new XMLHttpRequest();
@@ -524,7 +525,7 @@ date_default_timezone_set('Asia/Jakarta');
 
         // Tambahkan event listener ketika nilai "kelas" berubah pada Edit Transaksi siswa
         kelasDropdownEdit.addEventListener('change', function() {
-            var selectedKelasEdit = kelasDropdownEdit.value;            
+            var selectedKelasEdit = kelasDropdownEdit.value;
 
             // Gunakan AJAX untuk mengambil data siswa berdasarkan kelas
             var xhr = new XMLHttpRequest();
@@ -641,9 +642,13 @@ date_default_timezone_set('Asia/Jakarta');
             xhr.send();
         }
 
+        // Tambahkan event listener ketika nilai "kelas" berubah
+        kelasDropdownKolektif.addEventListener('change', function() {
+            updateTotalKolektifValue();
+        });
+
         // Tambahkan event listener ketika nilai "kategori" berubah
         kategoriDropdownKolektif.addEventListener('change', function() {
-            //updateNominalKolektifValue();
             updateTotalKolektifValue();
         });
 
@@ -693,6 +698,21 @@ date_default_timezone_set('Asia/Jakarta');
         }
 
 
+    });
+</script>
+
+<script>
+    document.getElementById('bulanIni').addEventListener('change', function() {
+        var bulanIniValue = parseInt(document.getElementById('bulanIni').value);
+        var nominalValue = parseInt(document.getElementById('nominal').value);
+
+        if (bulanIniValue === 0) {
+            document.getElementById('errorBulanIni').innerText = 'Bulan ini tidak boleh 0';
+        } else if (bulanIniValue % nominalValue !== 0) {
+            document.getElementById('errorBulanIni').innerText = 'Jumlah tidak sesuai, periksa kembali';
+        } else {
+            document.getElementById('errorBulanIni').innerText = '';
+        }
     });
 </script>
 
