@@ -20,6 +20,29 @@ if (!$result) {
 $row = mysqli_fetch_assoc($result);
 $nominal = floatval($row['nominal']);
 
+if ($kategori == 5) {
+    $queryNominalPramuka = "SELECT nominal FROM penetapan WHERE id_siswa = '$siswa' AND id_sub_kategori = '6'";
+    $pramuka = mysqli_query($conn, $queryNominalPramuka);
+    $dataNominalPramuka = mysqli_fetch_assoc($pramuka);
+    $nominalPramuka = $dataNominalPramuka['nominal'];
+
+    $queryNominalKegiatan = "SELECT nominal FROM penetapan WHERE id_siswa = '$siswa' AND id_sub_kategori = '7'";
+    $kegiatan = mysqli_query($conn, $queryNominalKegiatan);
+    $dataNominalKegiatan = mysqli_fetch_assoc($kegiatan);
+    $nominalKegiatan = $dataNominalKegiatan['nominal'];
+
+    $queryNominalKomputer = "SELECT nominal FROM penetapan WHERE id_siswa = '$siswa' AND id_sub_kategori = '8'";
+    $komputer = mysqli_query($conn, $queryNominalKomputer);
+    $dataNominalKomputer = mysqli_fetch_assoc($komputer);
+    $nominalKomputer = $dataNominalKomputer['nominal'];
+
+    $nominalEkstrakurikuler = $nominalPramuka + $nominalKegiatan + $nominalKomputer;
+
+    $nominal = $nominal + $nominalEkstrakurikuler;
+} else {
+    $nominal = $nominal;
+}
+
 // Mengembalikan data dalam format JSON tanpa tanda kutip ganda
 echo json_encode($nominal);
 ?>
