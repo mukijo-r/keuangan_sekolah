@@ -1136,8 +1136,7 @@
                 VALUES 
                 ('$tanggalBayar','$idTahunAjar','$idSiswa','4','6','$bulan', '$penetapanPramuka', '$nominalPramuka', '$tunggakan', '$jumlah','$namaUser','$keterangan')";
                     
-                $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
-                 
+                $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);                
 
                 
                  //Get nominal Kegiatan
@@ -1274,6 +1273,67 @@
                 for ($i = 0; $i < count($siswaArray); $i++) {
                     $idSiswa = $siswaArray[$i];
                     $tanggalBayar = date("Y-m-d H:i:$i", strtotime($tanggal));
+
+                    if ($idSubKategori == 5) {
+                    //Get nominal SPP
+                    $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori = '$idSubKategori' AND id_siswa = '$idSiswa'";
+                    $getPenetapan = mysqli_query($conn, $queryGetPenetapan);
+                    $rowPenetapan = mysqli_fetch_assoc($getPenetapan);
+                    $penetapan = floatval($rowPenetapan['nominal']);
+                    $bulanIni = $penetapan;
+                    $tunggakan = 0;
+                    $jumlah = $bulanIni + $tunggakan;
+                    //insert SPP 
+                    $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `penetapan`, `bulan_ini`, `tunggakan`, `jumlah`, `pencatat`, `keterangan`) 
+                    VALUES 
+                    ('$tanggalBayar','$idTahunAjar','$idSiswa','$idKategori','$idSubKategori','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$namaUser','$keterangan')";
+            
+                    $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
+
+                    //Get nominal Pramuka
+                    $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori = '6' AND id_siswa = '$idSiswa'";
+                    $getPenetapan = mysqli_query($conn, $queryGetPenetapan);
+                    $rowPenetapan = mysqli_fetch_assoc($getPenetapan);
+                    $penetapan = floatval($rowPenetapan['nominal']);
+                    $bulanIni = $penetapan;
+                    $tunggakan = 0;
+                    $jumlah = $bulanIni + $tunggakan;
+                    //insert Pramuka
+                    $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `penetapan`, `bulan_ini`, `tunggakan`, `jumlah`, `pencatat`, `keterangan`) 
+                    VALUES 
+                    ('$tanggalBayar','$idTahunAjar','$idSiswa','4','6','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$namaUser','$keterangan')";
+            
+                    $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
+                    //Get nominal Kegiatan
+                    $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori = '7' AND id_siswa = '$idSiswa'";
+                    $getPenetapan = mysqli_query($conn, $queryGetPenetapan);
+                    $rowPenetapan = mysqli_fetch_assoc($getPenetapan);
+                    $penetapan = floatval($rowPenetapan['nominal']);
+                    $bulanIni = $penetapan;
+                    $tunggakan = 0;
+                    $jumlah = $bulanIni + $tunggakan;
+                    //insert Kegiatan
+                    $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `penetapan`, `bulan_ini`, `tunggakan`, `jumlah`, `pencatat`, `keterangan`) 
+                    VALUES 
+                    ('$tanggalBayar','$idTahunAjar','$idSiswa','4','7','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$namaUser','$keterangan')";
+            
+                    $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
+                    //Get nominal Komputer
+                    $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori = '8' AND id_siswa = '$idSiswa'";
+                    $getPenetapan = mysqli_query($conn, $queryGetPenetapan);
+                    $rowPenetapan = mysqli_fetch_assoc($getPenetapan);
+                    $penetapan = floatval($rowPenetapan['nominal']);
+                    $bulanIni = $penetapan;
+                    $tunggakan = 0;
+                    $jumlah = $bulanIni + $tunggakan;
+                    //insert Komputer
+                    $queryInsertTransSiswa = "INSERT INTO `transaksi_masuk_siswa`(`tanggal`, `id_tahun_ajar`, `id_siswa`, `id_kategori`, `id_sub_kategori`, `bulan`, `penetapan`, `bulan_ini`, `tunggakan`, `jumlah`, `pencatat`, `keterangan`) 
+                    VALUES 
+                    ('$tanggalBayar','$idTahunAjar','$idSiswa','4','8','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$namaUser','$keterangan')";
+            
+                    $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
+                    } else {
+
                     $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori = '$idSubKategori' AND id_siswa = '$idSiswa'";
                     $getPenetapan = mysqli_query($conn, $queryGetPenetapan);
                     $rowPenetapan = mysqli_fetch_assoc($getPenetapan);
@@ -1287,6 +1347,7 @@
                     ('$tanggalBayar','$idTahunAjar','$idSiswa','$idKategori','$idSubKategori','$bulan', '$penetapan', '$bulanIni', '$tunggakan', '$jumlah','$namaUser','$keterangan')";
             
                     $insertTransSiswa = mysqli_query($conn, $queryInsertTransSiswa);
+                    }
                 }
             }           
 

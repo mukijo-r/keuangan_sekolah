@@ -18,13 +18,33 @@ while ($row = mysqli_fetch_assoc($siswa)) {
     $siswaArray[] = $row['id_siswa']; // Tambahkan id_siswa ke dalam array
 }
 
+// for ($i = 0; $i < count($siswaArray); $i++) {
+//     $idSiswa = $siswaArray[$i];
+//     $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori = '$kategori' AND id_siswa = '$idSiswa'";
+//     $getPenetapan = mysqli_query($conn, $queryGetPenetapan);
+//     $rowPenetapan = mysqli_fetch_assoc($getPenetapan);
+//     $penetapan = floatval($rowPenetapan['nominal']);
+//     $jumlahKolektif += $penetapan;
+// }
+
 for ($i = 0; $i < count($siswaArray); $i++) {
     $idSiswa = $siswaArray[$i];
-    $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori = '$kategori' AND id_siswa = '$idSiswa'";
+
+    if ($kategori == 5) {
+        $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori IN ('5', '6', '7', '8') AND id_siswa = '$idSiswa'";
+    } else {
+        $queryGetPenetapan = "SELECT nominal FROM penetapan WHERE id_sub_kategori = '$kategori' AND id_siswa = '$idSiswa'";
+    }
+
     $getPenetapan = mysqli_query($conn, $queryGetPenetapan);
-    $rowPenetapan = mysqli_fetch_assoc($getPenetapan);
-    $penetapan = floatval($rowPenetapan['nominal']);
-    $jumlahKolektif += $penetapan;
+    $totalNominal = 0;
+
+    while ($rowPenetapan = mysqli_fetch_assoc($getPenetapan)) {
+        $penetapan = floatval($rowPenetapan['nominal']);
+        $totalNominal += $penetapan;
+    }
+
+    $jumlahKolektif += $totalNominal;
 }
 
 // Mengembalikan data dalam format JSON tanpa tanda kutip ganda
