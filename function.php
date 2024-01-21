@@ -42,13 +42,34 @@
         try {
             // Coba jalankan query insert
             $addSiswa = mysqli_query($conn, "INSERT INTO siswa 
-            (nis,nisn, nama, id_kelas, jk, tempat_lahir, tanggal_lahir, agama, alamat, `status`) 
+            (nis, nisn, nama, id_kelas, jk, tempat_lahir, tanggal_lahir, agama, alamat, `status`) 
             VALUES 
             ('$nipd','$nisn', '$namaSiswa', $kelas, '$jk', '$kotaLahir', '$tanggalLahir', '$agama', '$alamat', 'aktif')");
 
             if (!$addSiswa) {
                 throw new Exception("Query insert gagal"); // Lempar exception jika query gagal
             }
+
+            //query mendapatkan id siswa
+            $querysiswa = "SELECT id_siswa FROM siswa WHERE nisn = '$nisn'";
+            $selectSiswa = mysqli_query($conn, $querysiswa);
+            while ($dataSiswa = mysqli_fetch_assoc($selectSiswa)) {
+                $idSiswa = $dataSiswa['id_siswa'];
+            };
+
+            //Tambahkan capaian kompetensi dengan nilai 0
+            $querySelectAsesmen = "SELECT id_asesmen FROM asesmen";
+            $selectAsesmen = mysqli_query($conn, $querySelectAsesmen);
+
+            while ($dataAsesmen = mysqli_fetch_assoc($selectAsesmen)) {
+                $idAsesmen = $dataAsesmen['id_asesmen'];
+
+                // Insert untuk setiap id_asesmen
+                $queryInsertCK = "INSERT INTO capaian_kompetensi (id_siswa, id_asesmen, capaian) 
+                                VALUES ($idSiswa, $idAsesmen, 0);";
+                $insertCK = mysqli_query($conn, $queryInsertCK);
+            }
+
 
             // Query SELECT untuk memeriksa apakah data sudah masuk ke database
             $result = mysqli_query($conn, "SELECT * FROM siswa WHERE nisn = '$nisn'");
@@ -153,6 +174,10 @@
         $ids = $_POST['ids'];
 
         try {
+            //Hapus capaian kompetensi siswa bersangkutan
+
+            $hapusCK = mysqli_query($conn, "DELETE FROM capaian_kompetensi WHERE id_siswa='$ids'");
+
             // Coba jalankan query hapus
             $hapusSiswa = mysqli_query($conn, "DELETE FROM siswa WHERE id_siswa='$ids'");
 
@@ -447,6 +472,27 @@
             if (!mysqli_query($conn, $sql)) {
                 throw new Exception(mysqli_error($conn));
             }
+
+            //mendapatkan id siswa
+            $querysiswa = "SELECT id_siswa FROM siswa WHERE nisn = '$nisn'";
+            $selectSiswa = mysqli_query($conn, $querysiswa);
+            while ($dataSiswa = mysqli_fetch_assoc($selectSiswa)) {
+                $idSiswa = $dataSiswa['id_siswa'];
+            };
+
+            //Tambahkan capaian kompetensi dengan nilai 0
+            $querySelectAsesmen = "SELECT id_asesmen FROM asesmen";
+            $selectAsesmen = mysqli_query($conn, $querySelectAsesmen);
+
+            while ($dataAsesmen = mysqli_fetch_assoc($selectAsesmen)) {
+                $idAsesmen = $dataAsesmen['id_asesmen'];
+
+                // Insert untuk setiap id_asesmen
+                $queryInsertCK = "INSERT INTO capaian_kompetensi (id_siswa, id_asesmen, capaian) 
+                                VALUES ($idSiswa, $idAsesmen, 0);";
+                $insertCK = mysqli_query($conn, $queryInsertCK);
+            }
+
         }
 
         // Tutup koneksi database

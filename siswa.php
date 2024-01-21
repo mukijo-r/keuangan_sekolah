@@ -365,7 +365,7 @@ require 'config.php';
                     <br>
                     <select class="form-select" name="agama" aria-label="Agama">
                         <option selected>Agama</option>
-                        <option value="Katolik">Katolik</option>
+                        <option value="Katholik">Katolik</option>
                         <option value="Kristen">Kristen</option>
                         <option value="Islam">Islam</option>
                         <option value="Hindu">Hindu</option>
