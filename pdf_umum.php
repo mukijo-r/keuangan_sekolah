@@ -189,6 +189,9 @@ $nipPembuatLaporan = $rowJabatan['nip_pembuat_laporan'];
 $nipKepalaSekolah = $rowJabatan['nip_kepala_sekolah'];
 
 $html .= '<table>';
+$html .= '<tr nobr="true"><td>';
+
+$html .= '<table>';
 $html .= '<tr>';
 $html .= '<td style="width: 10%"></td>';
 $html .= '<td style="width: 60%">Bendahara Sekolah</td>';
@@ -240,9 +243,10 @@ $html .= '<tr>';
 $html .= '<td style="width: 55%"></td>';
 $html .= '<td style="width: 45%">Malang ________________________</td>';
 $html .= '</tr>';
-$html .= '</table><br><br>';
+$html .= '</table><br>';
 
-
+$html .= '</td></tr>'; 
+$html .= '</table>';
 
 // print a block of text using Write()
 $pdf->Write(0, $txt, '', 0, 'C', true, 0, false, false, 0);

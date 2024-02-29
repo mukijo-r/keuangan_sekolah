@@ -229,7 +229,7 @@ $queryUser = mysqli_query($conn, "SELECT `role` FROM users WHERE username = '$us
                     <h5>Versi</h5>
                     <p>1.0.0 </p>
                     <h5>Tanggal Rilis</h5>
-                    <p>15 Oktober 2023 </p>
+                    <p>01 Desember 2023 </p>
                     <h5>Pengembangan</h5>
                     <ul>
                         <li>Pengembang : Mukijo</li>

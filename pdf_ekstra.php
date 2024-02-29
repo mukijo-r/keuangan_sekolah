@@ -27,7 +27,7 @@ class MYPDF extends TCPDF {
         $this->SetFont('helvetica', '', 9);
         $this->Cell(0, 6, 'Rogojampi - Banyuwangi', 0, false, 'C', 0, '', 0, false, 'M', 'M');
         $this->SetLineWidth(0.3); // Atur ketebalan garis
-        $this->Line(10, 37, 200, 37); // Koordinat untuk garis mendatar
+        $this->Line(10, 37, 285, 37); // Koordinat untuk garis mendatar
         $this->Ln();
 
     }
@@ -40,7 +40,7 @@ $pdf = new MYPDF('landscape', PDF_UNIT, 'A4', true, 'UTF-8', false);
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Mukijo');
-$pdf->SetTitle('Laporan Cash Flow');
+$pdf->SetTitle('Rekapan Ekstrakurikuler');
 $pdf->SetSubject('TCPDF');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -114,6 +114,10 @@ $pdf->SetFont('times', '', 10);
 $pdf->SetCellMargins(0, 1, 0, 0);
 $html = '';
 for ($kelas = 1; $kelas <= 6; $kelas++) {
+
+    $html .= '<table>';
+    $html .= '<tr nobr="true"><td>';
+
     $html .= '
             Daftar Penerimaan kelas ' . $kelas . ' :<br><br>
             <table border="0.75">
@@ -248,10 +252,16 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
     <td><strong>Rp. ' . number_format($totalTunggakanKomputer, 0, ',', '.') . '</strong></td>
     <td><strong>Rp. ' . number_format($totalJumlahKomputer, 0, ',', '.') . '</strong></td>
     </tr>
-    </table>
-    <br><br><br>';                     
+    </table><br>';
+    
+    $html .= '</td></tr>'; 
+    $html .= '</table>';  
 }
 // Tampilkan tabel untuk total kolom per kelas
+
+$html .= '<table>';
+$html .= '<tr nobr="true"><td>';
+
 $html .= '
     <br>
     <div class="card mb-4">
@@ -410,7 +420,10 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
     </tr>
     </table>
     </div>
-    </div><br>';       
+    </div><br>';
+    
+$html .= '</td></tr>'; 
+$html .= '</table>';  
 
 $queryJabatan = mysqli_query($conn, "SELECT
 MAX(CASE WHEN jabatan = 'Kepala Sekolah' THEN nama_lengkap END) AS kepala_sekolah,
@@ -428,6 +441,9 @@ $kepalaSekolah = $rowJabatan['kepala_sekolah'];
 $nipBendahara = $rowJabatan['nip_bendahara_sekolah'];
 $nipPembuatLaporan = $rowJabatan['nip_pembuat_laporan'];
 $nipKepalaSekolah = $rowJabatan['nip_kepala_sekolah'];
+
+$html .= '<table>';
+$html .= '<tr nobr="true"><td>';
 
 $html .= '<table>';
 $html .= '<tr>';
@@ -481,7 +497,10 @@ $html .= '<tr>';
 $html .= '<td style="width: 55%"></td>';
 $html .= '<td style="width: 45%">Malang ________________________</td>';
 $html .= '</tr>';
-$html .= '</table><br><br>';
+$html .= '</table><br>';
+
+$html .= '</td></tr>'; 
+$html .= '</table>';
 
 // print a block of text using Write()
 $pdf->Write(0, $txt, '', 0, 'C', true, 0, false, false, 0);

@@ -40,7 +40,7 @@ $pdf = new MYPDF('portrait', PDF_UNIT, 'A4', true, 'UTF-8', false);
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Mukijo');
-$pdf->SetTitle('Laporan Cash Flow');
+$pdf->SetTitle('Rekapan SPP');
 $pdf->SetSubject('TCPDF');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -114,15 +114,18 @@ $pdf->SetFont('times', '', 10);
 $pdf->SetCellMargins(0, 1, 0, 0);
 $html = '';
 
+
 for ($kelas = 1; $kelas <= 6; $kelas++) {
-    $html .= 'Daftar Penerimaan kelas ' . $kelas . ' :<br><br>';
-    $html .= '<table border="0.75">';
-    $html .= '<tr>';
+   
+
+    $html .= '<table border="0.75" nobr="true">';
+    $html .= '<tr><th> Daftar Penerimaan kelas ' . $kelas . ' :<br></th></tr>';
+    $html .= '<tr nobr="true">';
     $html .= '<th rowspan="2" style="vertical-align: middle; width: 5%"> No.</th>';
     $html .= '<th rowspan="2" style="vertical-align: middle; width: 25%"> Nama Siswa</th>';
     $html .= '<th colspan="4" style="text-align: center; width: 70%"> Iuran SPP</th>';
     $html .= '</tr>';
-    $html .= '<tr>';
+    $html .= '<tr nobr="true">';
     $html .= '<td> Penetapan</td>';
     $html .= '<td> Bulan ini</td>';
     $html .= '<td> Tunggakan</td>';
@@ -163,9 +166,9 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
         $tunggakanSpp = $rowPenerimaan['tunggakan_spp'];
         $jumlahSpp = $rowPenerimaan['jumlah_spp'];
 
-    $html .= '<tr>';
+    $html .= '<tr nobr="true">';
     $html .= '<td> ' . $i++ . '</td>';
-    $html .= '<td> ' . $namaSiswa . '</td>';
+    $html .= '<td>' . $namaSiswa . '</td>';
     $html .= '<td> Rp. ' . number_format($penetapanSpp, 0, ',', '.') . '</td>';
     $html .= '<td> Rp. ' . number_format($bulanIniSpp, 0, ',', '.') . '</td>';
     $html .= '<td> Rp. ' . number_format($tunggakanSpp, 0, ',', '.') . '</td>';
@@ -179,7 +182,7 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
     $totalJumlahSpp += $jumlahSpp;
     }
     // Tampilkan baris total
-    $html .= '<tr>';
+    $html .= '<tr nobr="true">';
     $html .= '<td colspan="2"> Total</td>';
     $html .= '<td><strong> Rp. ' . number_format($totalPenetapanSpp, 0, ',', '.') . '</strong></td>';
     $html .= '<td><strong> Rp. ' . number_format($totalbulanIniSpp, 0, ',', '.') . '</strong></td>';
@@ -188,17 +191,20 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
     $html .= '</tr>';                            
     $html .= '</table>'; 
     $html .= '<br><br>';
-    }                       
+
+    }       
 
 // Tampilkan tabel untuk total kolom per kelas
-$html .= 'Rekapitulasi Penerimaan Uang SPP :';
-$html .= '<br><br>';
-$html .= '<table border="0.75">';
-$html .= '<tr>';
+
+// $html .= 'Rekapitulasi Penerimaan Uang SPP :';
+// $html .= '<br><br>';
+$html .= '<table border="0.75" nobr="true">';
+$html .= '<tr><th colspan="5">Rekapitulasi Penerimaan Uang SPP :</th></tr>';
+$html .= '<tr nobr="true">';
 $html .= '<th rowspan="2"  style="vertical-align: middle;"> Kelas</th>';
 $html .= '<th colspan="4" style="text-align: center;"> Iuran SPP</th>';
 $html .= '</tr>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td> Penetapan</td>';
 $html .= '<td> Bulan ini</td>';
 $html .= '<td> Tunggakan</td>';
@@ -252,7 +258,7 @@ $queryPenetapanKelas = "SELECT SUM(p.nominal) AS total_nominal
     $rowPenetapanSppKelas = mysqli_fetch_array($resultPenetapanSppKelas);
     $penetapanSppKelas = $rowPenetapanSppKelas['total_nominal'];
 
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td> Kelas ' . $kelas . '</td>';
 $html .= '<td> Rp. ' . number_format($penetapanSppKelas, 0, ',', '.') . '</td>';
 $html .= '<td> Rp. ' . number_format($bulanIniSppKelas, 0, ',', '.') . '</td>';
@@ -269,7 +275,7 @@ $selisihPenetapanJumlah = $finalJumlahSpp - $finalPenetapanSpp;
 
 }
 
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td><strong> Total</strong></td>';
 $html .= '<td><strong> Rp. ' . number_format($finalPenetapanSpp, 0, ',', '.') . '</strong></td>';
 $html .= '<td><strong> Rp. ' . number_format($finalBulanIniSpp, 0, ',', '.') . '</strong></td>';
@@ -280,12 +286,12 @@ $html .= '</table><br><br>';
 
 $html .= 'Selisih Penerimaan SPP bulan ini Terhadap Penetapan <br><br>';
 $html .= '<table border="0.75">
-    <tr>
+    <tr nobr="true">
         <th style="width: 30%"> Penetapan SPP' . $tahunAjar . '</th>
         <th style="width: 20%"> SPP Masuk </th>
         <th style="width: 20%"> Selisih Penerimaan</th>
     </tr>
-    <tr>
+    <tr nobr="true">
         <td style="width: 30%"> Rp. ' . number_format($finalPenetapanSpp, 0, ',', '.') . '</td>
         <td style="width: 20%"> Rp. ' . number_format($finalJumlahSpp, 0, ',', '.') . '</td>
         <td style="width: 20%"> Rp. ' . number_format($selisihPenetapanJumlah, 0, ',', '.') . '</td>
@@ -311,7 +317,7 @@ $nipPembuatLaporan = $rowJabatan['nip_pembuat_laporan'];
 $nipKepalaSekolah = $rowJabatan['nip_kepala_sekolah'];
 
 $html .= '<table>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 10%"></td>';
 $html .= '<td style="width: 60%">Bendahara Sekolah</td>';
 $html .= '<td style="width: 30%">Pembuat Laporan</td>';
@@ -319,12 +325,12 @@ $html .= '</tr>';
 $html .= '</table><br><br><br><br>';
 
 $html .= '<table>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 10%"></td>';
 $html .= '<td style="width: 60%"><u>' . $bendahara . '</u></td>';
 $html .= '<td style="width: 30%"><u>' . $pembuatLaporan . '</u></td>';
 $html .= '</tr>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 10%"></td>';
 $html .= '<td style="width: 60%">NIP. ' . $nipBendahara . '</td>';
 $html .= '<td style="width: 30%">NIP. ' . $nipPembuatLaporan . '</td>';
@@ -332,33 +338,33 @@ $html .= '</tr>';
 $html .= '</table><br><br>';
 
 $html .= '<table>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 10%"></td>';
 $html .= '<td style="width: 55%">Kepala Sekolah</td>';
 $html .= '</tr>';
 $html .= '</table><br><br><br><br>';
 
 $html .= '<table>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 10%"></td>';
 $html .= '<td style="width: 55%"><u>' . $kepalaSekolah . '</u></td>';
 $html .= '</tr>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 10%"></td>';
 $html .= '<td style="width: 55%">NIP. ' . $nipKepalaSekolah . '</td>';
 $html .= '</tr>';
 $html .= '</table><br>';
 
 $html .= '<table>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 55%"></td>';
 $html .= '<td style="width: 45%">Telah diperiksa oleh Bagian Keuangan</td>';
 $html .= '</tr>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 55%"></td>';
 $html .= '<td style="width: 45%">Yayasan Karmel Malang </td>';
 $html .= '</tr>';
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 55%"></td>';
 $html .= '<td style="width: 45%">Malang ________________________</td>';
 $html .= '</tr>';
