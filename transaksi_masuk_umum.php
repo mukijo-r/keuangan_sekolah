@@ -49,6 +49,12 @@ date_default_timezone_set('Asia/Jakarta');
                             </div>
                         </div>                    
                         <br>
+                        <?php 
+                        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahun_ajar'");
+                        while ($rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar)) {                            
+                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar'];
+                        }
+                        ?>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -79,7 +85,8 @@ date_default_timezone_set('Asia/Jakarta');
                                     kat.nama_kategori AS kategori                                    
                                     FROM transaksi_masuk_nonsiswa tmn
                                     LEFT JOIN tahun_ajar ta ON tmn.id_tahun_ajar = ta.id_tahun_ajar
-                                    LEFT JOIN kategori kat ON tmn.id_kategori = kat.id_kategori                                    
+                                    LEFT JOIN kategori kat ON tmn.id_kategori = kat.id_kategori
+                                    WHERE tmn.id_tahun_ajar = '$idTahunAjar'                                    
                                     ORDER BY tmn.tanggal DESC;
                                     ;");
 

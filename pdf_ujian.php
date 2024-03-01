@@ -235,6 +235,7 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
         $totalBulanIniUs += $bulanIniUs;
         $totalTunggakanUs += $tunggakanUs;
         $totalJumlahUs += $jumlahUs;
+        $i++;
     }
         // Tampilkan baris total
     $html .= '<tr>
@@ -252,10 +253,11 @@ for ($kelas = 1; $kelas <= 6; $kelas++) {
     <td><strong>Rp. ' . number_format($totalTunggakanUs, 0, ',', '.') . '</strong></td>
     <td><strong>Rp. ' . number_format($totalJumlahUs, 0, ',', '.') . '</strong></td>
     </tr>
-    </table><br>';
+    </table>';
     
     $html .= '</td></tr>'; 
-    $html .= '</table>'; 
+    $html .= '</table>';
+
 }
 // Tampilkan tabel untuk total kolom per kelas
 

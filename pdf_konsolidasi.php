@@ -379,7 +379,7 @@ $html .= '</table><br><br>';
 $html .= '<table><tr><td style="width: 33%"></td><td>Daftar Pemegang Kas Keuangan Sekolah</td></tr></table><br>';
 
 $html .= '<table border="0.75">
-            <tr>
+            <tr nobr="true">
                 <th style="width: 5%"><strong>  No.</strong></th>
                 <th style="width: 19%"><strong>  Nama Pemegang Kas</strong></th>    
                 <th style="width: 20%"><strong>  Macam Keuangan</strong></th>
@@ -389,7 +389,7 @@ $html .= '<table border="0.75">
                 <th style="width: 14%"><strong>  Keterangan</strong></th>
             </tr>';
 
-$html .= '<tr>';
+$html .= '<tr nobr="true">';
 $html .= '<td style="width: 5%">1</td>';                                      
 $html .= '<td style="width: 19%">  ' . $namaGuru . '</td>';
 $html .= '<td style="width: 20%">  Cash Flow</td>'; 
@@ -438,7 +438,7 @@ while($data=mysqli_fetch_array($pemegangKas)){
 
     $jumlahKas = $kasMasuk - $kasKeluar;
     $tunaiKas = $jumlahKas - $jumlahPinjamKas;
-    $html .= '<tr>';
+    $html .= '<tr nobr="true">';
     $html .= '<td>  ' . $i++ . '</td>';                                        
     $html .= '<td>  ' . $nama . '</td>';
     $html .= '<td>  ' . $kategori . '</td>';
@@ -466,6 +466,9 @@ $kepalaSekolah = $rowJabatan['kepala_sekolah'];
 $nipBendahara = $rowJabatan['nip_bendahara_sekolah'];
 $nipPembuatLaporan = $rowJabatan['nip_pembuat_laporan'];
 $nipKepalaSekolah = $rowJabatan['nip_kepala_sekolah'];
+
+$html .= '<table>';
+$html .= '<tr nobr="true"><td>';
 
 $html .= '<table>';
 $html .= '<tr>';
@@ -521,7 +524,8 @@ $html .= '<td style="width: 45%">Malang ________________________</td>';
 $html .= '</tr>';
 $html .= '</table><br><br>';
 
-
+$html .= '</td></tr>'; 
+$html .= '</table>';
 
 // print a block of text using Write()
 $pdf->Write(0, $txt, '', 0, 'C', true, 0, false, false, 0);

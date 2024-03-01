@@ -3,6 +3,9 @@ require 'function.php';
 require 'cek.php';
 require 'config.php';
 date_default_timezone_set('Asia/Jakarta');
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,6 +57,14 @@ date_default_timezone_set('Asia/Jakarta');
                             </div>
                         </div>                    
                         <br>
+                        
+                        <?php 
+                        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahun_ajar'");
+                        while ($rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar)) {                            
+                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar'];
+                        }
+                        ?>
+
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -95,6 +106,7 @@ date_default_timezone_set('Asia/Jakarta');
                                     LEFT JOIN siswa s ON tms.id_siswa = s.id_siswa
                                     LEFT JOIN kategori kat ON tms.id_kategori = kat.id_kategori
                                     LEFT JOIN sub_kategori_siswa subkat ON tms.id_sub_kategori = subkat.id_sub_kategori
+                                    WHERE tms.id_tahun_ajar = '$idTahunAjar'
                                     ORDER BY tms.id_tms DESC;");
 
                                     $totalEntries = mysqli_num_rows($dataTransaksiSiswa);

@@ -49,6 +49,12 @@ date_default_timezone_set('Asia/Jakarta');
                             </div>
                         </div>                    
                         <br>
+                        <?php 
+                        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahun_ajar'");
+                        while ($rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar)) {                            
+                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar'];
+                        }
+                        ?>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -84,6 +90,7 @@ date_default_timezone_set('Asia/Jakarta');
                                     LEFT JOIN tahun_ajar ta ON tkc.id_tahun_ajar = ta.id_tahun_ajar
                                     LEFT JOIN sub_kategori_cashflow skc ON tkc.id_subkategori_cashflow = skc.id_subkategori_cashflow
                                     LEFT JOIN group_cashflow gc ON skc.id_group_cashflow = gc.id_group_cashflow
+                                    WHERE tkc.id_tahun_ajar = '$idTahunAjar'
                                     ORDER BY tkc.id_tkc DESC;
                                     ;");
 

@@ -316,7 +316,7 @@ $html .= '<td>';
     $html .= '</table>';
 $html .= '</td>';
 $html .= '</tr>';
-$html .= '</table><br><br><br><br>';
+$html .= '</table><br><br>';
 
 
 
@@ -336,6 +336,9 @@ $kepalaSekolah = $rowJabatan['kepala_sekolah'];
 $nipBendahara = $rowJabatan['nip_bendahara_sekolah'];
 $nipPembuatLaporan = $rowJabatan['nip_pembuat_laporan'];
 $nipKepalaSekolah = $rowJabatan['nip_kepala_sekolah'];
+
+$html .= '<table>';
+$html .= '<tr nobr="true"><td>';
 
 $html .= '<table>';
 $html .= '<tr>';
@@ -390,6 +393,9 @@ $html .= '<td style="width: 55%"></td>';
 $html .= '<td style="width: 45%">Malang ________________________</td>';
 $html .= '</tr>';
 $html .= '</table><br><br>';
+
+$html .= '</td></tr>'; 
+$html .= '</table>';
 
 
 

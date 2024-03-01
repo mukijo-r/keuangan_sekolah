@@ -43,13 +43,18 @@ require 'config.php';
                                         $message_class = isset($_SESSION['flash_message_class']) ? $_SESSION['flash_message_class'] : 'alert-success';
                                         echo '<div class="alert ' . $message_class . ' text-center">' . $_SESSION['flash_message'] . '</div>';
                                         unset($_SESSION['flash_message']); // Hapus pesan flash setelah ditampilkan
-                                    }
-                                    
+                                    }                                    
                                     ?>
                                 </div>
                             </div>
                         </div>                    
                         <br>
+                        <?php 
+                        $queryTahunAjar = mysqli_query($conn, "SELECT id_tahun_ajar FROM tahun_ajar WHERE tahun_ajar='$tahun_ajar'");
+                        while ($rowTahunAjar = mysqli_fetch_assoc($queryTahunAjar)) {                            
+                            $idTahunAjar = $rowTahunAjar['id_tahun_ajar'];
+                        }
+                        ?>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -77,6 +82,7 @@ require 'config.php';
                                     FROM tabung_masuk tm
                                     LEFT JOIN siswa s ON tm.id_siswa = s.id_siswa
                                     LEFT JOIN kelas k ON s.id_kelas = k.id_kelas
+                                    WHERE tm.id_tahun_ajar = '$idTahunAjar'
                                     ORDER BY tm.id_tb_masuk DESC");
 
                                     $totalEntries = mysqli_num_rows($dataTabungan);

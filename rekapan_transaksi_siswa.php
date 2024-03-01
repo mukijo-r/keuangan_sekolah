@@ -14,21 +14,7 @@ $conn = mysqli_connect("localhost:3306","root","","sdk");
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Halaman Transaksi Siswa</title>
-        <style>
-            @media print {
-                .mt-4, .breadcrumb-item, .container-fluid, .px-4, .breadcrumb, .mb-4, .active, 
-                .px-1, .row-cols-auto, .input-group, .mb-3, .input-group-prepend, .input-group-text,
-                .custom-select, .btn, .btn-primary, .card, .mb-3, .h3, .ol, .li, .layoutSidenav, .layoutSidenav_content,
-                .form, .option,
-                 {
-                    display: none;
-                }
-                
-                body {
-                margin: 0 !important;
-                padding: 0 !important;
-                }
-            }
+        <style>          
 
             .teks-kecil {
                 font-size: 0.8em;

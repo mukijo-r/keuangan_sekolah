@@ -116,7 +116,7 @@ require 'config.php';
                                                 <option value="">Pilih Kategori</option>
                                                 <?php
                                                 // Ambil data kelas dari tabel kelas
-                                                $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum'");
+                                                $queryKategori = mysqli_query($conn, "SELECT id_kategori, nama_kategori FROM kategori WHERE kelompok='umum' AND nama_kategori <> 'Cash Flow'");
                                                 while ($kategori = mysqli_fetch_assoc($queryKategori)) {
                                                     echo '<option value="' . $kategori['id_kategori'] . '">' . $kategori['nama_kategori'] . '</option>';
                                                 }
